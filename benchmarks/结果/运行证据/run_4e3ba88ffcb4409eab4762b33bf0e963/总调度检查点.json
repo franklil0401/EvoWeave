@@ -1,0 +1,373 @@
+{
+  "run_id": "run_4e3ba88ffcb4409eab4762b33bf0e963",
+  "version": 3,
+  "graph": {
+    "graph_id": "graph_d833881694c44694a06c0a0a12f79c69",
+    "run_id": "run_4e3ba88ffcb4409eab4762b33bf0e963",
+    "version": 7,
+    "nodes": [
+      {
+        "task_id": "task_d92354cb9dc143e49ae4d59482547145",
+        "task_spec_version": 1,
+        "status": "running",
+        "attempts": 1
+      },
+      {
+        "task_id": "task_a0cba8e6fc384ea69dc3ede5547353a9",
+        "task_spec_version": 1,
+        "status": "failed",
+        "attempts": 1
+      }
+    ],
+    "edges": [],
+    "created_at": "2026-08-14T14:32:18.196203Z"
+  },
+  "task_specs": [
+    {
+      "spec_id": "spec_c0551990a1fc4e31bf3f0817605b793a",
+      "task_id": "task_a0cba8e6fc384ea69dc3ede5547353a9",
+      "change_spec_id": "spec_8592b04a20e4441083c35004e9ecbff1",
+      "goal": "同时为 Customer 增加 normalized_type 标准化属性，并让价格匹配独立支持大小写与首尾空格\n本任务只负责写范围：src/shop/pricing.py；可以读取授权仓库证据，但不得修改其他路径。",
+      "base_commit": "15fdda6d2004e5291abacbf11c727bc977e51409",
+      "acceptance_criteria": [
+        "Customer.normalized_type 返回去空格的大写值",
+        "价格模块独立支持大小写与空格",
+        "回归通过"
+      ],
+      "depends_on": [],
+      "input_artifact_ids": [],
+      "context_artifact_ids": [
+        "artifact_0bad45aed0c941caa462a0e848218150"
+      ],
+      "read_scope": [
+        ".github/workflows/ci.yml",
+        "pyproject.toml",
+        "src/shop/__init__.py",
+        "src/shop/legacy_broken.py",
+        "src/shop/models.py",
+        "src/shop/pricing.py",
+        "src/shop/service.py",
+        "tests/test_service.py"
+      ],
+      "write_scope": [
+        "src/shop/pricing.py"
+      ],
+      "required_modalities": [
+        "text"
+      ],
+      "difficulty": {
+        "difficulty": "medium",
+        "rationale": "仓库证据规则评分 0；单一、明确且低风险的候选范围；结构性难度下限：任务需要协调多个独立写范围",
+        "evidence_ids": [
+          "evidence_1dc740337b2854b6c0b155be",
+          "evidence_65407f4fe0f339d057c8189d",
+          "evidence_860316578bf7ace3a4ac60cc",
+          "evidence_935ddeddb1267cee12b17c6c",
+          "evidence_95f1ab3d5708a7ad987daa5e",
+          "evidence_a4bbad59c34fdfdfc8db2070",
+          "evidence_b4c4266317692cb3bd2fa75a",
+          "evidence_583d010c4675fa2b5541bd97",
+          "evidence_745eb2c1f40c12eac871599f",
+          "evidence_7615d891088b843690416a09",
+          "evidence_8641529085cab769d26abdd1",
+          "evidence_8a0c0e1dbfe0841efb0509f1",
+          "evidence_a2bf2b2d4af036f5e27221b7",
+          "evidence_a55e13e8d5c495c242754514",
+          "evidence_e67cc2499c075b608e47e71d",
+          "evidence_038038e72d924192763aaec6",
+          "evidence_0b4ce13b603cc451de040304",
+          "evidence_415fe9882f5e0e076424888a",
+          "evidence_5c43ba8973e80c1fbf9a295d",
+          "evidence_9a7de0ea556122ec1b77d253",
+          "evidence_5bc229732d3c9973b3c45a51",
+          "evidence_753c0804d5d4aca505a49c8c",
+          "evidence_8111f34bcc970d42a5797940",
+          "evidence_cbbc702718bbb011d3394406",
+          "evidence_3616d3b9402cea2dd3889ca7",
+          "evidence_fd0b317dc5e16a4e8d4564c2",
+          "evidence_4f6b86f6da278d3891cdb6e6",
+          "evidence_e7b59004e0b0ac35c0ddb924"
+        ],
+        "version": 1
+      },
+      "model_requirement": {
+        "requirement_id": "spec_c5ef8e405af9ce208addaf1d",
+        "task_id": "task_a0cba8e6fc384ea69dc3ede5547353a9",
+        "difficulty": "medium",
+        "required_modalities": [
+          "text"
+        ],
+        "min_context_tokens": 32000,
+        "min_output_tokens": 4000,
+        "requires_tool_calling": true,
+        "requires_structured_output": true,
+        "requires_thinking": false,
+        "version": 1
+      },
+      "risk_level": "low",
+      "version": 1
+    },
+    {
+      "spec_id": "spec_77dcaa25874a44249f014146d3458bda",
+      "task_id": "task_d92354cb9dc143e49ae4d59482547145",
+      "change_spec_id": "spec_8592b04a20e4441083c35004e9ecbff1",
+      "goal": "同时为 Customer 增加 normalized_type 标准化属性，并让价格匹配独立支持大小写与首尾空格\n本任务只负责写范围：src/shop/models.py；可以读取授权仓库证据，但不得修改其他路径。",
+      "base_commit": "15fdda6d2004e5291abacbf11c727bc977e51409",
+      "acceptance_criteria": [
+        "Customer.normalized_type 返回去空格的大写值",
+        "价格模块独立支持大小写与空格",
+        "回归通过"
+      ],
+      "depends_on": [],
+      "input_artifact_ids": [],
+      "context_artifact_ids": [
+        "artifact_0bad45aed0c941caa462a0e848218150"
+      ],
+      "read_scope": [
+        ".github/workflows/ci.yml",
+        "pyproject.toml",
+        "src/shop/__init__.py",
+        "src/shop/legacy_broken.py",
+        "src/shop/models.py",
+        "src/shop/pricing.py",
+        "src/shop/service.py",
+        "tests/test_service.py"
+      ],
+      "write_scope": [
+        "src/shop/models.py"
+      ],
+      "required_modalities": [
+        "text"
+      ],
+      "difficulty": {
+        "difficulty": "medium",
+        "rationale": "仓库证据规则评分 0；单一、明确且低风险的候选范围；结构性难度下限：任务需要协调多个独立写范围",
+        "evidence_ids": [
+          "evidence_038038e72d924192763aaec6",
+          "evidence_0b4ce13b603cc451de040304",
+          "evidence_415fe9882f5e0e076424888a",
+          "evidence_5c43ba8973e80c1fbf9a295d",
+          "evidence_9a7de0ea556122ec1b77d253",
+          "evidence_bbd8dd833515492908bcc492",
+          "evidence_583d010c4675fa2b5541bd97",
+          "evidence_745eb2c1f40c12eac871599f",
+          "evidence_7615d891088b843690416a09",
+          "evidence_8641529085cab769d26abdd1",
+          "evidence_8a0c0e1dbfe0841efb0509f1",
+          "evidence_a2bf2b2d4af036f5e27221b7",
+          "evidence_a55e13e8d5c495c242754514",
+          "evidence_e67cc2499c075b608e47e71d",
+          "evidence_65407f4fe0f339d057c8189d",
+          "evidence_860316578bf7ace3a4ac60cc",
+          "evidence_935ddeddb1267cee12b17c6c",
+          "evidence_95f1ab3d5708a7ad987daa5e",
+          "evidence_a4bbad59c34fdfdfc8db2070",
+          "evidence_b4c4266317692cb3bd2fa75a",
+          "evidence_5bc229732d3c9973b3c45a51",
+          "evidence_753c0804d5d4aca505a49c8c",
+          "evidence_8111f34bcc970d42a5797940",
+          "evidence_cbbc702718bbb011d3394406",
+          "evidence_3616d3b9402cea2dd3889ca7",
+          "evidence_fd0b317dc5e16a4e8d4564c2",
+          "evidence_4f6b86f6da278d3891cdb6e6",
+          "evidence_e7b59004e0b0ac35c0ddb924"
+        ],
+        "version": 1
+      },
+      "model_requirement": {
+        "requirement_id": "spec_000b185066410d410cc008a5",
+        "task_id": "task_d92354cb9dc143e49ae4d59482547145",
+        "difficulty": "medium",
+        "required_modalities": [
+          "text"
+        ],
+        "min_context_tokens": 32000,
+        "min_output_tokens": 4000,
+        "requires_tool_calling": true,
+        "requires_structured_output": true,
+        "requires_thinking": false,
+        "version": 1
+      },
+      "risk_level": "low",
+      "version": 1
+    }
+  ],
+  "execution_specs": [
+    {
+      "spec_id": "spec_e7b541668c4a49e7a2d44b0c1e215dfa",
+      "run_id": "run_4e3ba88ffcb4409eab4762b33bf0e963",
+      "agent_id": "agent_e2d601e3548d40e6b1f9b8b505f51ec7",
+      "task_id": "task_a0cba8e6fc384ea69dc3ede5547353a9",
+      "task_spec_id": "spec_c0551990a1fc4e31bf3f0817605b793a",
+      "task_spec_version": 1,
+      "base_commit": "15fdda6d2004e5291abacbf11c727bc977e51409",
+      "goal": "同时为 Customer 增加 normalized_type 标准化属性，并让价格匹配独立支持大小写与首尾空格\n本任务只负责写范围：src/shop/pricing.py；可以读取授权仓库证据，但不得修改其他路径。",
+      "acceptance_criteria": [
+        "Customer.normalized_type 返回去空格的大写值",
+        "价格模块独立支持大小写与空格",
+        "回归通过"
+      ],
+      "required_modalities": [
+        "text"
+      ],
+      "model_routing": {
+        "decision_id": "spec_157fc8e728c144d1867bcd6fa60afd39",
+        "requirement_id": "spec_c5ef8e405af9ce208addaf1d",
+        "requirement_version": 1,
+        "selected_model_key": "doubao:doubao-seed-2-0-mini-260428",
+        "selected_availability": "available",
+        "selected_snapshot": null,
+        "reason": "benchmark fixed_low 对照固定使用单一模型；输入模态、上下文、工具和结构化输出硬约束仍然生效",
+        "fallback_model_keys": [],
+        "rejected_candidates": [],
+        "capability_snapshot_at": "2026-08-14T14:28:33.137172Z",
+        "version": 1
+      },
+      "tool_names": [
+        "file.read",
+        "file.search",
+        "file.write"
+      ],
+      "allowed_commands": [],
+      "read_scope": [
+        ".github/workflows/ci.yml",
+        "pyproject.toml",
+        "src/shop/__init__.py",
+        "src/shop/legacy_broken.py",
+        "src/shop/models.py",
+        "src/shop/pricing.py",
+        "src/shop/service.py",
+        "tests/test_service.py"
+      ],
+      "write_scope": [
+        "src/shop/pricing.py"
+      ],
+      "context_artifact_ids": [
+        "artifact_0bad45aed0c941caa462a0e848218150"
+      ],
+      "input_artifact_ids": [],
+      "runtime_limits": {
+        "max_steps": 32,
+        "max_input_tokens": 1000000,
+        "max_output_tokens": 16384,
+        "max_tool_calls": 32,
+        "timeout_seconds": 900
+      },
+      "output_schema": "TaskResult",
+      "version": 1
+    },
+    {
+      "spec_id": "spec_91c29a7fae77420bb465ee2650bec2c0",
+      "run_id": "run_4e3ba88ffcb4409eab4762b33bf0e963",
+      "agent_id": "agent_06b6a3c7ce8145aebb802ace962f08c9",
+      "task_id": "task_d92354cb9dc143e49ae4d59482547145",
+      "task_spec_id": "spec_77dcaa25874a44249f014146d3458bda",
+      "task_spec_version": 1,
+      "base_commit": "15fdda6d2004e5291abacbf11c727bc977e51409",
+      "goal": "同时为 Customer 增加 normalized_type 标准化属性，并让价格匹配独立支持大小写与首尾空格\n本任务只负责写范围：src/shop/models.py；可以读取授权仓库证据，但不得修改其他路径。",
+      "acceptance_criteria": [
+        "Customer.normalized_type 返回去空格的大写值",
+        "价格模块独立支持大小写与空格",
+        "回归通过"
+      ],
+      "required_modalities": [
+        "text"
+      ],
+      "model_routing": {
+        "decision_id": "spec_fd05ded4738d43ce9bf7f37627fdcd04",
+        "requirement_id": "spec_000b185066410d410cc008a5",
+        "requirement_version": 1,
+        "selected_model_key": "doubao:doubao-seed-2-0-mini-260428",
+        "selected_availability": "available",
+        "selected_snapshot": null,
+        "reason": "benchmark fixed_low 对照固定使用单一模型；输入模态、上下文、工具和结构化输出硬约束仍然生效",
+        "fallback_model_keys": [],
+        "rejected_candidates": [],
+        "capability_snapshot_at": "2026-08-14T14:28:33.137172Z",
+        "version": 1
+      },
+      "tool_names": [
+        "file.read",
+        "file.search",
+        "file.write"
+      ],
+      "allowed_commands": [],
+      "read_scope": [
+        ".github/workflows/ci.yml",
+        "pyproject.toml",
+        "src/shop/__init__.py",
+        "src/shop/legacy_broken.py",
+        "src/shop/models.py",
+        "src/shop/pricing.py",
+        "src/shop/service.py",
+        "tests/test_service.py"
+      ],
+      "write_scope": [
+        "src/shop/models.py"
+      ],
+      "context_artifact_ids": [
+        "artifact_0bad45aed0c941caa462a0e848218150"
+      ],
+      "input_artifact_ids": [],
+      "runtime_limits": {
+        "max_steps": 32,
+        "max_input_tokens": 1000000,
+        "max_output_tokens": 16384,
+        "max_tool_calls": 32,
+        "timeout_seconds": 900
+      },
+      "output_schema": "TaskResult",
+      "version": 1
+    }
+  ],
+  "active_leases": [
+    {
+      "lease_id": "lease_1f60457ef2824204964238521d8fb0f4",
+      "run_id": "run_4e3ba88ffcb4409eab4762b33bf0e963",
+      "task_id": "task_d92354cb9dc143e49ae4d59482547145",
+      "agent_id": "agent_06b6a3c7ce8145aebb802ace962f08c9",
+      "execution_spec_id": "spec_91c29a7fae77420bb465ee2650bec2c0",
+      "execution_spec_version": 1,
+      "write_scope": [
+        "src/shop/models.py"
+      ],
+      "status": "active",
+      "leased_at": "2026-08-14T14:32:18.238997Z",
+      "expires_at": "2026-08-14T15:02:18.238997Z"
+    }
+  ],
+  "allocation_decisions": [
+    {
+      "allocation_id": "spec_dadfbeca717a4b1ea459e2c4354299cd",
+      "run_id": "run_4e3ba88ffcb4409eab4762b33bf0e963",
+      "graph_version": 2,
+      "ready_task_ids": [
+        "task_a0cba8e6fc384ea69dc3ede5547353a9",
+        "task_d92354cb9dc143e49ae4d59482547145"
+      ],
+      "selected_task_ids": [
+        "task_a0cba8e6fc384ea69dc3ede5547353a9",
+        "task_d92354cb9dc143e49ae4d59482547145"
+      ],
+      "available_slots": 6,
+      "reason": "实例数由就绪任务、并发槽位和写集合独立性共同决定"
+    }
+  ],
+  "result_summaries": [
+    {
+      "task_id": "task_a0cba8e6fc384ea69dc3ede5547353a9",
+      "agent_id": "agent_e2d601e3548d40e6b1f9b8b505f51ec7",
+      "execution_spec_id": "spec_e7b541668c4a49e7a2d44b0c1e215dfa",
+      "status": "failed",
+      "summary": "Worker 已达到确定性运行上限",
+      "artifacts": [],
+      "suggestions": []
+    }
+  ],
+  "processed_decisions": [],
+  "progress_state": null,
+  "decision_count": 0,
+  "acceptance_satisfied": false,
+  "finished": false,
+  "finish_summary": null
+}

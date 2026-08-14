@@ -50,6 +50,27 @@
       "success_rate": 0.333333
     },
     {
+      "agent_strategy": "adaptive_agent",
+      "average_agent_count": 1.083,
+      "average_duration_ms": 55862.667,
+      "average_tokens": 68375.417,
+      "conflict_rate": 0.0,
+      "difficulty_match_rate": 1.0,
+      "evidence_level": "live_model",
+      "fallback_rate": 0.0,
+      "image_success_rate": 0.0,
+      "initial_route_success_rate": 0.75,
+      "invalid_task_rate": 0.625,
+      "localization_recall": 0.958,
+      "model_strategy": "fixed_low",
+      "orchestrator_context_ratio": 0.078875,
+      "original_image_exposure_rate": 1.0,
+      "patch_efficiency": 1.0,
+      "regression_rate": 0.0,
+      "run_count": 12,
+      "success_rate": 0.083333
+    },
+    {
       "agent_strategy": "single_agent",
       "average_agent_count": 1.833,
       "average_duration_ms": 71440.833,
@@ -113,7 +134,7 @@
       "success_rate": 0.0
     }
   ],
-  "record_count": 60,
+  "record_count": 72,
   "suite_id": "evoweave_v1",
   "suite_sha256": "842d8c4edfeaf1e02350a594ee473d5d9a8372de9371e2483593aa86ca65350e",
   "suite_version": 3,

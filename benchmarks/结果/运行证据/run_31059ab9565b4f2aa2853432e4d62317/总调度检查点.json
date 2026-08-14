@@ -1,0 +1,167 @@
+{
+  "run_id": "run_31059ab9565b4f2aa2853432e4d62317",
+  "version": 3,
+  "graph": {
+    "graph_id": "graph_62ca687f4de94ddaad6abd8957839cf0",
+    "run_id": "run_31059ab9565b4f2aa2853432e4d62317",
+    "version": 5,
+    "nodes": [
+      {
+        "task_id": "task_29b5f07e707e4932a7000e9bef4e6169",
+        "task_spec_version": 1,
+        "status": "failed",
+        "attempts": 1
+      }
+    ],
+    "edges": [],
+    "created_at": "2026-08-14T14:34:44.525951Z"
+  },
+  "task_specs": [
+    {
+      "spec_id": "spec_4453625b37c14fb3851d9d6f79a29785",
+      "task_id": "task_29b5f07e707e4932a7000e9bef4e6169",
+      "change_spec_id": "spec_4bc1b0dadf954991aac0429d3c75c2ad",
+      "goal": "让除数为零时抛出包含 right 和 zero 的 ValueError，同时不要掩盖已有失败\n本任务只负责写范围：app.py；可以读取授权仓库证据，但不得修改其他路径。",
+      "base_commit": "ffb6556f85c458cc39c5a2865f323ee58850ae9f",
+      "acceptance_criteria": [
+        "零除抛出明确的 ValueError",
+        "验证报告区分已有失败与新增失败"
+      ],
+      "depends_on": [],
+      "input_artifact_ids": [],
+      "context_artifact_ids": [
+        "artifact_60741b18a19c4ef4b91b1c6fc0389db5"
+      ],
+      "read_scope": [
+        "app.py",
+        "pyproject.toml",
+        "tests/test_existing_failure.py"
+      ],
+      "write_scope": [
+        "app.py"
+      ],
+      "required_modalities": [
+        "text"
+      ],
+      "difficulty": {
+        "difficulty": "high",
+        "rationale": "仓库证据规则评分 0；单一、明确且低风险的候选范围；结构性难度下限：需求包含高复杂度语义：已有失败",
+        "evidence_ids": [
+          "evidence_4c4c3ea1d73bed17b149c720",
+          "evidence_deb7ef09ae9e627be48f1434",
+          "evidence_f92a44691021d6e92f89ab82",
+          "evidence_45a4b335e49e82e26b64a8ed"
+        ],
+        "version": 1
+      },
+      "model_requirement": {
+        "requirement_id": "spec_8563a8f4931b514d8a5a1982",
+        "task_id": "task_29b5f07e707e4932a7000e9bef4e6169",
+        "difficulty": "high",
+        "required_modalities": [
+          "text"
+        ],
+        "min_context_tokens": 64000,
+        "min_output_tokens": 8000,
+        "requires_tool_calling": true,
+        "requires_structured_output": true,
+        "requires_thinking": true,
+        "version": 1
+      },
+      "risk_level": "medium",
+      "version": 1
+    }
+  ],
+  "execution_specs": [
+    {
+      "spec_id": "spec_5529ff5cfea9494b958d67219c41caea",
+      "run_id": "run_31059ab9565b4f2aa2853432e4d62317",
+      "agent_id": "agent_cab25a5d6fb04ff2a3b584722361f9fd",
+      "task_id": "task_29b5f07e707e4932a7000e9bef4e6169",
+      "task_spec_id": "spec_4453625b37c14fb3851d9d6f79a29785",
+      "task_spec_version": 1,
+      "base_commit": "ffb6556f85c458cc39c5a2865f323ee58850ae9f",
+      "goal": "让除数为零时抛出包含 right 和 zero 的 ValueError，同时不要掩盖已有失败\n本任务只负责写范围：app.py；可以读取授权仓库证据，但不得修改其他路径。",
+      "acceptance_criteria": [
+        "零除抛出明确的 ValueError",
+        "验证报告区分已有失败与新增失败"
+      ],
+      "required_modalities": [
+        "text"
+      ],
+      "model_routing": {
+        "decision_id": "spec_00753708981c4fc5be2a8ccc014bc379",
+        "requirement_id": "spec_8563a8f4931b514d8a5a1982",
+        "requirement_version": 1,
+        "selected_model_key": "doubao:doubao-seed-2-0-mini-260428",
+        "selected_availability": "available",
+        "selected_snapshot": null,
+        "reason": "benchmark fixed_low 对照固定使用单一模型；输入模态、上下文、工具和结构化输出硬约束仍然生效",
+        "fallback_model_keys": [],
+        "rejected_candidates": [],
+        "capability_snapshot_at": "2026-08-14T14:28:33.137172Z",
+        "version": 1
+      },
+      "tool_names": [
+        "file.read",
+        "file.search",
+        "file.write"
+      ],
+      "allowed_commands": [],
+      "read_scope": [
+        "app.py",
+        "pyproject.toml",
+        "tests/test_existing_failure.py"
+      ],
+      "write_scope": [
+        "app.py"
+      ],
+      "context_artifact_ids": [
+        "artifact_60741b18a19c4ef4b91b1c6fc0389db5"
+      ],
+      "input_artifact_ids": [],
+      "runtime_limits": {
+        "max_steps": 32,
+        "max_input_tokens": 1000000,
+        "max_output_tokens": 16384,
+        "max_tool_calls": 32,
+        "timeout_seconds": 900
+      },
+      "output_schema": "TaskResult",
+      "version": 1
+    }
+  ],
+  "active_leases": [],
+  "allocation_decisions": [
+    {
+      "allocation_id": "spec_e77246a125b14747b921da46238b7590",
+      "run_id": "run_31059ab9565b4f2aa2853432e4d62317",
+      "graph_version": 2,
+      "ready_task_ids": [
+        "task_29b5f07e707e4932a7000e9bef4e6169"
+      ],
+      "selected_task_ids": [
+        "task_29b5f07e707e4932a7000e9bef4e6169"
+      ],
+      "available_slots": 6,
+      "reason": "实例数由就绪任务、并发槽位和写集合独立性共同决定"
+    }
+  ],
+  "result_summaries": [
+    {
+      "task_id": "task_29b5f07e707e4932a7000e9bef4e6169",
+      "agent_id": "agent_cab25a5d6fb04ff2a3b584722361f9fd",
+      "execution_spec_id": "spec_5529ff5cfea9494b958d67219c41caea",
+      "status": "failed",
+      "summary": "Worker 已达到确定性运行上限",
+      "artifacts": [],
+      "suggestions": []
+    }
+  ],
+  "processed_decisions": [],
+  "progress_state": null,
+  "decision_count": 0,
+  "acceptance_satisfied": false,
+  "finished": false,
+  "finish_summary": null
+}

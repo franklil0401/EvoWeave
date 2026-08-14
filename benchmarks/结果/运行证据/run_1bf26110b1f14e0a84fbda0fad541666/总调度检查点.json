@@ -1,0 +1,189 @@
+{
+  "run_id": "run_1bf26110b1f14e0a84fbda0fad541666",
+  "version": 3,
+  "graph": {
+    "graph_id": "graph_319ce55bb78246a1a2f474098fa03662",
+    "run_id": "run_1bf26110b1f14e0a84fbda0fad541666",
+    "version": 5,
+    "nodes": [
+      {
+        "task_id": "task_22fe1b511f4c475c8c45077120333b19",
+        "task_spec_version": 1,
+        "status": "failed",
+        "attempts": 1
+      }
+    ],
+    "edges": [],
+    "created_at": "2026-08-14T14:36:12.123781Z"
+  },
+  "task_specs": [
+    {
+      "spec_id": "spec_a34db8ff925e480484e12f24fbc0895b",
+      "task_id": "task_22fe1b511f4c475c8c45077120333b19",
+      "change_spec_id": "spec_c31f0bd82c0b447db267e1dee0446d47",
+      "goal": "把 VIP 折扣调整为八五折，同时对客户类型执行 strip 和大小写规范化，并安全处理同一函数写冲突\n本任务只负责写范围：src/shop/pricing.py；可以读取授权仓库证据，但不得修改其他路径。",
+      "base_commit": "15fdda6d2004e5291abacbf11c727bc977e51409",
+      "acceptance_criteria": [
+        "冲突不被静默覆盖",
+        "VIP 空格与大小写变体均返回八五折"
+      ],
+      "depends_on": [],
+      "input_artifact_ids": [],
+      "context_artifact_ids": [
+        "artifact_14ab6b7b4a71426294113b4038c11f0d"
+      ],
+      "read_scope": [
+        ".github/workflows/ci.yml",
+        "pyproject.toml",
+        "src/shop/__init__.py",
+        "src/shop/legacy_broken.py",
+        "src/shop/models.py",
+        "src/shop/pricing.py",
+        "src/shop/service.py",
+        "tests/test_service.py"
+      ],
+      "write_scope": [
+        "src/shop/pricing.py"
+      ],
+      "required_modalities": [
+        "text"
+      ],
+      "difficulty": {
+        "difficulty": "high",
+        "rationale": "仓库证据规则评分 4；包含风险信号：安全；结构性难度下限：需求包含高复杂度语义：冲突、安全",
+        "evidence_ids": [
+          "evidence_1dc740337b2854b6c0b155be",
+          "evidence_65407f4fe0f339d057c8189d",
+          "evidence_860316578bf7ace3a4ac60cc",
+          "evidence_cdec9199595cc7e8968b6de6",
+          "evidence_583d010c4675fa2b5541bd97",
+          "evidence_7615d891088b843690416a09",
+          "evidence_8641529085cab769d26abdd1",
+          "evidence_8a0c0e1dbfe0841efb0509f1",
+          "evidence_3616d3b9402cea2dd3889ca7",
+          "evidence_fd0b317dc5e16a4e8d4564c2",
+          "evidence_51afbdaf9c8a0b8ab3f3d5f4",
+          "evidence_5bc229732d3c9973b3c45a51",
+          "evidence_8111f34bcc970d42a5797940",
+          "evidence_0b4ce13b603cc451de040304",
+          "evidence_9a7de0ea556122ec1b77d253",
+          "evidence_e7b59004e0b0ac35c0ddb924"
+        ],
+        "version": 1
+      },
+      "model_requirement": {
+        "requirement_id": "spec_c822aa3e1a0eff7b6929df49",
+        "task_id": "task_22fe1b511f4c475c8c45077120333b19",
+        "difficulty": "high",
+        "required_modalities": [
+          "text"
+        ],
+        "min_context_tokens": 64000,
+        "min_output_tokens": 8000,
+        "requires_tool_calling": true,
+        "requires_structured_output": true,
+        "requires_thinking": true,
+        "version": 1
+      },
+      "risk_level": "high",
+      "version": 1
+    }
+  ],
+  "execution_specs": [
+    {
+      "spec_id": "spec_7d9de4fc1c3f4f0882b386d733208ea3",
+      "run_id": "run_1bf26110b1f14e0a84fbda0fad541666",
+      "agent_id": "agent_f01366b316994778b7bcb1e1864fa7e4",
+      "task_id": "task_22fe1b511f4c475c8c45077120333b19",
+      "task_spec_id": "spec_a34db8ff925e480484e12f24fbc0895b",
+      "task_spec_version": 1,
+      "base_commit": "15fdda6d2004e5291abacbf11c727bc977e51409",
+      "goal": "把 VIP 折扣调整为八五折，同时对客户类型执行 strip 和大小写规范化，并安全处理同一函数写冲突\n本任务只负责写范围：src/shop/pricing.py；可以读取授权仓库证据，但不得修改其他路径。",
+      "acceptance_criteria": [
+        "冲突不被静默覆盖",
+        "VIP 空格与大小写变体均返回八五折"
+      ],
+      "required_modalities": [
+        "text"
+      ],
+      "model_routing": {
+        "decision_id": "spec_c2d11695b5464a5aa9fa53de85c997ce",
+        "requirement_id": "spec_c822aa3e1a0eff7b6929df49",
+        "requirement_version": 1,
+        "selected_model_key": "doubao:doubao-seed-2-0-mini-260428",
+        "selected_availability": "available",
+        "selected_snapshot": null,
+        "reason": "benchmark fixed_low 对照固定使用单一模型；输入模态、上下文、工具和结构化输出硬约束仍然生效",
+        "fallback_model_keys": [],
+        "rejected_candidates": [],
+        "capability_snapshot_at": "2026-08-14T14:28:33.137172Z",
+        "version": 1
+      },
+      "tool_names": [
+        "file.read",
+        "file.search",
+        "file.write"
+      ],
+      "allowed_commands": [],
+      "read_scope": [
+        ".github/workflows/ci.yml",
+        "pyproject.toml",
+        "src/shop/__init__.py",
+        "src/shop/legacy_broken.py",
+        "src/shop/models.py",
+        "src/shop/pricing.py",
+        "src/shop/service.py",
+        "tests/test_service.py"
+      ],
+      "write_scope": [
+        "src/shop/pricing.py"
+      ],
+      "context_artifact_ids": [
+        "artifact_14ab6b7b4a71426294113b4038c11f0d"
+      ],
+      "input_artifact_ids": [],
+      "runtime_limits": {
+        "max_steps": 32,
+        "max_input_tokens": 1000000,
+        "max_output_tokens": 16384,
+        "max_tool_calls": 32,
+        "timeout_seconds": 900
+      },
+      "output_schema": "TaskResult",
+      "version": 1
+    }
+  ],
+  "active_leases": [],
+  "allocation_decisions": [
+    {
+      "allocation_id": "spec_edfee407bc164ab787b3597ba7039a2c",
+      "run_id": "run_1bf26110b1f14e0a84fbda0fad541666",
+      "graph_version": 2,
+      "ready_task_ids": [
+        "task_22fe1b511f4c475c8c45077120333b19"
+      ],
+      "selected_task_ids": [
+        "task_22fe1b511f4c475c8c45077120333b19"
+      ],
+      "available_slots": 6,
+      "reason": "实例数由就绪任务、并发槽位和写集合独立性共同决定"
+    }
+  ],
+  "result_summaries": [
+    {
+      "task_id": "task_22fe1b511f4c475c8c45077120333b19",
+      "agent_id": "agent_f01366b316994778b7bcb1e1864fa7e4",
+      "execution_spec_id": "spec_7d9de4fc1c3f4f0882b386d733208ea3",
+      "status": "failed",
+      "summary": "Worker 已达到确定性运行上限",
+      "artifacts": [],
+      "suggestions": []
+    }
+  ],
+  "processed_decisions": [],
+  "progress_state": null,
+  "decision_count": 0,
+  "acceptance_satisfied": false,
+  "finished": false,
+  "finish_summary": null
+}

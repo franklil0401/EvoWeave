@@ -1,0 +1,9 @@
+{
+  "details": {
+    "fault_injected": true,
+    "model_key": "doubao:doubao-seed-2-0-mini-260428",
+    "scenario": "model_fallback"
+  },
+  "error_code": "model_unavailable",
+  "message": "benchmark 注入首选模型不可用故障"
+}

@@ -1,0 +1,216 @@
+{
+  "run_id": "run_68200a088bf54eefa170706123b0787c",
+  "version": 3,
+  "graph": {
+    "graph_id": "graph_6320c4d76281490cbf19d97703d7732f",
+    "run_id": "run_68200a088bf54eefa170706123b0787c",
+    "version": 5,
+    "nodes": [
+      {
+        "task_id": "task_9c1c8f9763e441be8b79e1527a4e0a27",
+        "task_spec_version": 1,
+        "status": "succeeded",
+        "attempts": 1
+      }
+    ],
+    "edges": [],
+    "created_at": "2026-08-14T14:39:03.770433Z"
+  },
+  "task_specs": [
+    {
+      "spec_id": "spec_7ad169d97fa94dd68f18458628b8eeda",
+      "task_id": "task_9c1c8f9763e441be8b79e1527a4e0a27",
+      "change_spec_id": "spec_44921b96d376451bad4bf17a180f5cc2",
+      "goal": "让价格匹配忽略客户类型大小写；附图与代码任务无关\n本任务只负责写范围：src/shop/pricing.py；可以读取授权仓库证据，但不得修改其他路径。",
+      "base_commit": "15fdda6d2004e5291abacbf11c727bc977e51409",
+      "acceptance_criteria": [
+        "纯文本任务不接收原图",
+        "价格测试通过"
+      ],
+      "depends_on": [],
+      "input_artifact_ids": [],
+      "context_artifact_ids": [
+        "artifact_3b0ea5ca7f3048d7af17bcac6a754bf2"
+      ],
+      "read_scope": [
+        ".github/workflows/ci.yml",
+        "pyproject.toml",
+        "src/shop/__init__.py",
+        "src/shop/legacy_broken.py",
+        "src/shop/models.py",
+        "src/shop/pricing.py",
+        "src/shop/service.py",
+        "tests/test_service.py"
+      ],
+      "write_scope": [
+        "src/shop/pricing.py"
+      ],
+      "required_modalities": [
+        "text"
+      ],
+      "difficulty": {
+        "difficulty": "low",
+        "rationale": "仓库证据规则评分 0；单一、明确且低风险的候选范围",
+        "evidence_ids": [
+          "evidence_1dc740337b2854b6c0b155be",
+          "evidence_65407f4fe0f339d057c8189d",
+          "evidence_860316578bf7ace3a4ac60cc",
+          "evidence_583d010c4675fa2b5541bd97",
+          "evidence_7615d891088b843690416a09",
+          "evidence_8641529085cab769d26abdd1",
+          "evidence_8a0c0e1dbfe0841efb0509f1",
+          "evidence_3616d3b9402cea2dd3889ca7",
+          "evidence_fd0b317dc5e16a4e8d4564c2",
+          "evidence_0b4ce13b603cc451de040304",
+          "evidence_9a7de0ea556122ec1b77d253",
+          "evidence_5bc229732d3c9973b3c45a51",
+          "evidence_8111f34bcc970d42a5797940",
+          "evidence_e7b59004e0b0ac35c0ddb924"
+        ],
+        "version": 1
+      },
+      "model_requirement": {
+        "requirement_id": "spec_8e7dd21479f7f069647a4aeb",
+        "task_id": "task_9c1c8f9763e441be8b79e1527a4e0a27",
+        "difficulty": "low",
+        "required_modalities": [
+          "text"
+        ],
+        "min_context_tokens": 8000,
+        "min_output_tokens": 2000,
+        "requires_tool_calling": true,
+        "requires_structured_output": true,
+        "requires_thinking": false,
+        "version": 1
+      },
+      "risk_level": "low",
+      "version": 1
+    }
+  ],
+  "execution_specs": [
+    {
+      "spec_id": "spec_1695633f7a9c47ba99d8f9a5e738607a",
+      "run_id": "run_68200a088bf54eefa170706123b0787c",
+      "agent_id": "agent_0342327842a94f4cbb3f3b1c1e6863c4",
+      "task_id": "task_9c1c8f9763e441be8b79e1527a4e0a27",
+      "task_spec_id": "spec_7ad169d97fa94dd68f18458628b8eeda",
+      "task_spec_version": 1,
+      "base_commit": "15fdda6d2004e5291abacbf11c727bc977e51409",
+      "goal": "让价格匹配忽略客户类型大小写；附图与代码任务无关\n本任务只负责写范围：src/shop/pricing.py；可以读取授权仓库证据，但不得修改其他路径。",
+      "acceptance_criteria": [
+        "纯文本任务不接收原图",
+        "价格测试通过"
+      ],
+      "required_modalities": [
+        "text"
+      ],
+      "model_routing": {
+        "decision_id": "spec_df70a588a90544cdb6545dfacdee0242",
+        "requirement_id": "spec_8e7dd21479f7f069647a4aeb",
+        "requirement_version": 1,
+        "selected_model_key": "doubao:doubao-seed-2-0-mini-260428",
+        "selected_availability": "available",
+        "selected_snapshot": null,
+        "reason": "benchmark fixed_low 对照固定使用单一模型；输入模态、上下文、工具和结构化输出硬约束仍然生效",
+        "fallback_model_keys": [],
+        "rejected_candidates": [],
+        "capability_snapshot_at": "2026-08-14T14:28:33.137172Z",
+        "version": 1
+      },
+      "tool_names": [
+        "file.read",
+        "file.search",
+        "file.write"
+      ],
+      "allowed_commands": [],
+      "read_scope": [
+        ".github/workflows/ci.yml",
+        "pyproject.toml",
+        "src/shop/__init__.py",
+        "src/shop/legacy_broken.py",
+        "src/shop/models.py",
+        "src/shop/pricing.py",
+        "src/shop/service.py",
+        "tests/test_service.py"
+      ],
+      "write_scope": [
+        "src/shop/pricing.py"
+      ],
+      "context_artifact_ids": [
+        "artifact_3b0ea5ca7f3048d7af17bcac6a754bf2"
+      ],
+      "input_artifact_ids": [],
+      "runtime_limits": {
+        "max_steps": 32,
+        "max_input_tokens": 1000000,
+        "max_output_tokens": 16384,
+        "max_tool_calls": 32,
+        "timeout_seconds": 900
+      },
+      "output_schema": "TaskResult",
+      "version": 1
+    }
+  ],
+  "active_leases": [],
+  "allocation_decisions": [
+    {
+      "allocation_id": "spec_6b073867f60a41d78aa7c370ea5c6675",
+      "run_id": "run_68200a088bf54eefa170706123b0787c",
+      "graph_version": 2,
+      "ready_task_ids": [
+        "task_9c1c8f9763e441be8b79e1527a4e0a27"
+      ],
+      "selected_task_ids": [
+        "task_9c1c8f9763e441be8b79e1527a4e0a27"
+      ],
+      "available_slots": 6,
+      "reason": "实例数由就绪任务、并发槽位和写集合独立性共同决定"
+    }
+  ],
+  "result_summaries": [
+    {
+      "task_id": "task_9c1c8f9763e441be8b79e1527a4e0a27",
+      "agent_id": "agent_0342327842a94f4cbb3f3b1c1e6863c4",
+      "execution_spec_id": "spec_1695633f7a9c47ba99d8f9a5e738607a",
+      "status": "succeeded",
+      "summary": "已修改 src/shop/pricing.py 中的 calculate_discount 函数，将客户类型转换为小写后进行比较，实现忽略客户类型大小写的价格匹配，满足验收条件。",
+      "artifacts": [
+        {
+          "artifact_id": "artifact_c43662497e694c249ac9150cad154a39",
+          "kind": "patch",
+          "media_type": "text/x-diff",
+          "size_bytes": 271,
+          "sha256": "a12c749ae87ebcd42a33d0bce9838a671036bf1fc80fbce8b73f61bcf924ed45"
+        },
+        {
+          "artifact_id": "artifact_e8401b6314e74b7aa9bd69d44c5436d6",
+          "kind": "patch",
+          "media_type": "text/x-diff",
+          "size_bytes": 261,
+          "sha256": "6f7697317da74cb73745643f239b6dd5febe8da072d9135cc3c1feb286303197"
+        },
+        {
+          "artifact_id": "artifact_82a9e4b0aff84f13803dc0689cab5b97",
+          "kind": "patch",
+          "media_type": "text/x-diff",
+          "size_bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "artifact_id": "artifact_307367264e8743a1811ffb4108fab7b8",
+          "kind": "patch",
+          "media_type": "text/x-diff",
+          "size_bytes": 261,
+          "sha256": "d0bfc94be53cd3f4aafca7c3f92045b1179ac46eebada8161b4a53bc41b7eb1f"
+        }
+      ],
+      "suggestions": []
+    }
+  ],
+  "processed_decisions": [],
+  "progress_state": null,
+  "decision_count": 0,
+  "acceptance_satisfied": false,
+  "finished": false,
+  "finish_summary": null
+}

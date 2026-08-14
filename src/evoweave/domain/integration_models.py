@@ -198,7 +198,12 @@ class ValidationReport(DomainModel):
         }
         expected_acceptance = not any(
             item.classification in blocking for item in self.failure_deltas
-        ) and not any(item.timed_out or item.output_truncated for item in self.observations)
+        ) and not any(
+            item.timed_out
+            or item.output_truncated
+            or any(key.startswith("command:") for key in item.failure_keys)
+            for item in self.observations
+        )
         if self.accepted != expected_acceptance:
             raise ValueError("验收结论与失败增量不一致")
         if self.report_ref is not None and self.report_ref.kind is not ArtifactKind.TEST_REPORT:

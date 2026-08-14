@@ -17,6 +17,9 @@ dependencies = [
     "pydantic>=2.12,<3",
 ]
 
+[project.scripts]
+evoweave = "evoweave.interfaces.cli:main"
+
 [dependency-groups]
 dev = [
     "mypy>=1.15,<2",

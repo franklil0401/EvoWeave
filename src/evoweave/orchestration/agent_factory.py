@@ -1,12 +1,13 @@
 """Create capability-scoped temporary workers only after explicit model routing."""
 
-from pydantic import field_validator
+from pydantic import Field, field_validator
 
 from evoweave.domain.agent_execution_spec import AgentExecutionSpec
 from evoweave.domain.base import DomainModel
 from evoweave.domain.identifiers import AgentId, RunId, SpecId
 from evoweave.domain.model_routing import ModelProfile
 from evoweave.domain.ports import ModelRouter
+from evoweave.domain.resources import RuntimeLimits
 from evoweave.domain.task_spec import TaskSpec
 from evoweave.domain.validation import validate_unique_strings
 
@@ -14,6 +15,7 @@ from evoweave.domain.validation import validate_unique_strings
 class CapabilityPlan(DomainModel):
     tool_names: tuple[str, ...] = ()
     allowed_commands: tuple[str, ...] = ()
+    runtime_limits: RuntimeLimits = Field(default_factory=RuntimeLimits)
 
     @field_validator("tool_names", "allowed_commands")
     @classmethod
@@ -58,5 +60,6 @@ class AgentFactory:
             write_scope=task_spec.write_scope,
             context_artifact_ids=task_spec.context_artifact_ids,
             input_artifact_ids=task_spec.input_artifact_ids,
+            runtime_limits=capability_plan.runtime_limits,
             version=version,
         )

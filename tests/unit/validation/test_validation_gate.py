@@ -113,6 +113,33 @@ def test_preexisting_failure_alone_does_not_hide_or_create_a_regression() -> Non
     }
 
 
+def test_preexisting_command_error_is_still_rejected_as_infrastructure_failure() -> None:
+    commands = _commands()
+    command_error = "test runner could not collect the requested path"
+    baseline_results = {
+        command.argv: (_failed(command, command_error) if index == 0 else _passed(command),)
+        for index, command in enumerate(commands)
+    }
+    candidate_results = {
+        command.argv: (
+            (_failed(command, command_error), _failed(command, command_error))
+            if index == 0
+            else (_passed(command),)
+        )
+        for index, command in enumerate(commands)
+    }
+
+    report = DeterministicValidationGate(InMemoryArtifactStore()).run(
+        state=_state(),
+        commands=commands,
+        baseline_runner=SequenceCommandRunner(baseline_results),
+        candidate_runner=SequenceCommandRunner(candidate_results),
+    )
+
+    assert report.accepted is False
+    assert any(item.failure_key.startswith("command:") for item in report.failure_deltas)
+
+
 def test_python_plan_contains_local_impact_full_and_ruff_gates() -> None:
     commands = PythonValidationPlanBuilder().build(
         local_test_paths=("tests/test_local.py",),

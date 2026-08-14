@@ -38,6 +38,7 @@ class ErrorCode(StrEnum):
     VALIDATION_FAILED = "validation_failed"
     COMMAND_TIMEOUT = "command_timeout"
     SANDBOX_UNAVAILABLE = "sandbox_unavailable"
+    APPROVAL_REQUIRED = "approval_required"
     SCRIPT_EXHAUSTED = "script_exhausted"
 
 

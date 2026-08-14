@@ -1,0 +1,333 @@
+"""Minimal OpenAI-compatible HTTP gateway for the three configured providers."""
+
+import base64
+import json
+import os
+import urllib.error
+import urllib.request
+from collections.abc import Mapping
+from dataclasses import dataclass
+from datetime import UTC, datetime
+from typing import Any, Protocol
+
+from pydantic import Field, ValidationInfo, field_validator
+
+from evoweave.domain.base import DomainModel
+from evoweave.domain.enums import InputModality, ModelAvailability, ModelTier
+from evoweave.domain.errors import DomainError, ErrorCode
+from evoweave.domain.model_routing import ModelProfile
+from evoweave.domain.ports import ModelRequest, ModelResponse
+
+
+class ProviderConfig(DomainModel):
+    provider: str = Field(pattern=r"^[a-z0-9_-]+$")
+    base_url: str = Field(min_length=8, max_length=2_048)
+    api_key_env: str = Field(min_length=1, max_length=128)
+    profiles: tuple[ModelProfile, ...] = Field(min_length=1)
+
+    @field_validator("base_url")
+    @classmethod
+    def validate_base_url(cls, value: str) -> str:
+        normalized = value.rstrip("/")
+        if not normalized.startswith("https://"):
+            raise ValueError("模型 Base URL 必须使用 HTTPS")
+        return normalized
+
+    @field_validator("profiles")
+    @classmethod
+    def validate_profiles(
+        cls,
+        values: tuple[ModelProfile, ...],
+        info: ValidationInfo,
+    ) -> tuple[ModelProfile, ...]:
+        provider = info.data.get("provider")
+        if provider is not None and any(item.provider != provider for item in values):
+            raise ValueError("模型 Profile 必须属于 ProviderConfig.provider")
+        return values
+
+
+@dataclass(frozen=True, slots=True)
+class HttpResponse:
+    status: int
+    body: bytes
+
+
+class HttpTransport(Protocol):
+    def request(
+        self,
+        *,
+        method: str,
+        url: str,
+        headers: Mapping[str, str],
+        body: bytes | None,
+        timeout_seconds: int,
+    ) -> HttpResponse: ...
+
+
+class UrllibHttpTransport:
+    def request(
+        self,
+        *,
+        method: str,
+        url: str,
+        headers: Mapping[str, str],
+        body: bytes | None,
+        timeout_seconds: int,
+    ) -> HttpResponse:
+        request = urllib.request.Request(
+            url=url,
+            data=body,
+            headers=dict(headers),
+            method=method,
+        )
+        try:
+            with urllib.request.urlopen(request, timeout=timeout_seconds) as response:
+                return HttpResponse(status=response.status, body=response.read())
+        except urllib.error.HTTPError as exc:
+            return HttpResponse(status=exc.code, body=exc.read())
+        except (urllib.error.URLError, TimeoutError, OSError) as exc:
+            raise DomainError(
+                ErrorCode.MODEL_UNAVAILABLE,
+                "模型服务网络请求失败",
+                details={"exception_type": type(exc).__name__},
+            ) from exc
+
+
+class OpenAICompatibleModelGateway:
+    def __init__(
+        self,
+        providers: tuple[ProviderConfig, ...],
+        *,
+        transport: HttpTransport | None = None,
+        environment: Mapping[str, str] | None = None,
+        timeout_seconds: int = 120,
+    ) -> None:
+        if len({item.provider for item in providers}) != len(providers):
+            raise ValueError("provider 不能重复")
+        self._providers = {item.provider: item for item in providers}
+        self._transport = transport or UrllibHttpTransport()
+        self._environment = environment if environment is not None else os.environ
+        self._timeout_seconds = timeout_seconds
+
+    def list_profiles(self) -> tuple[ModelProfile, ...]:
+        return tuple(
+            profile
+            for provider in sorted(self._providers)
+            for profile in self._providers[provider].profiles
+        )
+
+    def complete(self, request: ModelRequest) -> ModelResponse:
+        provider, model_id = _split_model_key(request.model_key)
+        config = self._provider(provider)
+        key = self._api_key(config)
+        messages: list[dict[str, object]] = [{"role": "system", "content": request.messages[0]}]
+        user_text = "\n\n".join(request.messages[1:]) or request.messages[0]
+        if request.attachments:
+            content: list[dict[str, object]] = [{"type": "text", "text": user_text}]
+            content.extend(
+                {
+                    "type": "image_url",
+                    "image_url": {
+                        "url": (
+                            f"data:{attachment.media_type};base64,"
+                            f"{base64.b64encode(attachment.data).decode('ascii')}"
+                        )
+                    },
+                }
+                for attachment in request.attachments
+            )
+            messages.append({"role": "user", "content": content})
+        else:
+            messages.append({"role": "user", "content": user_text})
+        payload = json.dumps(
+            {
+                "model": model_id,
+                "messages": messages,
+                "max_tokens": request.max_output_tokens,
+                "temperature": 0,
+            },
+            ensure_ascii=False,
+            separators=(",", ":"),
+        ).encode("utf-8")
+        response = self._transport.request(
+            method="POST",
+            url=f"{config.base_url}/chat/completions",
+            headers={
+                "Authorization": f"Bearer {key}",
+                "Content-Type": "application/json",
+            },
+            body=payload,
+            timeout_seconds=self._timeout_seconds,
+        )
+        data = _response_json(response)
+        try:
+            text = data["choices"][0]["message"]["content"]
+            usage = data.get("usage", {})
+            details = usage.get("completion_tokens_details", {})
+            return ModelResponse(
+                model_key=request.model_key,
+                text=_content_text(text),
+                input_tokens=int(usage.get("prompt_tokens", 0)),
+                output_tokens=int(usage.get("completion_tokens", 0)),
+                reasoning_tokens=int(details.get("reasoning_tokens", 0)),
+            )
+        except (KeyError, IndexError, TypeError, ValueError) as exc:
+            raise DomainError(ErrorCode.INVALID_MODEL_OUTPUT, "模型响应结构无效") from exc
+
+    def discover_model_ids(self, provider: str) -> tuple[str, ...]:
+        config = self._provider(provider)
+        response = self._transport.request(
+            method="GET",
+            url=f"{config.base_url}/models",
+            headers={"Authorization": f"Bearer {self._api_key(config)}"},
+            body=None,
+            timeout_seconds=self._timeout_seconds,
+        )
+        data = _response_json(response)
+        try:
+            identifiers = {
+                str(item["id"])
+                for item in data["data"]
+                if isinstance(item, dict) and item.get("id")
+            }
+        except (KeyError, TypeError) as exc:
+            raise DomainError(ErrorCode.INVALID_MODEL_OUTPUT, "模型列表响应结构无效") from exc
+        return tuple(sorted(identifiers))
+
+    def available_profiles(self, provider: str) -> tuple[ModelProfile, ...]:
+        discovered = set(self.discover_model_ids(provider))
+        checked_at = datetime.now(UTC)
+        return tuple(
+            profile.model_copy(
+                update={
+                    "availability": (
+                        ModelAvailability.AVAILABLE
+                        if profile.model_id in discovered
+                        else ModelAvailability.UNAVAILABLE
+                    ),
+                    "checked_at": checked_at if profile.model_id in discovered else None,
+                }
+            )
+            for profile in self._provider(provider).profiles
+        )
+
+    def _provider(self, provider: str) -> ProviderConfig:
+        try:
+            return self._providers[provider]
+        except KeyError as exc:
+            raise DomainError(ErrorCode.INVALID_SPEC, f"未知模型供应商：{provider}") from exc
+
+    def _api_key(self, config: ProviderConfig) -> str:
+        key = self._environment.get(config.api_key_env, "").strip()
+        if not key:
+            raise DomainError(
+                ErrorCode.MODEL_UNAVAILABLE,
+                f"缺少环境变量 {config.api_key_env}",
+            )
+        return key
+
+
+def default_provider_configs(
+    *,
+    qianwen_base_url: str = "https://dashscope.aliyuncs.com/compatible-mode/v1",
+) -> tuple[ProviderConfig, ...]:
+    return (
+        ProviderConfig(
+            provider="deepseek",
+            base_url="https://api.deepseek.com",
+            api_key_env="Deepseek_api_key",
+            profiles=(
+                _profile("deepseek", "deepseek-v4-pro", ModelTier.HIGH, vision=False),
+                _profile("deepseek", "deepseek-v4-flash", ModelTier.LOW, vision=False),
+            ),
+        ),
+        ProviderConfig(
+            provider="doubao",
+            base_url="https://ark.cn-beijing.volces.com/api/v3",
+            api_key_env="Doubao_api_key",
+            profiles=(
+                _profile("doubao", "doubao-seed-evolving", ModelTier.HIGH, vision=True),
+                _profile(
+                    "doubao",
+                    "doubao-seed-2-1-turbo-260628",
+                    ModelTier.MEDIUM,
+                    vision=True,
+                ),
+                _profile(
+                    "doubao",
+                    "doubao-seed-2-0-mini-260428",
+                    ModelTier.LOW,
+                    vision=True,
+                ),
+            ),
+        ),
+        ProviderConfig(
+            provider="qianwen",
+            base_url=qianwen_base_url,
+            api_key_env="Qianwen_api_key",
+            profiles=(
+                _profile("qianwen", "qwen3.8-max", ModelTier.HIGH, vision=False),
+                _profile("qianwen", "qwen3.7-plus", ModelTier.MEDIUM, vision=True),
+                _profile("qianwen", "qwen3.7-flash", ModelTier.LOW, vision=True),
+            ),
+        ),
+    )
+
+
+def _profile(
+    provider: str,
+    model_id: str,
+    tier: ModelTier,
+    *,
+    vision: bool,
+) -> ModelProfile:
+    modalities = (InputModality.TEXT, InputModality.IMAGE) if vision else (InputModality.TEXT,)
+    return ModelProfile(
+        provider=provider,
+        model_id=model_id,
+        tier=tier,
+        availability=ModelAvailability.UNKNOWN,
+        input_modalities=modalities,
+        context_window_tokens=1_000_000,
+        max_output_tokens=128_000,
+        supports_tool_calling=True,
+        supports_structured_output=True,
+        supports_thinking=True,
+    )
+
+
+def _split_model_key(model_key: str) -> tuple[str, str]:
+    provider, separator, model_id = model_key.partition(":")
+    if not separator or not provider or not model_id:
+        raise DomainError(ErrorCode.INVALID_SPEC, "模型 key 必须为 provider:model_id")
+    return provider, model_id
+
+
+def _response_json(response: HttpResponse) -> dict[str, Any]:
+    if not 200 <= response.status < 300:
+        raise DomainError(
+            ErrorCode.MODEL_UNAVAILABLE,
+            "模型服务返回非成功状态",
+            details={"http_status": response.status},
+        )
+    try:
+        data = json.loads(response.body)
+    except (json.JSONDecodeError, UnicodeDecodeError) as exc:
+        raise DomainError(ErrorCode.INVALID_MODEL_OUTPUT, "模型服务返回非 JSON") from exc
+    if not isinstance(data, dict):
+        raise DomainError(ErrorCode.INVALID_MODEL_OUTPUT, "模型服务 JSON 顶层必须为对象")
+    return data
+
+
+def _content_text(value: object) -> str:
+    if isinstance(value, str):
+        return value
+    if isinstance(value, list):
+        texts = [
+            item.get("text", "")
+            for item in value
+            if isinstance(item, dict) and isinstance(item.get("text"), str)
+        ]
+        if texts:
+            return "".join(texts)
+    raise DomainError(ErrorCode.INVALID_MODEL_OUTPUT, "模型响应 content 不是文本")

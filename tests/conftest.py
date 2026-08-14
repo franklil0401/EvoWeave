@@ -33,7 +33,16 @@ def committed_repository(tmp_path: Path) -> Callable[[str], Path]:
         nonlocal counter
         counter += 1
         destination = tmp_path / f"{name}-{counter}"
-        shutil.copytree(fixture_root / name, destination)
+        shutil.copytree(
+            fixture_root / name,
+            destination,
+            ignore=shutil.ignore_patterns(
+                "__pycache__",
+                "*.pyc",
+                ".pytest_cache",
+                ".ruff_cache",
+            ),
+        )
         _git(destination, "init", "--initial-branch=main")
         _git(destination, "config", "user.name", "EvoWeave Tests")
         _git(destination, "config", "user.email", "tests@evoweave.local")

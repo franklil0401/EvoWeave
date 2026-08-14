@@ -94,6 +94,15 @@ class IntegrationStatus(StrEnum):
     FAILED = "failed"
 
 
+class RunStatus(StrEnum):
+    INITIALIZED = "initialized"
+    ANALYZED = "analyzed"
+    RUNNING = "running"
+    WAITING_FOR_INPUT = "waiting_for_input"
+    COMPLETED = "completed"
+    FAILED = "failed"
+
+
 class PatchConflictKind(StrEnum):
     BASE_MISMATCH = "base_mismatch"
     INTEGRITY = "integrity"

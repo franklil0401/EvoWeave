@@ -24,7 +24,10 @@ class ValidationReportBuilder:
     ) -> ValidationReport:
         blocking = {FailureClassification.NEW, FailureClassification.UNSTABLE}
         accepted = not any(item.classification in blocking for item in failure_deltas) and not any(
-            item.timed_out or item.output_truncated for item in observations
+            item.timed_out
+            or item.output_truncated
+            or any(key.startswith("command:") for key in item.failure_keys)
+            for item in observations
         )
         report = ValidationReport(
             report_id=SpecId.new(),

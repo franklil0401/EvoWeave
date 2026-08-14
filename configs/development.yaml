@@ -1,0 +1,12 @@
+{
+  "runtime_directory": ".runtime",
+  "default_provider": "qianwen",
+  "default_model_id": "qwen3.7-flash",
+  "qianwen_base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+  "sandbox_image": "evoweave-python:3.12-dev",
+  "max_worker_steps": 16,
+  "max_worker_tool_calls": 16,
+  "max_worker_seconds": 600,
+  "max_dynamic_tasks": 4,
+  "split_directory_lines": 200
+}

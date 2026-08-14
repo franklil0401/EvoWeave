@@ -1,0 +1,9 @@
+diff --git a/app.py b/app.py
+index 5fb99ef8755b6a67cb980bf1c1f288edcbbe6d97..2400fa2cd6b9dd0ffc29cf7a8e8d301e9e3e5318 100644
+--- a/app.py
++++ b/app.py
+@@ -1,2 +1,4 @@
+ def divide(left: int, right: int) -> float:
++    if right == 0:
++        raise ValueError(f"right operand must not be zero: {right}")
+     return left / right

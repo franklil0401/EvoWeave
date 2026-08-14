@@ -1,0 +1,203 @@
+{
+  "run_id": "run_dc58c98866cc4b5f8138dea9e5b2efcc",
+  "version": 3,
+  "graph": {
+    "graph_id": "graph_9e4dcdd2f3b849c5a9347f1ff63af754",
+    "run_id": "run_dc58c98866cc4b5f8138dea9e5b2efcc",
+    "version": 5,
+    "nodes": [
+      {
+        "task_id": "task_6f2085bbd1cf4c7681666ff6e923b2df",
+        "task_spec_version": 1,
+        "status": "failed",
+        "attempts": 1
+      }
+    ],
+    "edges": [],
+    "created_at": "2026-08-14T14:23:10.708600Z"
+  },
+  "task_specs": [
+    {
+      "spec_id": "spec_767e2212a0d14c9bb61bf7aadcb49bde",
+      "task_id": "task_6f2085bbd1cf4c7681666ff6e923b2df",
+      "change_spec_id": "spec_0c6b8f86de9f41a9bf88dfaeafac881d",
+      "goal": "修复客户类型带首尾空格或大小写变化时，结账金额不符合优惠规则的问题\n本任务只负责写范围：src/shop；可以读取授权仓库证据，但不得修改其他路径。",
+      "base_commit": "15fdda6d2004e5291abacbf11c727bc977e51409",
+      "acceptance_criteria": [
+        "定位真实影响链",
+        "Customer 模型文件保持不变",
+        "VIP 的空格与大小写变体均获得九折",
+        "回归通过"
+      ],
+      "depends_on": [],
+      "input_artifact_ids": [],
+      "context_artifact_ids": [
+        "artifact_ad223e7104a34f82bed04267cfa6e633"
+      ],
+      "read_scope": [
+        ".github/workflows/ci.yml",
+        "pyproject.toml",
+        "src/shop/__init__.py",
+        "src/shop/legacy_broken.py",
+        "src/shop/models.py",
+        "src/shop/pricing.py",
+        "src/shop/service.py",
+        "tests/test_service.py",
+        "src/shop"
+      ],
+      "write_scope": [
+        "src/shop"
+      ],
+      "required_modalities": [
+        "text"
+      ],
+      "difficulty": {
+        "difficulty": "high",
+        "rationale": "仓库证据规则评分 6；候选影响文件至少 6 个；候选模块存在依赖扇出；结构性难度下限：用户授权的是目录或宽泛范围：src/shop",
+        "evidence_ids": [
+          "evidence_583d010c4675fa2b5541bd97",
+          "evidence_745eb2c1f40c12eac871599f",
+          "evidence_7615d891088b843690416a09",
+          "evidence_8641529085cab769d26abdd1",
+          "evidence_8a0c0e1dbfe0841efb0509f1",
+          "evidence_a2bf2b2d4af036f5e27221b7",
+          "evidence_a55e13e8d5c495c242754514",
+          "evidence_038038e72d924192763aaec6",
+          "evidence_0b4ce13b603cc451de040304",
+          "evidence_5c43ba8973e80c1fbf9a295d",
+          "evidence_9a7de0ea556122ec1b77d253",
+          "evidence_65407f4fe0f339d057c8189d",
+          "evidence_860316578bf7ace3a4ac60cc",
+          "evidence_a4bbad59c34fdfdfc8db2070",
+          "evidence_b4c4266317692cb3bd2fa75a",
+          "evidence_cdec9199595cc7e8968b6de6",
+          "evidence_51afbdaf9c8a0b8ab3f3d5f4",
+          "evidence_5bc229732d3c9973b3c45a51",
+          "evidence_753c0804d5d4aca505a49c8c",
+          "evidence_8111f34bcc970d42a5797940",
+          "evidence_cbbc702718bbb011d3394406",
+          "evidence_3616d3b9402cea2dd3889ca7",
+          "evidence_fd0b317dc5e16a4e8d4564c2",
+          "evidence_e7b59004e0b0ac35c0ddb924"
+        ],
+        "version": 1
+      },
+      "model_requirement": {
+        "requirement_id": "spec_4894003918e9dd8c01fd1566",
+        "task_id": "task_6f2085bbd1cf4c7681666ff6e923b2df",
+        "difficulty": "high",
+        "required_modalities": [
+          "text"
+        ],
+        "min_context_tokens": 64000,
+        "min_output_tokens": 8000,
+        "requires_tool_calling": true,
+        "requires_structured_output": true,
+        "requires_thinking": true,
+        "version": 1
+      },
+      "risk_level": "medium",
+      "version": 1
+    }
+  ],
+  "execution_specs": [
+    {
+      "spec_id": "spec_2499b9c18cb3449bbca052d7d23df04c",
+      "run_id": "run_dc58c98866cc4b5f8138dea9e5b2efcc",
+      "agent_id": "agent_8cdbfb061f054aa6b0a668bd9a46a162",
+      "task_id": "task_6f2085bbd1cf4c7681666ff6e923b2df",
+      "task_spec_id": "spec_767e2212a0d14c9bb61bf7aadcb49bde",
+      "task_spec_version": 1,
+      "base_commit": "15fdda6d2004e5291abacbf11c727bc977e51409",
+      "goal": "修复客户类型带首尾空格或大小写变化时，结账金额不符合优惠规则的问题\n本任务只负责写范围：src/shop；可以读取授权仓库证据，但不得修改其他路径。",
+      "acceptance_criteria": [
+        "定位真实影响链",
+        "Customer 模型文件保持不变",
+        "VIP 的空格与大小写变体均获得九折",
+        "回归通过"
+      ],
+      "required_modalities": [
+        "text"
+      ],
+      "model_routing": {
+        "decision_id": "spec_30ee6b60abdc4108ab470554d7b9fe0b",
+        "requirement_id": "spec_4894003918e9dd8c01fd1566",
+        "requirement_version": 1,
+        "selected_model_key": "doubao:doubao-seed-evolving",
+        "selected_availability": "available",
+        "selected_snapshot": null,
+        "reason": "benchmark fixed_high 对照固定使用单一模型；输入模态、上下文、工具和结构化输出硬约束仍然生效",
+        "fallback_model_keys": [],
+        "rejected_candidates": [],
+        "capability_snapshot_at": "2026-08-14T14:20:04.367092Z",
+        "version": 1
+      },
+      "tool_names": [
+        "file.read",
+        "file.search",
+        "file.write"
+      ],
+      "allowed_commands": [],
+      "read_scope": [
+        ".github/workflows/ci.yml",
+        "pyproject.toml",
+        "src/shop/__init__.py",
+        "src/shop/legacy_broken.py",
+        "src/shop/models.py",
+        "src/shop/pricing.py",
+        "src/shop/service.py",
+        "tests/test_service.py",
+        "src/shop"
+      ],
+      "write_scope": [
+        "src/shop"
+      ],
+      "context_artifact_ids": [
+        "artifact_ad223e7104a34f82bed04267cfa6e633"
+      ],
+      "input_artifact_ids": [],
+      "runtime_limits": {
+        "max_steps": 32,
+        "max_input_tokens": 1000000,
+        "max_output_tokens": 16384,
+        "max_tool_calls": 32,
+        "timeout_seconds": 900
+      },
+      "output_schema": "TaskResult",
+      "version": 1
+    }
+  ],
+  "active_leases": [],
+  "allocation_decisions": [
+    {
+      "allocation_id": "spec_f1b95a2842ac49d5b7c51479201dfce0",
+      "run_id": "run_dc58c98866cc4b5f8138dea9e5b2efcc",
+      "graph_version": 2,
+      "ready_task_ids": [
+        "task_6f2085bbd1cf4c7681666ff6e923b2df"
+      ],
+      "selected_task_ids": [
+        "task_6f2085bbd1cf4c7681666ff6e923b2df"
+      ],
+      "available_slots": 6,
+      "reason": "实例数由就绪任务、并发槽位和写集合独立性共同决定"
+    }
+  ],
+  "result_summaries": [
+    {
+      "task_id": "task_6f2085bbd1cf4c7681666ff6e923b2df",
+      "agent_id": "agent_8cdbfb061f054aa6b0a668bd9a46a162",
+      "execution_spec_id": "spec_2499b9c18cb3449bbca052d7d23df04c",
+      "status": "failed",
+      "summary": "模型输出不符合 Worker 决策协议",
+      "artifacts": [],
+      "suggestions": []
+    }
+  ],
+  "processed_decisions": [],
+  "progress_state": null,
+  "decision_count": 0,
+  "acceptance_satisfied": false,
+  "finished": false,
+  "finish_summary": null
+}

@@ -1,0 +1,1 @@
+{"argv":["python","-m","pytest","-q"],"attempt":1,"command_id":"spec_2e4b6a57f77c4c6ebd3256f93ac2920c","duration_ms":594,"exit_code":0,"name":"全量回归","output_truncated":false,"phase":"candidate","scope":"full","stderr":"","stdout":".                                                                        [100%]\r\n1 passed in 0.01s\r\n","timed_out":false}

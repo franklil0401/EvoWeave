@@ -1,0 +1,23 @@
+{
+  "details": {
+    "direct_errors": [
+      {
+        "ctx": {
+          "error": "expected value at line 1 column 1"
+        },
+        "input": "<seed:tool_call><function name=\"file.read\"><parameter name=\"path\" string=\"true\">src/shop/pricing.py</parameter></function></seed:tool_call>",
+        "loc": [],
+        "msg": "Invalid JSON: expected value at line 1 column 1",
+        "type": "json_invalid"
+      }
+    ],
+    "extraction_errors": [
+      {
+        "msg": "模型输出不包含 JSON 对象",
+        "type": "ValueError"
+      }
+    ]
+  },
+  "error_code": "invalid_model_output",
+  "message": "模型输出不符合 Worker 决策协议"
+}

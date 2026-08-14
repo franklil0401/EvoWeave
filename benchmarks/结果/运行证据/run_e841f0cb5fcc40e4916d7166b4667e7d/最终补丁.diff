@@ -1,0 +1,12 @@
+diff --git a/src/shop/pricing.py b/src/shop/pricing.py
+index 77dd772982c4544e14c165bb5f964dc2cc53cf7b..460a4f44ad0999b15fba8808937158e9abab3701 100644
+--- a/src/shop/pricing.py
++++ b/src/shop/pricing.py
+@@ -1,4 +1,5 @@
+ def calculate_discount(total: float, customer_type: str) -> float:
+-    if customer_type == "VIP":
+-        return total * 0.9
++    normalized_customer_type = customer_type.strip().casefold()
++    if normalized_customer_type == "vip":
++        return total * 0.85
+     return total

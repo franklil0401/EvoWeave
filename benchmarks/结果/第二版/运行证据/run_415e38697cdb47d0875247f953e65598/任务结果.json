@@ -1,0 +1,57 @@
+[
+  {
+    "agent_id": "agent_9ad069501c864988a75a63024a796c09",
+    "artifacts": [
+      {
+        "artifact_id": "artifact_60e958d9b29744be9aa8f6223a8ce84a",
+        "created_at": "2026-08-14T16:59:21.707040Z",
+        "kind": "patch",
+        "media_type": "text/x-diff",
+        "sha256": "2c13baef491699871b2f4d341e4fefb9836f29abca87e9198766b86e898942c3",
+        "size_bytes": 5761,
+        "storage_key": "sha256/2c/2c13baef491699871b2f4d341e4fefb9836f29abca87e9198766b86e898942c3"
+      }
+    ],
+    "evidence": [
+      {
+        "artifact_id": "artifact_60e958d9b29744be9aa8f6223a8ce84a",
+        "command": null,
+        "evidence_id": "evidence_321bc4a3c0d74d83be2600f9fe973f92",
+        "kind": "artifact",
+        "line_end": null,
+        "line_start": null,
+        "repository_path": null,
+        "summary": "已生成 web/login.html 的补丁",
+        "symbol": null
+      },
+      {
+        "artifact_id": null,
+        "command": null,
+        "evidence_id": "evidence_a372300ad1a245408dbf4e7ddd2cbbd4",
+        "kind": "file",
+        "line_end": null,
+        "line_start": null,
+        "repository_path": "web/login.html",
+        "summary": "已读取 web/login.html",
+        "symbol": null
+      }
+    ],
+    "execution_spec_id": "spec_aa94b0e796244ef8aae0fc88717f0775",
+    "execution_spec_version": 1,
+    "failure": null,
+    "risk_level": "low",
+    "risk_notes": [],
+    "status": "succeeded",
+    "summary": "已在 web/login.html 中新增登录折扣提示界面。登录卡片内副标题下方添加了带有 data-testid=\"discount-login-hint\" 的提示节点，显示文案\"登录后可查看专属折扣\"。仅修改了 web/login.html，未触碰 calculator.py 等后端折扣逻辑文件，满足全部验收条件。",
+    "task_id": "task_f52343541c7b4846a148ecf92d89121f",
+    "usage": {
+      "cached_input_tokens": 0,
+      "elapsed_ms": 45077,
+      "input_tokens": 22927,
+      "output_tokens": 2697,
+      "reasoning_tokens": 542,
+      "steps": 4,
+      "tool_calls": 3
+    }
+  }
+]

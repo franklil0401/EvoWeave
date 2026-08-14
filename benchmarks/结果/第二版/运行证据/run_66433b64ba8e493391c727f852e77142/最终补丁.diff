@@ -1,0 +1,26 @@
+diff --git a/src/shop/pricing.py b/src/shop/pricing.py
+index 77dd772982c4544e14c165bb5f964dc2cc53cf7b..278d4c3b304b66dbe53849235c4a5a4798e4a565 100644
+--- a/src/shop/pricing.py
++++ b/src/shop/pricing.py
+@@ -1,4 +1,4 @@
+-def calculate_discount(total: float, customer_type: str) -> float:
++def discount_amount(total: float, customer_type: str) -> float:
+     if customer_type == "VIP":
+-        return total * 0.9
+-    return total
++        return total * 0.1
++    return 0.0
+diff --git a/src/shop/service.py b/src/shop/service.py
+index dafdc57bb4a51481de9a0c75a2736349183aa07b..ed8affd5682e8852a28f25ab32220a6d13f5b55b 100644
+--- a/src/shop/service.py
++++ b/src/shop/service.py
+@@ -1,6 +1,7 @@
+ from shop.models import Customer
+-from shop.pricing import calculate_discount
++from shop.pricing import discount_amount
+ 
+ 
+ def checkout_total(total: float, customer: Customer) -> float:
+-    return calculate_discount(total, customer.customer_type)
++    discount = discount_amount(total, customer.customer_type)
++    return total - discount

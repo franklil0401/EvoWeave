@@ -1,0 +1,204 @@
+{
+  "run_id": "run_415e38697cdb47d0875247f953e65598",
+  "version": 3,
+  "graph": {
+    "graph_id": "graph_4393eb98ec60420b89b121cc8ed541a1",
+    "run_id": "run_415e38697cdb47d0875247f953e65598",
+    "version": 5,
+    "nodes": [
+      {
+        "task_id": "task_f52343541c7b4846a148ecf92d89121f",
+        "task_spec_version": 1,
+        "status": "succeeded",
+        "attempts": 1
+      }
+    ],
+    "edges": [],
+    "created_at": "2026-08-14T16:58:49.667312Z"
+  },
+  "task_specs": [
+    {
+      "spec_id": "spec_51307c0251714124820429e91d62273d",
+      "task_id": "task_f52343541c7b4846a148ecf92d89121f",
+      "change_spec_id": "spec_766fe6ea4bc04d049c290d1039bf34a1",
+      "goal": "根据截图新增登录折扣提示界面，包含 data-testid=discount-login-hint 的提示节点\n本任务只负责写范围：web/login.html；可以读取授权仓库证据，但不得修改其他路径。",
+      "base_commit": "c0eca3a1137c62190990bcd56ba95930866b941b",
+      "acceptance_criteria": [
+        "界面包含“登录后可查看专属折扣”",
+        "提示节点具有指定 data-testid",
+        "后端折扣逻辑不被修改"
+      ],
+      "depends_on": [],
+      "input_artifact_ids": [
+        "artifact_9b9d95f74baa4fa6938ee7c2c911dd9b"
+      ],
+      "context_artifact_ids": [
+        "artifact_a8a8a5e8839d41309c388e9e3fcb2759"
+      ],
+      "read_scope": [
+        "calculator.py",
+        "pyproject.toml",
+        "tests/test_calculator.py",
+        "web/login.html"
+      ],
+      "write_scope": [
+        "web/login.html"
+      ],
+      "required_modalities": [
+        "text",
+        "image"
+      ],
+      "difficulty": {
+        "difficulty": "high",
+        "rationale": "仓库证据规则评分 12；没有可定位的候选影响范围；定位歧义高或置信度低；需要图片输入",
+        "evidence_ids": [],
+        "version": 1
+      },
+      "model_requirement": {
+        "requirement_id": "spec_e74f799d5683773f5fbf8171",
+        "task_id": "task_f52343541c7b4846a148ecf92d89121f",
+        "difficulty": "high",
+        "required_modalities": [
+          "text",
+          "image"
+        ],
+        "min_context_tokens": 64000,
+        "min_output_tokens": 8000,
+        "requires_tool_calling": true,
+        "requires_structured_output": true,
+        "requires_thinking": true,
+        "version": 1
+      },
+      "risk_level": "medium",
+      "version": 1
+    }
+  ],
+  "execution_specs": [
+    {
+      "spec_id": "spec_aa94b0e796244ef8aae0fc88717f0775",
+      "run_id": "run_415e38697cdb47d0875247f953e65598",
+      "agent_id": "agent_9ad069501c864988a75a63024a796c09",
+      "task_id": "task_f52343541c7b4846a148ecf92d89121f",
+      "task_spec_id": "spec_51307c0251714124820429e91d62273d",
+      "task_spec_version": 1,
+      "base_commit": "c0eca3a1137c62190990bcd56ba95930866b941b",
+      "goal": "根据截图新增登录折扣提示界面，包含 data-testid=discount-login-hint 的提示节点\n本任务只负责写范围：web/login.html；可以读取授权仓库证据，但不得修改其他路径。",
+      "acceptance_criteria": [
+        "界面包含“登录后可查看专属折扣”",
+        "提示节点具有指定 data-testid",
+        "后端折扣逻辑不被修改"
+      ],
+      "required_modalities": [
+        "text",
+        "image"
+      ],
+      "model_routing": {
+        "decision_id": "spec_87256e361e0b4f0987dfe8136c02cd2c",
+        "requirement_id": "spec_e74f799d5683773f5fbf8171",
+        "requirement_version": 1,
+        "selected_model_key": "doubao:doubao-seed-evolving",
+        "selected_availability": "available",
+        "selected_snapshot": null,
+        "reason": "任务难度为 high，选择满足全部硬约束的 high 档最高优先级模型；故障回退可降档但不得放宽输入模态、上下文、工具和结构化输出硬约束",
+        "fallback_model_keys": [
+          "doubao:doubao-seed-2-1-turbo-260628",
+          "qianwen:qwen3.7-plus",
+          "doubao:doubao-seed-2-0-mini-260428"
+        ],
+        "rejected_candidates": [
+          {
+            "model_key": "deepseek:deepseek-v4-flash",
+            "reasons": [
+              "缺少输入模态：image"
+            ]
+          },
+          {
+            "model_key": "deepseek:deepseek-v4-pro",
+            "reasons": [
+              "缺少输入模态：image"
+            ]
+          },
+          {
+            "model_key": "qianwen:qwen3.8-max",
+            "reasons": [
+              "缺少输入模态：image"
+            ]
+          }
+        ],
+        "capability_snapshot_at": "2026-08-14T16:58:48.534504Z",
+        "version": 1
+      },
+      "tool_names": [
+        "file.read",
+        "file.search",
+        "file.write"
+      ],
+      "allowed_commands": [],
+      "read_scope": [
+        "calculator.py",
+        "pyproject.toml",
+        "tests/test_calculator.py",
+        "web/login.html"
+      ],
+      "write_scope": [
+        "web/login.html"
+      ],
+      "context_artifact_ids": [
+        "artifact_a8a8a5e8839d41309c388e9e3fcb2759"
+      ],
+      "input_artifact_ids": [
+        "artifact_9b9d95f74baa4fa6938ee7c2c911dd9b"
+      ],
+      "runtime_limits": {
+        "max_steps": 32,
+        "max_input_tokens": 1000000,
+        "max_output_tokens": 16384,
+        "max_tool_calls": 32,
+        "timeout_seconds": 900
+      },
+      "output_schema": "TaskResult",
+      "version": 1
+    }
+  ],
+  "active_leases": [],
+  "allocation_decisions": [
+    {
+      "allocation_id": "spec_caf7d857ef80400c9a3c58864cc43552",
+      "run_id": "run_415e38697cdb47d0875247f953e65598",
+      "graph_version": 2,
+      "ready_task_ids": [
+        "task_f52343541c7b4846a148ecf92d89121f"
+      ],
+      "selected_task_ids": [
+        "task_f52343541c7b4846a148ecf92d89121f"
+      ],
+      "available_slots": 6,
+      "reason": "实例数由就绪任务、并发槽位和写集合独立性共同决定"
+    }
+  ],
+  "result_summaries": [
+    {
+      "task_id": "task_f52343541c7b4846a148ecf92d89121f",
+      "agent_id": "agent_9ad069501c864988a75a63024a796c09",
+      "execution_spec_id": "spec_aa94b0e796244ef8aae0fc88717f0775",
+      "status": "succeeded",
+      "summary": "已在 web/login.html 中新增登录折扣提示界面。登录卡片内副标题下方添加了带有 data-testid=\"discount-login-hint\" 的提示节点，显示文案\"登录后可查看专属折扣\"。仅修改了 web/login.html，未触碰 calculator.py 等后端折扣逻辑文件，满足全部验收条件。",
+      "artifacts": [
+        {
+          "artifact_id": "artifact_60e958d9b29744be9aa8f6223a8ce84a",
+          "kind": "patch",
+          "media_type": "text/x-diff",
+          "size_bytes": 5761,
+          "sha256": "2c13baef491699871b2f4d341e4fefb9836f29abca87e9198766b86e898942c3"
+        }
+      ],
+      "suggestions": []
+    }
+  ],
+  "processed_decisions": [],
+  "progress_state": null,
+  "decision_count": 0,
+  "acceptance_satisfied": false,
+  "finished": false,
+  "finish_summary": null
+}

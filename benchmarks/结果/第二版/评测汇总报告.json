@@ -1,0 +1,73 @@
+{
+  "go_no_go": {
+    "evidence_level": null,
+    "reasons": [
+      "尚无任一真实性等级完成 12 个任务 × 3 种 Agent 策略 × 3 种模型策略的完整矩阵"
+    ],
+    "status": "pending"
+  },
+  "metrics": [
+    {
+      "agent_strategy": "adaptive_agent",
+      "average_agent_count": 1.5,
+      "average_duration_ms": 83515.5,
+      "average_duration_ms_stddev": 0.0,
+      "average_tokens": 69457.5,
+      "average_tokens_stddev": 0.0,
+      "conflict_rate": 0.0,
+      "difficulty_match_rate": 1.0,
+      "evidence_level": "live_model",
+      "fallback_rate": 0.5,
+      "image_success_rate": 1.0,
+      "initial_execution_success_rate": 0.5,
+      "initial_route_success_rate": 0.5,
+      "invalid_task_rate": 0.0,
+      "localization_recall": 1.0,
+      "model_strategy": "adaptive_model",
+      "orchestrator_context_ratio": 0.063658,
+      "original_image_exposure_rate": 1.0,
+      "patch_efficiency": 1.0,
+      "regression_rate": 0.0,
+      "route_hard_constraint_compliance_rate": 1.0,
+      "run_count": 2,
+      "success_rate": 1.0,
+      "success_rate_stddev": 0.0,
+      "trial_count": 1
+    },
+    {
+      "agent_strategy": "single_agent",
+      "average_agent_count": 1.0,
+      "average_duration_ms": 57405.0,
+      "average_duration_ms_stddev": 0.0,
+      "average_tokens": 55830.0,
+      "average_tokens_stddev": 0.0,
+      "conflict_rate": 0.0,
+      "difficulty_match_rate": 1.0,
+      "evidence_level": "live_model",
+      "fallback_rate": 0.0,
+      "image_success_rate": 1.0,
+      "initial_execution_success_rate": 1.0,
+      "initial_route_success_rate": 1.0,
+      "invalid_task_rate": 0.0,
+      "localization_recall": 1.0,
+      "model_strategy": "adaptive_model",
+      "orchestrator_context_ratio": 0.104727,
+      "original_image_exposure_rate": 1.0,
+      "patch_efficiency": 1.0,
+      "regression_rate": 0.0,
+      "route_hard_constraint_compliance_rate": 1.0,
+      "run_count": 2,
+      "success_rate": 1.0,
+      "success_rate_stddev": 0.0,
+      "trial_count": 1
+    }
+  ],
+  "record_count": 4,
+  "suite_id": "evoweave_v2",
+  "suite_sha256": "a637d9f3d8760aac915cf17b5af5057438ab18c6775eda34b81b94ce6355ec6d",
+  "suite_version": 4,
+  "system_commits": [
+    "0b6c1051330b2236827538069f59ff55e84b893c"
+  ],
+  "task_count": 12
+}

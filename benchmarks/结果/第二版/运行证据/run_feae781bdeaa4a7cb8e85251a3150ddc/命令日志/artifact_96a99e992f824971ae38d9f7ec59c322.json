@@ -1,0 +1,1 @@
+{"argv":["python","-m","pytest","-q","tests/test_calculator.py"],"attempt":1,"command_id":"spec_f644768d23bd4766b4ced048130320ed","duration_ms":608,"exit_code":0,"name":"局部测试","output_truncated":false,"phase":"baseline","scope":"local","stderr":"","stdout":".                                                                        [100%]\r\n1 passed in 0.01s\r\n","timed_out":false}

@@ -1,0 +1,362 @@
+{
+  "run_id": "run_ea1c819af6be4f8f8ba2efdac0eb1875",
+  "version": 5,
+  "graph": {
+    "graph_id": "graph_c58ab025a0494c4191a8d40a2ddbd874",
+    "run_id": "run_ea1c819af6be4f8f8ba2efdac0eb1875",
+    "version": 13,
+    "nodes": [
+      {
+        "task_id": "task_eb0ebde5b476448ab9c66cc3a8693547",
+        "task_spec_version": 1,
+        "status": "failed",
+        "attempts": 3
+      }
+    ],
+    "edges": [],
+    "created_at": "2026-08-14T14:08:39.869735Z"
+  },
+  "task_specs": [
+    {
+      "spec_id": "spec_05265dc9430d4c178a78a1a4ddd097c7",
+      "task_id": "task_eb0ebde5b476448ab9c66cc3a8693547",
+      "change_spec_id": "spec_b10350c9d0c84c2381750f31d82ae9b7",
+      "goal": "修复客户类型带首尾空格或大小写变化时，结账金额不符合优惠规则的问题\n本任务只负责写范围：src/shop；可以读取授权仓库证据，但不得修改其他路径。",
+      "base_commit": "15fdda6d2004e5291abacbf11c727bc977e51409",
+      "acceptance_criteria": [
+        "定位真实影响链",
+        "Customer 模型文件保持不变",
+        "VIP 的空格与大小写变体均获得九折",
+        "回归通过"
+      ],
+      "depends_on": [],
+      "input_artifact_ids": [],
+      "context_artifact_ids": [
+        "artifact_4f6cc1a9b24645168dce3c0c3900226d"
+      ],
+      "read_scope": [
+        ".github/workflows/ci.yml",
+        "pyproject.toml",
+        "src/shop/__init__.py",
+        "src/shop/legacy_broken.py",
+        "src/shop/models.py",
+        "src/shop/pricing.py",
+        "src/shop/service.py",
+        "tests/test_service.py",
+        "src/shop"
+      ],
+      "write_scope": [
+        "src/shop"
+      ],
+      "required_modalities": [
+        "text"
+      ],
+      "difficulty": {
+        "difficulty": "high",
+        "rationale": "仓库证据规则评分 6；候选影响文件至少 6 个；候选模块存在依赖扇出；结构性难度下限：用户授权的是目录或宽泛范围：src/shop",
+        "evidence_ids": [
+          "evidence_583d010c4675fa2b5541bd97",
+          "evidence_745eb2c1f40c12eac871599f",
+          "evidence_7615d891088b843690416a09",
+          "evidence_8641529085cab769d26abdd1",
+          "evidence_8a0c0e1dbfe0841efb0509f1",
+          "evidence_a2bf2b2d4af036f5e27221b7",
+          "evidence_a55e13e8d5c495c242754514",
+          "evidence_038038e72d924192763aaec6",
+          "evidence_0b4ce13b603cc451de040304",
+          "evidence_5c43ba8973e80c1fbf9a295d",
+          "evidence_9a7de0ea556122ec1b77d253",
+          "evidence_65407f4fe0f339d057c8189d",
+          "evidence_860316578bf7ace3a4ac60cc",
+          "evidence_a4bbad59c34fdfdfc8db2070",
+          "evidence_b4c4266317692cb3bd2fa75a",
+          "evidence_cdec9199595cc7e8968b6de6",
+          "evidence_51afbdaf9c8a0b8ab3f3d5f4",
+          "evidence_5bc229732d3c9973b3c45a51",
+          "evidence_753c0804d5d4aca505a49c8c",
+          "evidence_8111f34bcc970d42a5797940",
+          "evidence_cbbc702718bbb011d3394406",
+          "evidence_3616d3b9402cea2dd3889ca7",
+          "evidence_fd0b317dc5e16a4e8d4564c2",
+          "evidence_e7b59004e0b0ac35c0ddb924"
+        ],
+        "version": 1
+      },
+      "model_requirement": {
+        "requirement_id": "spec_29d50a8c88dec107b7071037",
+        "task_id": "task_eb0ebde5b476448ab9c66cc3a8693547",
+        "difficulty": "high",
+        "required_modalities": [
+          "text"
+        ],
+        "min_context_tokens": 64000,
+        "min_output_tokens": 8000,
+        "requires_tool_calling": true,
+        "requires_structured_output": true,
+        "requires_thinking": true,
+        "version": 1
+      },
+      "risk_level": "medium",
+      "version": 1
+    }
+  ],
+  "execution_specs": [
+    {
+      "spec_id": "spec_5df027bf6de8477282c0951df45f72ca",
+      "run_id": "run_ea1c819af6be4f8f8ba2efdac0eb1875",
+      "agent_id": "agent_e27ca1c736f944f58480fdb60c3d5b7d",
+      "task_id": "task_eb0ebde5b476448ab9c66cc3a8693547",
+      "task_spec_id": "spec_05265dc9430d4c178a78a1a4ddd097c7",
+      "task_spec_version": 1,
+      "base_commit": "15fdda6d2004e5291abacbf11c727bc977e51409",
+      "goal": "修复客户类型带首尾空格或大小写变化时，结账金额不符合优惠规则的问题\n本任务只负责写范围：src/shop；可以读取授权仓库证据，但不得修改其他路径。",
+      "acceptance_criteria": [
+        "定位真实影响链",
+        "Customer 模型文件保持不变",
+        "VIP 的空格与大小写变体均获得九折",
+        "回归通过"
+      ],
+      "required_modalities": [
+        "text"
+      ],
+      "model_routing": {
+        "decision_id": "spec_d9d866c0159a46fcb1d7d6c9528760db",
+        "requirement_id": "spec_29d50a8c88dec107b7071037",
+        "requirement_version": 1,
+        "selected_model_key": "deepseek:deepseek-v4-pro",
+        "selected_availability": "available",
+        "selected_snapshot": null,
+        "reason": "任务难度为 high，选择满足全部硬约束的 high 档最高优先级模型；故障回退可降档但不得放宽输入模态、上下文、工具和结构化输出硬约束",
+        "fallback_model_keys": [
+          "doubao:doubao-seed-evolving",
+          "qianwen:qwen3.8-max",
+          "doubao:doubao-seed-2-1-turbo-260628"
+        ],
+        "rejected_candidates": [],
+        "capability_snapshot_at": "2026-08-14T14:02:49.810083Z",
+        "version": 1
+      },
+      "tool_names": [
+        "file.read",
+        "file.search",
+        "file.write"
+      ],
+      "allowed_commands": [],
+      "read_scope": [
+        ".github/workflows/ci.yml",
+        "pyproject.toml",
+        "src/shop/__init__.py",
+        "src/shop/legacy_broken.py",
+        "src/shop/models.py",
+        "src/shop/pricing.py",
+        "src/shop/service.py",
+        "tests/test_service.py",
+        "src/shop"
+      ],
+      "write_scope": [
+        "src/shop"
+      ],
+      "context_artifact_ids": [
+        "artifact_4f6cc1a9b24645168dce3c0c3900226d"
+      ],
+      "input_artifact_ids": [],
+      "runtime_limits": {
+        "max_steps": 32,
+        "max_input_tokens": 1000000,
+        "max_output_tokens": 16384,
+        "max_tool_calls": 32,
+        "timeout_seconds": 900
+      },
+      "output_schema": "TaskResult",
+      "version": 1
+    },
+    {
+      "spec_id": "spec_47fc969e439b48a78811f0e8cf48d9cb",
+      "run_id": "run_ea1c819af6be4f8f8ba2efdac0eb1875",
+      "agent_id": "agent_9e3e4f4767114b7c97be26b97c71892f",
+      "task_id": "task_eb0ebde5b476448ab9c66cc3a8693547",
+      "task_spec_id": "spec_05265dc9430d4c178a78a1a4ddd097c7",
+      "task_spec_version": 1,
+      "base_commit": "15fdda6d2004e5291abacbf11c727bc977e51409",
+      "goal": "修复客户类型带首尾空格或大小写变化时，结账金额不符合优惠规则的问题\n本任务只负责写范围：src/shop；可以读取授权仓库证据，但不得修改其他路径。",
+      "acceptance_criteria": [
+        "定位真实影响链",
+        "Customer 模型文件保持不变",
+        "VIP 的空格与大小写变体均获得九折",
+        "回归通过"
+      ],
+      "required_modalities": [
+        "text"
+      ],
+      "model_routing": {
+        "decision_id": "spec_2a17a66683db4652942a30602c0ad471",
+        "requirement_id": "spec_29d50a8c88dec107b7071037",
+        "requirement_version": 1,
+        "selected_model_key": "doubao:doubao-seed-evolving",
+        "selected_availability": "available",
+        "selected_snapshot": null,
+        "reason": "模型 deepseek:deepseek-v4-pro 执行失败（invalid_model_output），按已记录回退链切换到 doubao:doubao-seed-evolving",
+        "fallback_model_keys": [
+          "qianwen:qwen3.8-max",
+          "doubao:doubao-seed-2-1-turbo-260628"
+        ],
+        "rejected_candidates": [
+          {
+            "model_key": "deepseek:deepseek-v4-pro",
+            "reasons": [
+              "本次调用失败：invalid_model_output"
+            ]
+          }
+        ],
+        "capability_snapshot_at": "2026-08-14T14:02:49.810083Z",
+        "version": 2
+      },
+      "tool_names": [
+        "file.read",
+        "file.search",
+        "file.write"
+      ],
+      "allowed_commands": [],
+      "read_scope": [
+        ".github/workflows/ci.yml",
+        "pyproject.toml",
+        "src/shop/__init__.py",
+        "src/shop/legacy_broken.py",
+        "src/shop/models.py",
+        "src/shop/pricing.py",
+        "src/shop/service.py",
+        "tests/test_service.py",
+        "src/shop"
+      ],
+      "write_scope": [
+        "src/shop"
+      ],
+      "context_artifact_ids": [
+        "artifact_4f6cc1a9b24645168dce3c0c3900226d"
+      ],
+      "input_artifact_ids": [],
+      "runtime_limits": {
+        "max_steps": 32,
+        "max_input_tokens": 1000000,
+        "max_output_tokens": 16384,
+        "max_tool_calls": 32,
+        "timeout_seconds": 900
+      },
+      "output_schema": "TaskResult",
+      "version": 2
+    },
+    {
+      "spec_id": "spec_b6b77d876c0b411a88c48926c5b9f282",
+      "run_id": "run_ea1c819af6be4f8f8ba2efdac0eb1875",
+      "agent_id": "agent_0dfbe44b08404824b408b1f6983b0aab",
+      "task_id": "task_eb0ebde5b476448ab9c66cc3a8693547",
+      "task_spec_id": "spec_05265dc9430d4c178a78a1a4ddd097c7",
+      "task_spec_version": 1,
+      "base_commit": "15fdda6d2004e5291abacbf11c727bc977e51409",
+      "goal": "修复客户类型带首尾空格或大小写变化时，结账金额不符合优惠规则的问题\n本任务只负责写范围：src/shop；可以读取授权仓库证据，但不得修改其他路径。",
+      "acceptance_criteria": [
+        "定位真实影响链",
+        "Customer 模型文件保持不变",
+        "VIP 的空格与大小写变体均获得九折",
+        "回归通过"
+      ],
+      "required_modalities": [
+        "text"
+      ],
+      "model_routing": {
+        "decision_id": "spec_7ad72acebf1b4380a2cf47e1cc751a76",
+        "requirement_id": "spec_29d50a8c88dec107b7071037",
+        "requirement_version": 1,
+        "selected_model_key": "qianwen:qwen3.8-max",
+        "selected_availability": "available",
+        "selected_snapshot": null,
+        "reason": "模型 doubao:doubao-seed-evolving 执行失败（invalid_model_output），按已记录回退链切换到 qianwen:qwen3.8-max",
+        "fallback_model_keys": [
+          "doubao:doubao-seed-2-1-turbo-260628"
+        ],
+        "rejected_candidates": [
+          {
+            "model_key": "deepseek:deepseek-v4-pro",
+            "reasons": [
+              "本次调用失败：invalid_model_output"
+            ]
+          },
+          {
+            "model_key": "doubao:doubao-seed-evolving",
+            "reasons": [
+              "本次调用失败：invalid_model_output"
+            ]
+          }
+        ],
+        "capability_snapshot_at": "2026-08-14T14:02:49.810083Z",
+        "version": 3
+      },
+      "tool_names": [
+        "file.read",
+        "file.search",
+        "file.write"
+      ],
+      "allowed_commands": [],
+      "read_scope": [
+        ".github/workflows/ci.yml",
+        "pyproject.toml",
+        "src/shop/__init__.py",
+        "src/shop/legacy_broken.py",
+        "src/shop/models.py",
+        "src/shop/pricing.py",
+        "src/shop/service.py",
+        "tests/test_service.py",
+        "src/shop"
+      ],
+      "write_scope": [
+        "src/shop"
+      ],
+      "context_artifact_ids": [
+        "artifact_4f6cc1a9b24645168dce3c0c3900226d"
+      ],
+      "input_artifact_ids": [],
+      "runtime_limits": {
+        "max_steps": 32,
+        "max_input_tokens": 1000000,
+        "max_output_tokens": 16384,
+        "max_tool_calls": 32,
+        "timeout_seconds": 900
+      },
+      "output_schema": "TaskResult",
+      "version": 3
+    }
+  ],
+  "active_leases": [],
+  "allocation_decisions": [
+    {
+      "allocation_id": "spec_e75f546e04b348cf92066ca51d772644",
+      "run_id": "run_ea1c819af6be4f8f8ba2efdac0eb1875",
+      "graph_version": 2,
+      "ready_task_ids": [
+        "task_eb0ebde5b476448ab9c66cc3a8693547"
+      ],
+      "selected_task_ids": [
+        "task_eb0ebde5b476448ab9c66cc3a8693547"
+      ],
+      "available_slots": 6,
+      "reason": "实例数由就绪任务、并发槽位和写集合独立性共同决定"
+    }
+  ],
+  "result_summaries": [
+    {
+      "task_id": "task_eb0ebde5b476448ab9c66cc3a8693547",
+      "agent_id": "agent_0dfbe44b08404824b408b1f6983b0aab",
+      "execution_spec_id": "spec_b6b77d876c0b411a88c48926c5b9f282",
+      "status": "failed",
+      "summary": "Worker 已达到确定性运行上限",
+      "artifacts": [],
+      "suggestions": []
+    }
+  ],
+  "processed_decisions": [],
+  "progress_state": null,
+  "decision_count": 0,
+  "acceptance_satisfied": false,
+  "finished": false,
+  "finish_summary": null
+}

@@ -1,0 +1,184 @@
+[
+  {
+    "agent_id": "agent_9baa805727b9441893df5a4cf6dea759",
+    "artifacts": [],
+    "evidence": [],
+    "execution_spec_id": "spec_43ebd7da6cef429080e0dd5ce10f4d92",
+    "execution_spec_version": 1,
+    "failure": {
+      "code": "model_unavailable",
+      "details": {
+        "exception_type": "TimeoutError"
+      },
+      "message": "模型服务网络请求失败",
+      "retryable": true
+    },
+    "risk_level": "low",
+    "risk_notes": [],
+    "status": "failed",
+    "summary": "模型服务网络请求失败",
+    "task_id": "task_b5d32e0060f847469a04e6d5aae56db9",
+    "usage": {
+      "cached_input_tokens": 0,
+      "elapsed_ms": 136500,
+      "input_tokens": 24519,
+      "output_tokens": 462,
+      "reasoning_tokens": 316,
+      "steps": 4,
+      "tool_calls": 3
+    }
+  },
+  {
+    "agent_id": "agent_7fa9c468d84c4ef79b236a3f6529ff29",
+    "artifacts": [],
+    "evidence": [],
+    "execution_spec_id": "spec_0bc2226ce98447478cec6e2e5d660e27",
+    "execution_spec_version": 2,
+    "failure": {
+      "code": "invalid_model_output",
+      "details": {
+        "direct_errors": [
+          {
+            "ctx": {
+              "error": "expected value at line 1 column 1"
+            },
+            "input": "<tool_call>\n<function=file.read>\n<parameter>path>\nsrc/shop/models.py\n</parameter>\n</function>\n</tool_call>",
+            "loc": [],
+            "msg": "Invalid JSON: expected value at line 1 column 1",
+            "type": "json_invalid"
+          }
+        ],
+        "extraction_errors": [
+          {
+            "msg": "模型输出不包含 JSON 对象",
+            "type": "ValueError"
+          }
+        ]
+      },
+      "message": "模型输出不符合 Worker 决策协议",
+      "retryable": false
+    },
+    "risk_level": "low",
+    "risk_notes": [],
+    "status": "failed",
+    "summary": "模型输出不符合 Worker 决策协议",
+    "task_id": "task_b5d32e0060f847469a04e6d5aae56db9",
+    "usage": {
+      "cached_input_tokens": 0,
+      "elapsed_ms": 2906,
+      "input_tokens": 7917,
+      "output_tokens": 120,
+      "reasoning_tokens": 87,
+      "steps": 1,
+      "tool_calls": 0
+    }
+  },
+  {
+    "agent_id": "agent_2f8f7406582948e5a9d59846eac15c2d",
+    "artifacts": [
+      {
+        "artifact_id": "artifact_51ee45e2e3ad4f1abf8dcfb78775be9a",
+        "created_at": "2026-08-14T14:05:39.516214Z",
+        "kind": "patch",
+        "media_type": "text/x-diff",
+        "sha256": "045b04c17eba2616f171af2aae4e3a363bd58788b3b80b8e6b65a253d47899ed",
+        "size_bytes": 239,
+        "storage_key": "sha256/04/045b04c17eba2616f171af2aae4e3a363bd58788b3b80b8e6b65a253d47899ed"
+      },
+      {
+        "artifact_id": "artifact_e18756761e5e42c4a563b9dccadd1408",
+        "created_at": "2026-08-14T14:08:14.470323Z",
+        "kind": "patch",
+        "media_type": "text/x-diff",
+        "sha256": "77c516f0a3587b7674d6f19e380f2a3167f2accb1cd31e891b915f75ae6eb53b",
+        "size_bytes": 301,
+        "storage_key": "sha256/77/77c516f0a3587b7674d6f19e380f2a3167f2accb1cd31e891b915f75ae6eb53b"
+      }
+    ],
+    "evidence": [
+      {
+        "artifact_id": null,
+        "command": null,
+        "evidence_id": "evidence_17109372fbb64d92ac07f59022a71237",
+        "kind": "file",
+        "line_end": null,
+        "line_start": null,
+        "repository_path": "src/shop/models.py",
+        "summary": "已读取 src/shop/models.py",
+        "symbol": null
+      },
+      {
+        "artifact_id": null,
+        "command": null,
+        "evidence_id": "evidence_238c8e172a6e482d8cc390bee984213c",
+        "kind": "file",
+        "line_end": null,
+        "line_start": null,
+        "repository_path": "src/shop/pricing.py",
+        "summary": "已读取 src/shop/pricing.py",
+        "symbol": null
+      },
+      {
+        "artifact_id": "artifact_51ee45e2e3ad4f1abf8dcfb78775be9a",
+        "command": null,
+        "evidence_id": "evidence_f3391c02653c44f19dfaae7cdd45e48e",
+        "kind": "artifact",
+        "line_end": null,
+        "line_start": null,
+        "repository_path": null,
+        "summary": "已生成 src/shop/models.py 的补丁",
+        "symbol": null
+      },
+      {
+        "artifact_id": "artifact_e18756761e5e42c4a563b9dccadd1408",
+        "command": null,
+        "evidence_id": "evidence_206c41a6246145668c1868c9f4203c00",
+        "kind": "artifact",
+        "line_end": null,
+        "line_start": null,
+        "repository_path": null,
+        "summary": "已生成 src/shop/pricing.py 的补丁",
+        "symbol": null
+      },
+      {
+        "artifact_id": null,
+        "command": null,
+        "evidence_id": "evidence_50001227f9544e259e470fe6ae4a5ab2",
+        "kind": "file",
+        "line_end": null,
+        "line_start": null,
+        "repository_path": "src/shop/models.py",
+        "summary": "已读取 src/shop/models.py",
+        "symbol": null
+      },
+      {
+        "artifact_id": null,
+        "command": null,
+        "evidence_id": "evidence_26838dbe377b41bc990c5900d02b64b9",
+        "kind": "file",
+        "line_end": null,
+        "line_start": null,
+        "repository_path": "src/shop/pricing.py",
+        "summary": "已读取 src/shop/pricing.py",
+        "symbol": null
+      }
+    ],
+    "execution_spec_id": "spec_4064da38877847f3b1fbe069f626a4e4",
+    "execution_spec_version": 3,
+    "failure": null,
+    "risk_level": "low",
+    "risk_notes": [],
+    "status": "succeeded",
+    "summary": "已修改 src/shop/models.py，为 Customer 增加 normalized_type 属性，返回 self.customer_type.strip().upper()。已修改 src/shop/pricing.py，计算折扣前对 customer_type 执行 strip().upper() 后再匹配 \"VIP\"，实现价格匹配独立支持大小写与首尾空格。",
+    "task_id": "task_b5d32e0060f847469a04e6d5aae56db9",
+    "usage": {
+      "cached_input_tokens": 0,
+      "elapsed_ms": 45921,
+      "input_tokens": 48434,
+      "output_tokens": 2664,
+      "reasoning_tokens": 2256,
+      "steps": 7,
+      "tool_calls": 6
+    }
+  }
+]

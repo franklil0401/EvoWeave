@@ -1,0 +1,23 @@
+diff --git a/src/shop/models.py b/src/shop/models.py
+index 66066ea012d583b58fc7b2b10c490175b5d431b0..f6b2bfd2cd3b6f94e4b88b4060d32f8a3348013f 100644
+--- a/src/shop/models.py
++++ b/src/shop/models.py
+@@ -4,3 +4,7 @@ from dataclasses import dataclass
+ @dataclass(frozen=True)
+ class Customer:
+     customer_type: str
++
++    @property
++    def normalized_type(self) -> str:
++        return self.customer_type.strip().upper()
+diff --git a/src/shop/pricing.py b/src/shop/pricing.py
+index 77dd772982c4544e14c165bb5f964dc2cc53cf7b..8b0527944f62a809dcfab26e1cce224766105037 100644
+--- a/src/shop/pricing.py
++++ b/src/shop/pricing.py
+@@ -1,4 +1,5 @@
+ def calculate_discount(total: float, customer_type: str) -> float:
+-    if customer_type == "VIP":
++    normalized_type = customer_type.strip().upper()
++    if normalized_type == "VIP":
+         return total * 0.9
+     return total

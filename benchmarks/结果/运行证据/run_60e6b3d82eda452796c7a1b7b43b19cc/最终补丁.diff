@@ -1,0 +1,12 @@
+diff --git a/calculator.py b/calculator.py
+index 77dd772982c4544e14c165bb5f964dc2cc53cf7b..596170947452d36f0d715d1a5f2a43fead2d8dbe 100644
+--- a/calculator.py
++++ b/calculator.py
+@@ -1,4 +1,6 @@
+-def calculate_discount(total: float, customer_type: str) -> float:
++def calculate_discount(total: float, customer_type: str, *, authorized: bool = False) -> float:
++    if not authorized:
++        raise PermissionError("authorized is required to calculate discount")
+     if customer_type == "VIP":
+         return total * 0.9
+     return total

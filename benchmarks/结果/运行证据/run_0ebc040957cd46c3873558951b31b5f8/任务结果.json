@@ -1,0 +1,106 @@
+[
+  {
+    "agent_id": "agent_332233026bda4ed1b282466d879356fd",
+    "artifacts": [],
+    "evidence": [],
+    "execution_spec_id": "spec_34acb63fd2364daeb79f465e5a9cfa28",
+    "execution_spec_version": 1,
+    "failure": {
+      "code": "invalid_model_output",
+      "details": {},
+      "message": "模型输出在决策 JSON 后包含额外内容",
+      "retryable": false
+    },
+    "risk_level": "low",
+    "risk_notes": [],
+    "status": "failed",
+    "summary": "模型输出在决策 JSON 后包含额外内容",
+    "task_id": "task_d2ad2339dfe3436db86c880e4df863fe",
+    "usage": {
+      "cached_input_tokens": 0,
+      "elapsed_ms": 4766,
+      "input_tokens": 6677,
+      "output_tokens": 226,
+      "reasoning_tokens": 189,
+      "steps": 1,
+      "tool_calls": 0
+    }
+  },
+  {
+    "agent_id": "agent_182f4c150d0045a199747bab2a952f41",
+    "artifacts": [
+      {
+        "artifact_id": "artifact_72a5d4d7cabe44208fde46c8ac5562c0",
+        "created_at": "2026-08-14T14:13:35.923637Z",
+        "kind": "patch",
+        "media_type": "text/x-diff",
+        "sha256": "520aee34c6d1932d2f0724958dc08602f1244367e41e84ab0ea1763ed793e326",
+        "size_bytes": 351,
+        "storage_key": "sha256/52/520aee34c6d1932d2f0724958dc08602f1244367e41e84ab0ea1763ed793e326"
+      }
+    ],
+    "evidence": [
+      {
+        "artifact_id": null,
+        "command": null,
+        "evidence_id": "evidence_bd3f11d97c78457ca8680d6c25d1c3b8",
+        "kind": "file",
+        "line_end": null,
+        "line_start": null,
+        "repository_path": "src/shop/pricing.py",
+        "summary": "已读取 src/shop/pricing.py",
+        "symbol": null
+      },
+      {
+        "artifact_id": null,
+        "command": null,
+        "evidence_id": "evidence_eff1e2aedecc4526aaec493f9fcc8446",
+        "kind": "file",
+        "line_end": 1,
+        "line_start": 1,
+        "repository_path": "src/shop/pricing.py",
+        "summary": "在 src/shop/pricing.py:1 找到匹配",
+        "symbol": null
+      },
+      {
+        "artifact_id": "artifact_72a5d4d7cabe44208fde46c8ac5562c0",
+        "command": null,
+        "evidence_id": "evidence_5419d38e94ba480da6325ac0979e2640",
+        "kind": "artifact",
+        "line_end": null,
+        "line_start": null,
+        "repository_path": null,
+        "summary": "已生成 src/shop/pricing.py 的补丁",
+        "symbol": null
+      },
+      {
+        "artifact_id": null,
+        "command": null,
+        "evidence_id": "evidence_4803781843a34a5bb3b16cb178d0a659",
+        "kind": "file",
+        "line_end": null,
+        "line_start": null,
+        "repository_path": "src/shop/pricing.py",
+        "summary": "已读取 src/shop/pricing.py",
+        "symbol": null
+      }
+    ],
+    "execution_spec_id": "spec_8458d17cf32140e2aafb59582fdf5487",
+    "execution_spec_version": 2,
+    "failure": null,
+    "risk_level": "low",
+    "risk_notes": [],
+    "status": "succeeded",
+    "summary": "已更新 src/shop/pricing.py：calculate_discount 现在先对 customer_type 执行 strip().casefold()，再以规范化后的 \"vip\" 判断，并将 VIP 折扣改为 total * 0.85（八五折）。写入基于最新读取内容生成补丁产物，未静默覆盖其他路径。",
+    "task_id": "task_d2ad2339dfe3436db86c880e4df863fe",
+    "usage": {
+      "cached_input_tokens": 0,
+      "elapsed_ms": 44016,
+      "input_tokens": 41282,
+      "output_tokens": 1492,
+      "reasoning_tokens": 1182,
+      "steps": 5,
+      "tool_calls": 4
+    }
+  }
+]

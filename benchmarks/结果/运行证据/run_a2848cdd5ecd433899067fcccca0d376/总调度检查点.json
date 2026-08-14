@@ -1,0 +1,381 @@
+{
+  "run_id": "run_a2848cdd5ecd433899067fcccca0d376",
+  "version": 5,
+  "graph": {
+    "graph_id": "graph_ad975ee67c1f4455844604d0fce76921",
+    "run_id": "run_a2848cdd5ecd433899067fcccca0d376",
+    "version": 13,
+    "nodes": [
+      {
+        "task_id": "task_653f2e92e58f4ea79d38951966fbf5e8",
+        "task_spec_version": 1,
+        "status": "failed",
+        "attempts": 3
+      }
+    ],
+    "edges": [],
+    "created_at": "2026-08-14T14:14:59.160351Z"
+  },
+  "task_specs": [
+    {
+      "spec_id": "spec_83f0a92e61424344a8ddd9db4decf848",
+      "task_id": "task_653f2e92e58f4ea79d38951966fbf5e8",
+      "change_spec_id": "spec_6910b896b47442359d87af49de2f5c47",
+      "goal": "根据截图新增登录折扣提示界面，包含 data-testid=discount-login-hint 的提示节点\n本任务只负责写范围：web/login.html；可以读取授权仓库证据，但不得修改其他路径。",
+      "base_commit": "c0eca3a1137c62190990bcd56ba95930866b941b",
+      "acceptance_criteria": [
+        "界面包含“登录后可查看专属折扣”",
+        "提示节点具有指定 data-testid",
+        "后端折扣逻辑不被修改"
+      ],
+      "depends_on": [],
+      "input_artifact_ids": [
+        "artifact_4ed5608775564f04b989aa418a9ead8f"
+      ],
+      "context_artifact_ids": [
+        "artifact_3dafd5eca79b418e81bcde7f4d253c39"
+      ],
+      "read_scope": [
+        "calculator.py",
+        "pyproject.toml",
+        "tests/test_calculator.py",
+        "web/login.html"
+      ],
+      "write_scope": [
+        "web/login.html"
+      ],
+      "required_modalities": [
+        "text",
+        "image"
+      ],
+      "difficulty": {
+        "difficulty": "high",
+        "rationale": "仓库证据规则评分 12；没有可定位的候选影响范围；定位歧义高或置信度低；需要图片输入",
+        "evidence_ids": [],
+        "version": 1
+      },
+      "model_requirement": {
+        "requirement_id": "spec_d17178e601ce5f5e9b5957af",
+        "task_id": "task_653f2e92e58f4ea79d38951966fbf5e8",
+        "difficulty": "high",
+        "required_modalities": [
+          "text",
+          "image"
+        ],
+        "min_context_tokens": 64000,
+        "min_output_tokens": 8000,
+        "requires_tool_calling": true,
+        "requires_structured_output": true,
+        "requires_thinking": true,
+        "version": 1
+      },
+      "risk_level": "medium",
+      "version": 1
+    }
+  ],
+  "execution_specs": [
+    {
+      "spec_id": "spec_b387131ef6564293b291e50974c0fb94",
+      "run_id": "run_a2848cdd5ecd433899067fcccca0d376",
+      "agent_id": "agent_a84398d828884347be91782a613a352c",
+      "task_id": "task_653f2e92e58f4ea79d38951966fbf5e8",
+      "task_spec_id": "spec_83f0a92e61424344a8ddd9db4decf848",
+      "task_spec_version": 1,
+      "base_commit": "c0eca3a1137c62190990bcd56ba95930866b941b",
+      "goal": "根据截图新增登录折扣提示界面，包含 data-testid=discount-login-hint 的提示节点\n本任务只负责写范围：web/login.html；可以读取授权仓库证据，但不得修改其他路径。",
+      "acceptance_criteria": [
+        "界面包含“登录后可查看专属折扣”",
+        "提示节点具有指定 data-testid",
+        "后端折扣逻辑不被修改"
+      ],
+      "required_modalities": [
+        "text",
+        "image"
+      ],
+      "model_routing": {
+        "decision_id": "spec_fc8e804d67f0459385934695bb5dce69",
+        "requirement_id": "spec_d17178e601ce5f5e9b5957af",
+        "requirement_version": 1,
+        "selected_model_key": "doubao:doubao-seed-evolving",
+        "selected_availability": "available",
+        "selected_snapshot": null,
+        "reason": "任务难度为 high，选择满足全部硬约束的 high 档最高优先级模型；故障回退可降档但不得放宽输入模态、上下文、工具和结构化输出硬约束",
+        "fallback_model_keys": [
+          "doubao:doubao-seed-2-1-turbo-260628",
+          "qianwen:qwen3.7-plus",
+          "doubao:doubao-seed-2-0-mini-260428"
+        ],
+        "rejected_candidates": [
+          {
+            "model_key": "deepseek:deepseek-v4-flash",
+            "reasons": [
+              "缺少输入模态：image"
+            ]
+          },
+          {
+            "model_key": "deepseek:deepseek-v4-pro",
+            "reasons": [
+              "缺少输入模态：image"
+            ]
+          },
+          {
+            "model_key": "qianwen:qwen3.8-max",
+            "reasons": [
+              "缺少输入模态：image"
+            ]
+          }
+        ],
+        "capability_snapshot_at": "2026-08-14T14:02:49.810083Z",
+        "version": 1
+      },
+      "tool_names": [
+        "file.read",
+        "file.search",
+        "file.write"
+      ],
+      "allowed_commands": [],
+      "read_scope": [
+        "calculator.py",
+        "pyproject.toml",
+        "tests/test_calculator.py",
+        "web/login.html"
+      ],
+      "write_scope": [
+        "web/login.html"
+      ],
+      "context_artifact_ids": [
+        "artifact_3dafd5eca79b418e81bcde7f4d253c39"
+      ],
+      "input_artifact_ids": [
+        "artifact_4ed5608775564f04b989aa418a9ead8f"
+      ],
+      "runtime_limits": {
+        "max_steps": 32,
+        "max_input_tokens": 1000000,
+        "max_output_tokens": 16384,
+        "max_tool_calls": 32,
+        "timeout_seconds": 900
+      },
+      "output_schema": "TaskResult",
+      "version": 1
+    },
+    {
+      "spec_id": "spec_a3f8911599f54ab7824ee636c3e38cb2",
+      "run_id": "run_a2848cdd5ecd433899067fcccca0d376",
+      "agent_id": "agent_56433f5abfe84eedbb28bb197f8a02de",
+      "task_id": "task_653f2e92e58f4ea79d38951966fbf5e8",
+      "task_spec_id": "spec_83f0a92e61424344a8ddd9db4decf848",
+      "task_spec_version": 1,
+      "base_commit": "c0eca3a1137c62190990bcd56ba95930866b941b",
+      "goal": "根据截图新增登录折扣提示界面，包含 data-testid=discount-login-hint 的提示节点\n本任务只负责写范围：web/login.html；可以读取授权仓库证据，但不得修改其他路径。",
+      "acceptance_criteria": [
+        "界面包含“登录后可查看专属折扣”",
+        "提示节点具有指定 data-testid",
+        "后端折扣逻辑不被修改"
+      ],
+      "required_modalities": [
+        "text",
+        "image"
+      ],
+      "model_routing": {
+        "decision_id": "spec_1dfa14fba49c4bea9c2e96cc90e85410",
+        "requirement_id": "spec_d17178e601ce5f5e9b5957af",
+        "requirement_version": 1,
+        "selected_model_key": "doubao:doubao-seed-2-1-turbo-260628",
+        "selected_availability": "available",
+        "selected_snapshot": null,
+        "reason": "模型 doubao:doubao-seed-evolving 执行失败（model_unavailable），按已记录回退链切换到 doubao:doubao-seed-2-1-turbo-260628",
+        "fallback_model_keys": [
+          "qianwen:qwen3.7-plus",
+          "doubao:doubao-seed-2-0-mini-260428"
+        ],
+        "rejected_candidates": [
+          {
+            "model_key": "deepseek:deepseek-v4-flash",
+            "reasons": [
+              "缺少输入模态：image"
+            ]
+          },
+          {
+            "model_key": "deepseek:deepseek-v4-pro",
+            "reasons": [
+              "缺少输入模态：image"
+            ]
+          },
+          {
+            "model_key": "qianwen:qwen3.8-max",
+            "reasons": [
+              "缺少输入模态：image"
+            ]
+          },
+          {
+            "model_key": "doubao:doubao-seed-evolving",
+            "reasons": [
+              "本次调用失败：model_unavailable"
+            ]
+          }
+        ],
+        "capability_snapshot_at": "2026-08-14T14:02:49.810083Z",
+        "version": 2
+      },
+      "tool_names": [
+        "file.read",
+        "file.search",
+        "file.write"
+      ],
+      "allowed_commands": [],
+      "read_scope": [
+        "calculator.py",
+        "pyproject.toml",
+        "tests/test_calculator.py",
+        "web/login.html"
+      ],
+      "write_scope": [
+        "web/login.html"
+      ],
+      "context_artifact_ids": [
+        "artifact_3dafd5eca79b418e81bcde7f4d253c39"
+      ],
+      "input_artifact_ids": [
+        "artifact_4ed5608775564f04b989aa418a9ead8f"
+      ],
+      "runtime_limits": {
+        "max_steps": 32,
+        "max_input_tokens": 1000000,
+        "max_output_tokens": 16384,
+        "max_tool_calls": 32,
+        "timeout_seconds": 900
+      },
+      "output_schema": "TaskResult",
+      "version": 2
+    },
+    {
+      "spec_id": "spec_9914aa1f10cb4c409b95ac6a67da0df8",
+      "run_id": "run_a2848cdd5ecd433899067fcccca0d376",
+      "agent_id": "agent_165192293a5a4ad5a06accce339e4478",
+      "task_id": "task_653f2e92e58f4ea79d38951966fbf5e8",
+      "task_spec_id": "spec_83f0a92e61424344a8ddd9db4decf848",
+      "task_spec_version": 1,
+      "base_commit": "c0eca3a1137c62190990bcd56ba95930866b941b",
+      "goal": "根据截图新增登录折扣提示界面，包含 data-testid=discount-login-hint 的提示节点\n本任务只负责写范围：web/login.html；可以读取授权仓库证据，但不得修改其他路径。",
+      "acceptance_criteria": [
+        "界面包含“登录后可查看专属折扣”",
+        "提示节点具有指定 data-testid",
+        "后端折扣逻辑不被修改"
+      ],
+      "required_modalities": [
+        "text",
+        "image"
+      ],
+      "model_routing": {
+        "decision_id": "spec_f3f3b41417a84cc6b524663579cdaf1e",
+        "requirement_id": "spec_d17178e601ce5f5e9b5957af",
+        "requirement_version": 1,
+        "selected_model_key": "qianwen:qwen3.7-plus",
+        "selected_availability": "available",
+        "selected_snapshot": null,
+        "reason": "模型 doubao:doubao-seed-2-1-turbo-260628 执行失败（model_unavailable），按已记录回退链切换到 qianwen:qwen3.7-plus",
+        "fallback_model_keys": [
+          "doubao:doubao-seed-2-0-mini-260428"
+        ],
+        "rejected_candidates": [
+          {
+            "model_key": "deepseek:deepseek-v4-flash",
+            "reasons": [
+              "缺少输入模态：image"
+            ]
+          },
+          {
+            "model_key": "deepseek:deepseek-v4-pro",
+            "reasons": [
+              "缺少输入模态：image"
+            ]
+          },
+          {
+            "model_key": "qianwen:qwen3.8-max",
+            "reasons": [
+              "缺少输入模态：image"
+            ]
+          },
+          {
+            "model_key": "doubao:doubao-seed-evolving",
+            "reasons": [
+              "本次调用失败：model_unavailable"
+            ]
+          },
+          {
+            "model_key": "doubao:doubao-seed-2-1-turbo-260628",
+            "reasons": [
+              "本次调用失败：model_unavailable"
+            ]
+          }
+        ],
+        "capability_snapshot_at": "2026-08-14T14:02:49.810083Z",
+        "version": 3
+      },
+      "tool_names": [
+        "file.read",
+        "file.search",
+        "file.write"
+      ],
+      "allowed_commands": [],
+      "read_scope": [
+        "calculator.py",
+        "pyproject.toml",
+        "tests/test_calculator.py",
+        "web/login.html"
+      ],
+      "write_scope": [
+        "web/login.html"
+      ],
+      "context_artifact_ids": [
+        "artifact_3dafd5eca79b418e81bcde7f4d253c39"
+      ],
+      "input_artifact_ids": [
+        "artifact_4ed5608775564f04b989aa418a9ead8f"
+      ],
+      "runtime_limits": {
+        "max_steps": 32,
+        "max_input_tokens": 1000000,
+        "max_output_tokens": 16384,
+        "max_tool_calls": 32,
+        "timeout_seconds": 900
+      },
+      "output_schema": "TaskResult",
+      "version": 3
+    }
+  ],
+  "active_leases": [],
+  "allocation_decisions": [
+    {
+      "allocation_id": "spec_9bc2404b8e524c56a51b59a685fa4526",
+      "run_id": "run_a2848cdd5ecd433899067fcccca0d376",
+      "graph_version": 2,
+      "ready_task_ids": [
+        "task_653f2e92e58f4ea79d38951966fbf5e8"
+      ],
+      "selected_task_ids": [
+        "task_653f2e92e58f4ea79d38951966fbf5e8"
+      ],
+      "available_slots": 6,
+      "reason": "实例数由就绪任务、并发槽位和写集合独立性共同决定"
+    }
+  ],
+  "result_summaries": [
+    {
+      "task_id": "task_653f2e92e58f4ea79d38951966fbf5e8",
+      "agent_id": "agent_165192293a5a4ad5a06accce339e4478",
+      "execution_spec_id": "spec_9914aa1f10cb4c409b95ac6a67da0df8",
+      "status": "failed",
+      "summary": "模型服务返回非成功状态",
+      "artifacts": [],
+      "suggestions": []
+    }
+  ],
+  "processed_decisions": [],
+  "progress_state": null,
+  "decision_count": 0,
+  "acceptance_satisfied": false,
+  "finished": false,
+  "finish_summary": null
+}

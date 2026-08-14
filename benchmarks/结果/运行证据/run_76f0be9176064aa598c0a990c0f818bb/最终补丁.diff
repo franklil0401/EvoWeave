@@ -1,0 +1,25 @@
+diff --git a/src/shop/pricing.py b/src/shop/pricing.py
+index 77dd772982c4544e14c165bb5f964dc2cc53cf7b..054b71c02c33277e7d42cda22102d41c83eb431a 100644
+--- a/src/shop/pricing.py
++++ b/src/shop/pricing.py
+@@ -1,4 +1,7 @@
+-def calculate_discount(total: float, customer_type: str) -> float:
+-    if customer_type == "VIP":
++from shop.models import Customer
++
++
++def calculate_discount(total: float, customer: Customer) -> float:
++    if customer.customer_type == "VIP":
+         return total * 0.9
+     return total
+diff --git a/src/shop/service.py b/src/shop/service.py
+index dafdc57bb4a51481de9a0c75a2736349183aa07b..880488d3d62948077d69d22e9e0629aa5721b148 100644
+--- a/src/shop/service.py
++++ b/src/shop/service.py
+@@ -3,4 +3,4 @@ from shop.pricing import calculate_discount
+ 
+ 
+ def checkout_total(total: float, customer: Customer) -> float:
+-    return calculate_discount(total, customer.customer_type)
++    return calculate_discount(total, customer)
+\ No newline at end of file

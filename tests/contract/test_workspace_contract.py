@@ -34,8 +34,9 @@ def test_workspace_rejects_read_outside_scope() -> None:
 
 def test_workspace_rejects_path_traversal() -> None:
     workspace = FakeWorkspace(task_id=TaskId.new(), read_scope=("src",))
-    with pytest.raises(ValueError, match=r"\.\."):
+    with pytest.raises(DomainError) as error:
         workspace.read_text("src/../secrets.txt")
+    assert error.value.code is ErrorCode.WORKSPACE_ACCESS_DENIED
 
 
 def test_workspace_write_scope_must_be_covered_by_read_scope() -> None:

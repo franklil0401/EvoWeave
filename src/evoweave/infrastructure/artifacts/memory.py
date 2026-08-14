@@ -63,3 +63,31 @@ class InMemoryArtifactStore:
                 ErrorCode.ARTIFACT_NOT_FOUND,
                 f"找不到产物引用：{artifact_id}",
             ) from exc
+
+    def update_ref(self, ref: ArtifactRef) -> None:
+        existing = self.get_ref(ref.artifact_id)
+        if type(existing) is not ArtifactRef and existing != ref:
+            raise DomainError(
+                ErrorCode.ARTIFACT_INTEGRITY_ERROR,
+                "已经丰富的产物元数据不可再次修改",
+            )
+        immutable_fields = (
+            existing.kind,
+            existing.media_type,
+            existing.size_bytes,
+            existing.sha256,
+            existing.storage_key,
+        )
+        replacement_fields = (
+            ref.kind,
+            ref.media_type,
+            ref.size_bytes,
+            ref.sha256,
+            ref.storage_key,
+        )
+        if immutable_fields != replacement_fields:
+            raise DomainError(
+                ErrorCode.ARTIFACT_INTEGRITY_ERROR,
+                "不能修改已持久化产物的内容身份字段",
+            )
+        self._refs[ref.artifact_id] = ref

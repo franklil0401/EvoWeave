@@ -15,7 +15,7 @@ from evoweave.domain.enums import (
     InputModality,
     TaskDifficulty,
 )
-from evoweave.domain.identifiers import ArtifactId, RunId, SpecId, TaskId
+from evoweave.domain.identifiers import AgentId, ArtifactId, RunId, SpecId, TaskId
 from evoweave.domain.model_routing import (
     DifficultyAssessment,
     ModelRequirement,
@@ -241,9 +241,13 @@ def test_agent_execution_spec_is_version_pinned() -> None:
     )
     spec = AgentExecutionSpec(
         spec_id=SpecId.new(),
+        run_id=RunId.new(),
+        agent_id=AgentId.new(),
         task_id=task_id,
         task_spec_id=SpecId.new(),
         task_spec_version=3,
+        goal="更新领域协议",
+        acceptance_criteria=("测试通过",),
         model_routing=decision,
         read_scope=("src",),
         write_scope=("src/evoweave",),

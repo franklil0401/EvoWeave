@@ -19,9 +19,9 @@
 
 ## 当前状态
 
-阶段 0 已完成：工程骨架、强类型领域协议、模型/Workspace/产物端口、离线假实现、CI 和自动化测试已经落地。
+阶段 1 已完成：工程骨架、强类型协议、动态能力注册、规则模型路由、受控图片摄取和唯一通用 `WorkerRuntime` 已经落地。
 
-当前准备进入阶段 1：实现原子能力注册、基于难度与图片输入的规则模型路由，以及所有临时 Agent 共用的通用 `WorkerRuntime`。真实总调度、Git worktree 和 Docker 尚未实现。
+同一个 Runtime 已通过三份不同执行规格完成只读定位、受限修改和只读验证。当前准备进入阶段 2，构建固定 Git commit 上的 Python 仓库画像、AST 符号索引、import 依赖图和基线检测。真实总调度、Git worktree 和 Docker 尚未实现。
 
 ## 本地验证
 
@@ -30,7 +30,7 @@ uv sync --group dev --frozen --no-editable
 ./scripts/运行全部检查.ps1
 ```
 
-当前阶段门禁为 Ruff、mypy 严格模式和 58 项完全离线的 pytest 测试，不需要 API Key。
+当前阶段门禁为 Ruff、mypy 严格模式和 104 项完全离线的 pytest 测试，不需要 API Key。
 
 Windows 工作区路径包含中文时，当前统一使用非 editable 安装，避免 Python 3.12 在读取 `.pth` 路径时受系统编码影响；这不改变源码布局和打包结果。
 

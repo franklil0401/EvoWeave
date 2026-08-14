@@ -1,12 +1,15 @@
 """Framework-independent ports implemented by infrastructure adapters."""
 
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from typing import Protocol, runtime_checkable
+
+from pydantic import JsonValue
 
 from evoweave.domain.agent_execution_spec import AgentExecutionSpec
 from evoweave.domain.artifacts import ArtifactRef, ImageIngestionPolicy, InputArtifactRef
-from evoweave.domain.enums import ArtifactKind
-from evoweave.domain.identifiers import ArtifactId, TaskId, WorkspaceId
+from evoweave.domain.enums import ArtifactKind, EventType
+from evoweave.domain.events import DomainEvent
+from evoweave.domain.identifiers import ArtifactId, RunId, TaskId, WorkspaceId
 from evoweave.domain.model_routing import (
     ModelProfile,
     ModelRequirement,
@@ -20,6 +23,20 @@ class ModelRequest:
     model_key: str
     messages: tuple[str, ...]
     max_output_tokens: int
+    attachments: tuple["ModelAttachment", ...] = ()
+
+    def __post_init__(self) -> None:
+        if not self.model_key or not self.messages:
+            raise ValueError("模型请求必须包含模型标识和消息")
+        if self.max_output_tokens < 1:
+            raise ValueError("max_output_tokens 必须大于零")
+
+
+@dataclass(frozen=True, slots=True)
+class ModelAttachment:
+    artifact_id: ArtifactId
+    media_type: str
+    data: bytes = field(repr=False)
 
 
 @dataclass(frozen=True, slots=True)
@@ -28,6 +45,13 @@ class ModelResponse:
     text: str
     input_tokens: int = 0
     output_tokens: int = 0
+    reasoning_tokens: int = 0
+
+    def __post_init__(self) -> None:
+        if not self.model_key:
+            raise ValueError("模型响应必须包含模型标识")
+        if min(self.input_tokens, self.output_tokens, self.reasoning_tokens) < 0:
+            raise ValueError("模型响应 Token 计数不能为负数")
 
 
 @dataclass(frozen=True, slots=True)
@@ -72,6 +96,8 @@ class ArtifactStore(Protocol):
 
     def get_ref(self, artifact_id: ArtifactId) -> ArtifactRef: ...
 
+    def update_ref(self, ref: ArtifactRef) -> None: ...
+
 
 @runtime_checkable
 class InputArtifactIngestor(Protocol):
@@ -94,3 +120,35 @@ class WorkspaceAdapter(Protocol):
     def read_text(self, path: str) -> str: ...
 
     def write_text(self, path: str, content: str) -> None: ...
+
+    def list_paths(self, prefix: str | None = None) -> tuple[str, ...]: ...
+
+
+@runtime_checkable
+class WorkspaceProvider(Protocol):
+    def for_execution(self, execution_spec: AgentExecutionSpec) -> WorkspaceAdapter: ...
+
+
+@dataclass(frozen=True, slots=True)
+class CommandResult:
+    argv: tuple[str, ...]
+    exit_code: int
+    stdout: str = ""
+    stderr: str = ""
+
+
+@runtime_checkable
+class CommandRunner(Protocol):
+    def run(self, argv: tuple[str, ...], *, timeout_seconds: int) -> CommandResult: ...
+
+
+@runtime_checkable
+class EventRecorder(Protocol):
+    def record(
+        self,
+        *,
+        run_id: RunId,
+        event_type: EventType,
+        payload: dict[str, JsonValue],
+        task_id: TaskId | None = None,
+    ) -> DomainEvent: ...

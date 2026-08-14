@@ -59,6 +59,12 @@ class RiskLevel(StrEnum):
     CRITICAL = "critical"
 
 
+class CapabilityAccess(StrEnum):
+    READ = "read"
+    WRITE = "write"
+    COMMAND = "command"
+
+
 class TaskDifficulty(StrEnum):
     LOW = "low"
     MEDIUM = "medium"
@@ -105,3 +111,7 @@ class EventType(StrEnum):
     AGENT_FINISHED = "agent_finished"
     ARTIFACT_PERSISTED = "artifact_persisted"
     POLICY_REJECTED = "policy_rejected"
+    MODEL_CALL_COMPLETED = "model_call_completed"
+    TOOL_STARTED = "tool_started"
+    TOOL_FINISHED = "tool_finished"
+    TOOL_REJECTED = "tool_rejected"

@@ -3,7 +3,8 @@
 from pydantic import Field, field_validator, model_validator
 
 from evoweave.domain.base import DomainModel
-from evoweave.domain.identifiers import ArtifactId, SpecId, TaskId
+from evoweave.domain.enums import InputModality
+from evoweave.domain.identifiers import AgentId, ArtifactId, RunId, SpecId, TaskId
 from evoweave.domain.model_routing import ModelRoutingDecision
 from evoweave.domain.resources import RuntimeLimits
 from evoweave.domain.validation import (
@@ -15,11 +16,17 @@ from evoweave.domain.validation import (
 
 class AgentExecutionSpec(DomainModel):
     spec_id: SpecId
+    run_id: RunId
+    agent_id: AgentId
     task_id: TaskId
     task_spec_id: SpecId
     task_spec_version: int = Field(ge=1)
+    goal: str = Field(min_length=1, max_length=10_000)
+    acceptance_criteria: tuple[str, ...] = Field(min_length=1)
+    required_modalities: tuple[InputModality, ...] = (InputModality.TEXT,)
     model_routing: ModelRoutingDecision
     tool_names: tuple[str, ...] = ()
+    allowed_commands: tuple[str, ...] = ()
     read_scope: tuple[str, ...] = ()
     write_scope: tuple[str, ...] = ()
     context_artifact_ids: tuple[ArtifactId, ...] = ()
@@ -34,10 +41,12 @@ class AgentExecutionSpec(DomainModel):
         validated = tuple(validate_repository_path(value) for value in values)
         return validate_unique_strings(validated, "路径范围")
 
-    @field_validator("tool_names")
+    @field_validator("tool_names", "allowed_commands", "acceptance_criteria")
     @classmethod
-    def validate_tools(cls, values: tuple[str, ...]) -> tuple[str, ...]:
-        return validate_unique_strings(values, "tool_names")
+    def validate_unique_values(cls, values: tuple[str, ...]) -> tuple[str, ...]:
+        if any(not value for value in values):
+            raise ValueError("执行规格列表不能包含空字符串")
+        return validate_unique_strings(values, "执行规格列表")
 
     @model_validator(mode="after")
     def validate_execution_scope(self) -> "AgentExecutionSpec":
@@ -51,4 +60,15 @@ class AgentExecutionSpec(DomainModel):
             raise ValueError("context_artifact_ids 不能重复")
         if len(set(self.input_artifact_ids)) != len(self.input_artifact_ids):
             raise ValueError("input_artifact_ids 不能重复")
+        overlap = set(self.context_artifact_ids) & set(self.input_artifact_ids)
+        if overlap:
+            raise ValueError("同一产物不能同时作为 context 和 input")
+        if not self.required_modalities:
+            raise ValueError("required_modalities 不能为空")
+        if len(set(self.required_modalities)) != len(self.required_modalities):
+            raise ValueError("required_modalities 不能重复")
+        if InputModality.TEXT not in self.required_modalities:
+            raise ValueError("第一版执行规格必须包含 text 输入模态")
+        if InputModality.IMAGE in self.required_modalities and not self.input_artifact_ids:
+            raise ValueError("图片执行规格必须引用输入图片产物")
         return self

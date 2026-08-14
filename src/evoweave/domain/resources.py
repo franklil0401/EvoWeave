@@ -35,7 +35,7 @@ class ResourceUsage(DomainModel):
 
         return (
             self.input_tokens > limits.max_input_tokens
-            or self.output_tokens > limits.max_output_tokens
+            or self.output_tokens + self.reasoning_tokens > limits.max_output_tokens
             or self.elapsed_ms > limits.timeout_seconds * 1_000
             or self.steps > limits.max_steps
             or self.tool_calls > limits.max_tool_calls

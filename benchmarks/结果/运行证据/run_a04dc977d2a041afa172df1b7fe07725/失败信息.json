@@ -1,0 +1,5 @@
+{
+  "details": {},
+  "error_code": "validation_failed",
+  "message": "只读检查未发现 MEMBER 九五折实现或相关新增测试；当前代码仅对 VIP 返回 90%，其他客户类型返回原价，因此验收条件未满足。"
+}

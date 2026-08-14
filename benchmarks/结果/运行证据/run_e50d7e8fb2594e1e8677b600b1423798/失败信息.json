@@ -1,0 +1,23 @@
+{
+  "details": {
+    "direct_errors": [
+      {
+        "ctx": {
+          "error": "key must be a string at line 1 column 2"
+        },
+        "input": "{'action': 'finish', 'status': 'succeeded', 'summary': '只读检查完成，未修改任何文件。核查结果：\\n\\n1. **VIP 九折逻辑保持不变**：`calculator.py` 中 `calculate_discount` 对 VIP 客户返回 `total * 0.9`（即九折），逻辑正确。\\n\\n2. **测试覆盖验证**：`tests/test_calculator.py` 中 `test_vip_discount` 断言 `calculate_discount(100, \"VIP\") == 90`，与九折逻辑一致。\\n\\n3. **门禁配置确认**：`pyproject.toml` 配置了 pytest（testpaths=[\"tests\"]）和 ruff（target-version=\"py312\"），路径与测试门禁仍然生效。\\n\\n4. **权限控制**：本实例仅被授予 `file.read` 和 `file.search` 能力，任何写操作或未授权调用将被权限系统拒绝（PermissionError 由运行时能力协议层保障，代码中无相关引用属正常）。\\n\\n5. **代码搜索**：在授权范围内搜索 \"PermissionError\" 和 \"authorized\" 均无匹配，确认代码中无硬编码的权限绕过逻辑。\\n\\n所有验收条件均满足。', 'risk_level': 'low', 'risk_notes': ['仅执行只读操作，未修改任何文件', 'VIP 折扣逻辑为 0.9（九折），与验收条件一致', '测试与 lint 门禁配置完整']}",
+        "loc": [],
+        "msg": "Invalid JSON: key must be a string at line 1 column 2",
+        "type": "json_invalid"
+      }
+    ],
+    "extraction_errors": [
+      {
+        "msg": "Expecting property name enclosed in double quotes: line 1 column 2 (char 1)",
+        "type": "JSONDecodeError"
+      }
+    ]
+  },
+  "error_code": "invalid_model_output",
+  "message": "模型输出不符合 Worker 决策协议"
+}

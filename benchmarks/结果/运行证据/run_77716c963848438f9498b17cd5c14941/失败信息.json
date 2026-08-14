@@ -1,0 +1,7 @@
+{
+  "details": {
+    "http_status": 400
+  },
+  "error_code": "model_unavailable",
+  "message": "模型服务返回非成功状态"
+}

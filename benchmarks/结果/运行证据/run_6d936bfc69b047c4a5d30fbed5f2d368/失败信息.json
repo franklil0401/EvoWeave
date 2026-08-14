@@ -1,0 +1,23 @@
+{
+  "details": {
+    "direct_errors": [
+      {
+        "ctx": {
+          "error": "expected value at line 1 column 1"
+        },
+        "input": "Looking at the code, I need to:\n1. Change VIP discount from 0.9 to 0.85 (八五折)\n2. Normalize `customer_type` with strip and case handling\n3. Update tests to cover VIP variants and the new discount\n4. Handle conflicts safely (use local normalization, don't mutate input)\n\nLet me start by updating `pricing.py`:<seed:tool_call><function name=\"file.write\"><parameter name=\"path\" string=\"true\">src/shop/pricing.py</parameter><parameter name=\"content\" string=\"true\">def calculate_discount(total: float, customer_type: str) -> float:\n    normalized = customer_type.strip().upper()\n    if normalized == \"VIP\":\n        return total * 0.85\n    return total\n</parameter></function></seed:tool_call>",
+        "loc": [],
+        "msg": "Invalid JSON: expected value at line 1 column 1",
+        "type": "json_invalid"
+      }
+    ],
+    "extraction_errors": [
+      {
+        "msg": "模型输出不包含 JSON 对象",
+        "type": "ValueError"
+      }
+    ]
+  },
+  "error_code": "invalid_model_output",
+  "message": "模型输出不符合 Worker 决策协议"
+}

@@ -1,0 +1,56 @@
+{
+  "details": {
+    "direct_errors": [
+      {
+        "ctx": {
+          "error": "非成功决定必须包含失败代码和消息"
+        },
+        "input": {
+          "action": "finish",
+          "failure_code": "validation_failed",
+          "retryable": false,
+          "risk_level": "low",
+          "risk_notes": [
+            "只读检查未修改任何文件。",
+            "src/shop/legacy_broken.py 存在已知语法错误：'(' was never closed；当前测试未导入该模块，因此不直接阻塞目标验收，但属于仓库风险。",
+            "当前实例仅有 file.read/file.search，无法执行 pytest/ruff/mypy，回归状态无法通过运行验证。"
+          ],
+          "status": "failed",
+          "summary": "静态只读检查未满足验收条件：\n1. Customer 仅定义字段 customer_type: str，未提供 normalized_type 属性/方法，因此无法保证返回去空格后的大写值。\n2. pricing.calculate_discount 直接比较 customer_type == \"VIP\"，未独立执行 strip().upper() 或等效规范化，不能独立支持大小写与前后空格。\n3. tests/test_service.py 仅验证 Customer(\"VIP\") 的折扣结果，未覆盖 \" vip \"、\"vip\"、\"VIP \" 等输入，也未验证 Customer.normalized_type。\n\n结论：在当前文件状态下，验收条件不成立；需要在前序可写步骤中补充 normalized_type、价格模块规范化逻辑及对应回归测试后，再运行 pytest/ruff/mypy 确认。"
+        },
+        "loc": [
+          "finish"
+        ],
+        "msg": "Value error, 非成功决定必须包含失败代码和消息",
+        "type": "value_error"
+      }
+    ],
+    "extraction_errors": [
+      {
+        "ctx": {
+          "error": "非成功决定必须包含失败代码和消息"
+        },
+        "input": {
+          "action": "finish",
+          "failure_code": "validation_failed",
+          "retryable": false,
+          "risk_level": "low",
+          "risk_notes": [
+            "只读检查未修改任何文件。",
+            "src/shop/legacy_broken.py 存在已知语法错误：'(' was never closed；当前测试未导入该模块，因此不直接阻塞目标验收，但属于仓库风险。",
+            "当前实例仅有 file.read/file.search，无法执行 pytest/ruff/mypy，回归状态无法通过运行验证。"
+          ],
+          "status": "failed",
+          "summary": "静态只读检查未满足验收条件：\n1. Customer 仅定义字段 customer_type: str，未提供 normalized_type 属性/方法，因此无法保证返回去空格后的大写值。\n2. pricing.calculate_discount 直接比较 customer_type == \"VIP\"，未独立执行 strip().upper() 或等效规范化，不能独立支持大小写与前后空格。\n3. tests/test_service.py 仅验证 Customer(\"VIP\") 的折扣结果，未覆盖 \" vip \"、\"vip\"、\"VIP \" 等输入，也未验证 Customer.normalized_type。\n\n结论：在当前文件状态下，验收条件不成立；需要在前序可写步骤中补充 normalized_type、价格模块规范化逻辑及对应回归测试后，再运行 pytest/ruff/mypy 确认。"
+        },
+        "loc": [
+          "finish"
+        ],
+        "msg": "Value error, 非成功决定必须包含失败代码和消息",
+        "type": "value_error"
+      }
+    ]
+  },
+  "error_code": "invalid_model_output",
+  "message": "模型输出不符合 Worker 决策协议"
+}

@@ -1,0 +1,5 @@
+{
+  "details": {},
+  "error_code": "validation_failed",
+  "message": "只读检查发现 calculate_discount 仅在 customer_type == \"VIP\" 时返回九折；传入 \"vip\" 或 \"Vip\" 会返回原价，不满足验收条件。当前授权仅包含 file.read/file.search，无法修改代码或执行 pytest/ruff。"
+}

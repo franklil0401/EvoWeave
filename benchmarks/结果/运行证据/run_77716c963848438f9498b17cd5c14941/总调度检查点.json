@@ -1,0 +1,361 @@
+{
+  "run_id": "run_77716c963848438f9498b17cd5c14941",
+  "version": 3,
+  "graph": {
+    "graph_id": "graph_7e6e2cf25f004e228c034532c3793ebd",
+    "run_id": "run_77716c963848438f9498b17cd5c14941",
+    "version": 5,
+    "nodes": [
+      {
+        "task_id": "task_5c083f01870d43aaabae5006990f06ae",
+        "task_spec_version": 1,
+        "status": "failed",
+        "attempts": 1
+      },
+      {
+        "task_id": "task_d6c28e2919a04b3c8882c33194281194",
+        "task_spec_version": 1,
+        "status": "created",
+        "attempts": 0
+      },
+      {
+        "task_id": "task_0f07d571374c41748eb6b6ab5cbb144a",
+        "task_spec_version": 1,
+        "status": "created",
+        "attempts": 0
+      },
+      {
+        "task_id": "task_a5bebdcf21794b32a1a1505e4096105d",
+        "task_spec_version": 1,
+        "status": "created",
+        "attempts": 0
+      }
+    ],
+    "edges": [
+      {
+        "source": "task_5c083f01870d43aaabae5006990f06ae",
+        "target": "task_d6c28e2919a04b3c8882c33194281194",
+        "relation": "depends_on"
+      },
+      {
+        "source": "task_d6c28e2919a04b3c8882c33194281194",
+        "target": "task_0f07d571374c41748eb6b6ab5cbb144a",
+        "relation": "depends_on"
+      },
+      {
+        "source": "task_0f07d571374c41748eb6b6ab5cbb144a",
+        "target": "task_a5bebdcf21794b32a1a1505e4096105d",
+        "relation": "depends_on"
+      }
+    ],
+    "created_at": "2026-08-14T14:57:34.576347Z"
+  },
+  "task_specs": [
+    {
+      "spec_id": "spec_9de08b6751f14b718f27e057eaf534c1",
+      "task_id": "task_0f07d571374c41748eb6b6ab5cbb144a",
+      "change_spec_id": "spec_37f78d0922094c3f8f5a80ddd3052a86",
+      "goal": "固定流水线步骤 3/4：只读审查修改范围和验收条件，不修改文件",
+      "base_commit": "c0eca3a1137c62190990bcd56ba95930866b941b",
+      "acceptance_criteria": [
+        "界面包含“登录后可查看专属折扣”",
+        "提示节点具有指定 data-testid",
+        "后端折扣逻辑不被修改"
+      ],
+      "depends_on": [
+        "task_d6c28e2919a04b3c8882c33194281194"
+      ],
+      "input_artifact_ids": [],
+      "context_artifact_ids": [
+        "artifact_db9f73e728d54cef9a2762f8b007e551"
+      ],
+      "read_scope": [
+        "calculator.py",
+        "pyproject.toml",
+        "tests/test_calculator.py",
+        "web/login.html"
+      ],
+      "write_scope": [],
+      "required_modalities": [
+        "text"
+      ],
+      "difficulty": {
+        "difficulty": "high",
+        "rationale": "仓库证据规则评分 12；没有可定位的候选影响范围；定位歧义高或置信度低；需要图片输入",
+        "evidence_ids": [],
+        "version": 1
+      },
+      "model_requirement": {
+        "requirement_id": "spec_c046506127be44f0801c455f49b6e736",
+        "task_id": "task_0f07d571374c41748eb6b6ab5cbb144a",
+        "difficulty": "high",
+        "required_modalities": [
+          "text"
+        ],
+        "min_context_tokens": 64000,
+        "min_output_tokens": 8000,
+        "requires_tool_calling": true,
+        "requires_structured_output": true,
+        "requires_thinking": true,
+        "version": 1
+      },
+      "risk_level": "medium",
+      "version": 1
+    },
+    {
+      "spec_id": "spec_9d538dac3bd441edbd73db534281103e",
+      "task_id": "task_5c083f01870d43aaabae5006990f06ae",
+      "change_spec_id": "spec_37f78d0922094c3f8f5a80ddd3052a86",
+      "goal": "固定流水线步骤 1/4：读取仓库并总结需求相关证据，不修改文件",
+      "base_commit": "c0eca3a1137c62190990bcd56ba95930866b941b",
+      "acceptance_criteria": [
+        "界面包含“登录后可查看专属折扣”",
+        "提示节点具有指定 data-testid",
+        "后端折扣逻辑不被修改"
+      ],
+      "depends_on": [],
+      "input_artifact_ids": [
+        "artifact_8f86262489f34d039c05b5a5a098f9eb"
+      ],
+      "context_artifact_ids": [
+        "artifact_db9f73e728d54cef9a2762f8b007e551"
+      ],
+      "read_scope": [
+        "calculator.py",
+        "pyproject.toml",
+        "tests/test_calculator.py",
+        "web/login.html"
+      ],
+      "write_scope": [],
+      "required_modalities": [
+        "text",
+        "image"
+      ],
+      "difficulty": {
+        "difficulty": "high",
+        "rationale": "仓库证据规则评分 12；没有可定位的候选影响范围；定位歧义高或置信度低；需要图片输入",
+        "evidence_ids": [],
+        "version": 1
+      },
+      "model_requirement": {
+        "requirement_id": "spec_f2b74dfc63b44ed9bcc7c81f63eedad4",
+        "task_id": "task_5c083f01870d43aaabae5006990f06ae",
+        "difficulty": "high",
+        "required_modalities": [
+          "text",
+          "image"
+        ],
+        "min_context_tokens": 64000,
+        "min_output_tokens": 8000,
+        "requires_tool_calling": true,
+        "requires_structured_output": true,
+        "requires_thinking": true,
+        "version": 1
+      },
+      "risk_level": "medium",
+      "version": 1
+    },
+    {
+      "spec_id": "spec_0f7fe7f713214357b5aca3751c2771b6",
+      "task_id": "task_a5bebdcf21794b32a1a1505e4096105d",
+      "change_spec_id": "spec_37f78d0922094c3f8f5a80ddd3052a86",
+      "goal": "固定流水线步骤 4/4：只读检查测试与风险信息，不修改文件",
+      "base_commit": "c0eca3a1137c62190990bcd56ba95930866b941b",
+      "acceptance_criteria": [
+        "界面包含“登录后可查看专属折扣”",
+        "提示节点具有指定 data-testid",
+        "后端折扣逻辑不被修改"
+      ],
+      "depends_on": [
+        "task_0f07d571374c41748eb6b6ab5cbb144a"
+      ],
+      "input_artifact_ids": [],
+      "context_artifact_ids": [
+        "artifact_db9f73e728d54cef9a2762f8b007e551"
+      ],
+      "read_scope": [
+        "calculator.py",
+        "pyproject.toml",
+        "tests/test_calculator.py",
+        "web/login.html"
+      ],
+      "write_scope": [],
+      "required_modalities": [
+        "text"
+      ],
+      "difficulty": {
+        "difficulty": "high",
+        "rationale": "仓库证据规则评分 12；没有可定位的候选影响范围；定位歧义高或置信度低；需要图片输入",
+        "evidence_ids": [],
+        "version": 1
+      },
+      "model_requirement": {
+        "requirement_id": "spec_ce13c858420748ceb88f88832094ac09",
+        "task_id": "task_a5bebdcf21794b32a1a1505e4096105d",
+        "difficulty": "high",
+        "required_modalities": [
+          "text"
+        ],
+        "min_context_tokens": 64000,
+        "min_output_tokens": 8000,
+        "requires_tool_calling": true,
+        "requires_structured_output": true,
+        "requires_thinking": true,
+        "version": 1
+      },
+      "risk_level": "medium",
+      "version": 1
+    },
+    {
+      "spec_id": "spec_7ce73d9a5d1b4beb8a08d149ce13643e",
+      "task_id": "task_d6c28e2919a04b3c8882c33194281194",
+      "change_spec_id": "spec_37f78d0922094c3f8f5a80ddd3052a86",
+      "goal": "固定流水线步骤 2/4：根据用户目标修改全部授权写范围；原目标：根据截图新增登录折扣提示界面，包含 data-testid=discount-login-hint 的提示节点",
+      "base_commit": "c0eca3a1137c62190990bcd56ba95930866b941b",
+      "acceptance_criteria": [
+        "界面包含“登录后可查看专属折扣”",
+        "提示节点具有指定 data-testid",
+        "后端折扣逻辑不被修改"
+      ],
+      "depends_on": [
+        "task_5c083f01870d43aaabae5006990f06ae"
+      ],
+      "input_artifact_ids": [
+        "artifact_8f86262489f34d039c05b5a5a098f9eb"
+      ],
+      "context_artifact_ids": [
+        "artifact_db9f73e728d54cef9a2762f8b007e551"
+      ],
+      "read_scope": [
+        "calculator.py",
+        "pyproject.toml",
+        "tests/test_calculator.py",
+        "web/login.html"
+      ],
+      "write_scope": [
+        "web/login.html"
+      ],
+      "required_modalities": [
+        "text",
+        "image"
+      ],
+      "difficulty": {
+        "difficulty": "high",
+        "rationale": "仓库证据规则评分 12；没有可定位的候选影响范围；定位歧义高或置信度低；需要图片输入",
+        "evidence_ids": [],
+        "version": 1
+      },
+      "model_requirement": {
+        "requirement_id": "spec_b4683e3f86aa446281e373df509c5133",
+        "task_id": "task_d6c28e2919a04b3c8882c33194281194",
+        "difficulty": "high",
+        "required_modalities": [
+          "text",
+          "image"
+        ],
+        "min_context_tokens": 64000,
+        "min_output_tokens": 8000,
+        "requires_tool_calling": true,
+        "requires_structured_output": true,
+        "requires_thinking": true,
+        "version": 1
+      },
+      "risk_level": "medium",
+      "version": 1
+    }
+  ],
+  "execution_specs": [
+    {
+      "spec_id": "spec_8c14a659c3a540e6ae7a54bfea365f55",
+      "run_id": "run_77716c963848438f9498b17cd5c14941",
+      "agent_id": "agent_5d6fd362da394a72adff8b70fbeea235",
+      "task_id": "task_5c083f01870d43aaabae5006990f06ae",
+      "task_spec_id": "spec_9d538dac3bd441edbd73db534281103e",
+      "task_spec_version": 1,
+      "base_commit": "c0eca3a1137c62190990bcd56ba95930866b941b",
+      "goal": "固定流水线步骤 1/4：读取仓库并总结需求相关证据，不修改文件",
+      "acceptance_criteria": [
+        "界面包含“登录后可查看专属折扣”",
+        "提示节点具有指定 data-testid",
+        "后端折扣逻辑不被修改"
+      ],
+      "required_modalities": [
+        "text",
+        "image"
+      ],
+      "model_routing": {
+        "decision_id": "spec_337bdf7aab3541999f8850c7df11c7c4",
+        "requirement_id": "spec_f2b74dfc63b44ed9bcc7c81f63eedad4",
+        "requirement_version": 1,
+        "selected_model_key": "doubao:doubao-seed-evolving",
+        "selected_availability": "available",
+        "selected_snapshot": null,
+        "reason": "benchmark fixed_high 对照固定使用单一模型；输入模态、上下文、工具和结构化输出硬约束仍然生效",
+        "fallback_model_keys": [],
+        "rejected_candidates": [],
+        "capability_snapshot_at": "2026-08-14T14:43:34.032084Z",
+        "version": 1
+      },
+      "tool_names": [
+        "file.read",
+        "file.search"
+      ],
+      "allowed_commands": [],
+      "read_scope": [
+        "calculator.py",
+        "pyproject.toml",
+        "tests/test_calculator.py",
+        "web/login.html"
+      ],
+      "write_scope": [],
+      "context_artifact_ids": [
+        "artifact_db9f73e728d54cef9a2762f8b007e551"
+      ],
+      "input_artifact_ids": [
+        "artifact_8f86262489f34d039c05b5a5a098f9eb"
+      ],
+      "runtime_limits": {
+        "max_steps": 32,
+        "max_input_tokens": 1000000,
+        "max_output_tokens": 16384,
+        "max_tool_calls": 32,
+        "timeout_seconds": 900
+      },
+      "output_schema": "TaskResult",
+      "version": 1
+    }
+  ],
+  "active_leases": [],
+  "allocation_decisions": [
+    {
+      "allocation_id": "spec_6882b199f86e4554bc57e18d6016b7a3",
+      "run_id": "run_77716c963848438f9498b17cd5c14941",
+      "graph_version": 2,
+      "ready_task_ids": [
+        "task_5c083f01870d43aaabae5006990f06ae"
+      ],
+      "selected_task_ids": [
+        "task_5c083f01870d43aaabae5006990f06ae"
+      ],
+      "available_slots": 6,
+      "reason": "实例数由就绪任务、并发槽位和写集合独立性共同决定"
+    }
+  ],
+  "result_summaries": [
+    {
+      "task_id": "task_5c083f01870d43aaabae5006990f06ae",
+      "agent_id": "agent_5d6fd362da394a72adff8b70fbeea235",
+      "execution_spec_id": "spec_8c14a659c3a540e6ae7a54bfea365f55",
+      "status": "failed",
+      "summary": "模型服务返回非成功状态",
+      "artifacts": [],
+      "suggestions": []
+    }
+  ],
+  "processed_decisions": [],
+  "progress_state": null,
+  "decision_count": 0,
+  "acceptance_satisfied": false,
+  "finished": false,
+  "finish_summary": null
+}

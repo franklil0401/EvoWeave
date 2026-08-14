@@ -1,0 +1,5 @@
+{
+  "details": {},
+  "error_code": "invalid_model_output",
+  "message": "模型输出在决策 JSON 后包含额外内容"
+}

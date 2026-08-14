@@ -1,0 +1,72 @@
+[
+  {
+    "agent_count": 1,
+    "agent_strategy": "adaptive_agent",
+    "benchmark_id": "bench-01-single-file",
+    "conflict_count": 0,
+    "duration_ms": 26984,
+    "evidence_directory": null,
+    "evidence_level": "live_model",
+    "failure_reason": "已废弃：隐藏验收错误加入了需求未声明的首尾空格条件；原始结果仅用于审计",
+    "fallback_count": 0,
+    "full_regression_passed": true,
+    "image_agent_count": 0,
+    "initial_route_valid": true,
+    "input_tokens": 17225,
+    "invalid_task_count": 0,
+    "localization_candidates": [
+      "calculator.py"
+    ],
+    "model_strategy": "adaptive_model",
+    "orchestrator_context_chars": 892,
+    "output_tokens": 1953,
+    "patch_applied": true,
+    "patch_authorized": true,
+    "patch_generated": true,
+    "predicted_difficulty": "low",
+    "reasoning_tokens": 1753,
+    "run_id": "run_b7f8754cad42476ab25119ec890397c7",
+    "selected_model_keys": [],
+    "status": "failed",
+    "suite_sha256": "b2877893c73c9bf037ba9bd0a4db47ce5b0c64e2fc6193fa33764b7e900fd134",
+    "target_tests_passed": false,
+    "task_count": 1,
+    "worker_context_chars": 5368
+  },
+  {
+    "agent_count": 1,
+    "agent_strategy": "single_agent",
+    "benchmark_id": "bench-01-single-file",
+    "conflict_count": 0,
+    "duration_ms": 20796,
+    "evidence_directory": "benchmarks/结果/运行证据/run_fcb9bc192f7940f6880d8732a3ee9518",
+    "evidence_level": "live_model",
+    "failure_reason": "已废弃：隐藏验收错误加入了需求未声明的首尾空格条件；原始结果与运行证据仅用于审计",
+    "fallback_count": 0,
+    "full_regression_passed": true,
+    "image_agent_count": 0,
+    "initial_route_valid": true,
+    "input_tokens": 17176,
+    "invalid_task_count": 0,
+    "localization_candidates": [
+      "calculator.py"
+    ],
+    "model_strategy": "adaptive_model",
+    "orchestrator_context_chars": 890,
+    "output_tokens": 1100,
+    "patch_applied": true,
+    "patch_authorized": true,
+    "patch_generated": true,
+    "predicted_difficulty": "low",
+    "reasoning_tokens": 882,
+    "run_id": "run_fcb9bc192f7940f6880d8732a3ee9518",
+    "selected_model_keys": [
+      "deepseek:deepseek-v4-flash"
+    ],
+    "status": "failed",
+    "suite_sha256": "b2877893c73c9bf037ba9bd0a4db47ce5b0c64e2fc6193fa33764b7e900fd134",
+    "target_tests_passed": false,
+    "task_count": 1,
+    "worker_context_chars": 5368
+  }
+]

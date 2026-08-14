@@ -1,0 +1,4 @@
+{
+  "error_code": "policy_rejected",
+  "message": "任务图变更违反 GraphPolicy"
+}

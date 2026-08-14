@@ -129,6 +129,7 @@ class FileWriteCapability:
         parsed = _validate(_FileWriteArguments, arguments)
         paths = context.workspace.list_paths()
         before = context.workspace.read_text(parsed.path) if parsed.path in paths else ""
+        changed = before != parsed.content
         context.workspace.write_text(parsed.path, parsed.content)
         patch = "".join(
             unified_diff(
@@ -150,8 +151,12 @@ class FileWriteCapability:
             artifact_id=artifact.artifact_id,
         )
         return CapabilityResult(
-            summary=f"已写入 {parsed.path}",
-            details={"path": parsed.path, "artifact_id": str(artifact.artifact_id)},
+            summary=(f"已写入 {parsed.path}" if changed else f"{parsed.path} 内容没有变化"),
+            details={
+                "path": parsed.path,
+                "artifact_id": str(artifact.artifact_id),
+                "changed": changed,
+            },
             evidence=(evidence,),
             artifacts=(artifact,),
         )

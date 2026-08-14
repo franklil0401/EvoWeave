@@ -1,0 +1,4 @@
+{
+  "error_code": "workspace_access_denied",
+  "message": "仓库路径不合法或试图逃逸工作区"
+}

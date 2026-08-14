@@ -156,6 +156,33 @@ def test_router_fails_instead_of_dropping_image_requirement() -> None:
     assert error.value.code is ErrorCode.MODEL_CAPABILITY_MISMATCH
 
 
+def test_high_vision_route_can_fallback_to_lower_tier_without_dropping_image() -> None:
+    high_vision = _profile(
+        "high-vision",
+        ModelTier.HIGH,
+        modalities=(InputModality.TEXT, InputModality.IMAGE),
+    )
+    medium_vision = _profile(
+        "medium-vision",
+        ModelTier.MEDIUM,
+        modalities=(InputModality.TEXT, InputModality.IMAGE),
+    )
+    text_only = _profile("text-only", ModelTier.MEDIUM)
+
+    decision = RuleBasedModelRouter().route(
+        _requirement(
+            TaskDifficulty.HIGH,
+            (InputModality.TEXT, InputModality.IMAGE),
+        ),
+        (medium_vision, text_only, high_vision),
+    )
+
+    assert decision.selected_model_key == high_vision.key
+    assert decision.fallback_model_keys == (medium_vision.key,)
+    assert "不得放宽" in decision.reason
+    assert {item.model_key for item in decision.rejected_candidates} == {text_only.key}
+
+
 def test_router_semantics_are_deterministic() -> None:
     profiles = (
         _profile("a", ModelTier.LOW, provider="first"),

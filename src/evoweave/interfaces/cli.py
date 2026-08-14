@@ -19,9 +19,22 @@ from evoweave.application.update_workflow import (
     ValidationRunnerFactory,
     prepare_task_plan,
 )
+from evoweave.benchmarking.models import AgentStrategy, EvidenceLevel, ModelStrategy
+from evoweave.benchmarking.planning_audit import PlanningAuditRunner, PlanningAuditWriter
+from evoweave.benchmarking.reporting import BenchmarkReportWriter, load_run_records
+from evoweave.benchmarking.runner import (
+    BenchmarkResultStore,
+    BenchmarkRunner,
+    selected_tasks,
+)
+from evoweave.benchmarking.suite_loader import (
+    load_benchmark_suite,
+    validate_benchmark_suite,
+)
 from evoweave.domain.enums import ModelAvailability
 from evoweave.domain.errors import DomainError, ErrorCode
 from evoweave.domain.identifiers import RunId
+from evoweave.domain.model_routing import ModelProfile
 from evoweave.domain.repository_models import RepositoryProfile
 from evoweave.domain.run_models import RunManifest
 from evoweave.infrastructure.artifacts.image_ingestor import PillowImageIngestor
@@ -101,6 +114,86 @@ def build_parser() -> argparse.ArgumentParser:
     doctor = model_subparsers.add_parser("doctor", help="检查三个供应商配置")
     doctor.add_argument("--network", action="store_true", help="显式调用只读模型列表接口")
     _json_argument(doctor)
+
+    benchmark = subparsers.add_parser("benchmark", help="固定评测集校验与结果汇总")
+    benchmark_subparsers = benchmark.add_subparsers(
+        dest="benchmark_command",
+        required=True,
+    )
+    benchmark_validate = benchmark_subparsers.add_parser(
+        "validate",
+        help="校验任务、fixture commit 和图片摘要",
+    )
+    benchmark_validate.add_argument(
+        "--suite",
+        type=Path,
+        default=Path("benchmarks/任务集/第一版任务集.json"),
+    )
+    benchmark_validate.add_argument("--project-root", type=Path, default=Path("."))
+    _json_argument(benchmark_validate)
+    benchmark_summarize = benchmark_subparsers.add_parser(
+        "summarize",
+        help="汇总真实或离线回放结果，不填充缺失数据",
+    )
+    benchmark_summarize.add_argument(
+        "--suite",
+        type=Path,
+        default=Path("benchmarks/任务集/第一版任务集.json"),
+    )
+    benchmark_summarize.add_argument("--results", type=Path, required=True)
+    benchmark_summarize.add_argument("--output", type=Path, required=True)
+    _json_argument(benchmark_summarize)
+    benchmark_audit = benchmark_subparsers.add_parser(
+        "audit",
+        help="在 12 个固定仓库任务上比较三种 Agent 规划，不调用模型",
+    )
+    benchmark_audit.add_argument(
+        "--suite",
+        type=Path,
+        default=Path("benchmarks/任务集/第一版任务集.json"),
+    )
+    benchmark_audit.add_argument("--project-root", type=Path, default=Path("."))
+    benchmark_audit.add_argument("--output", type=Path, required=True)
+    _json_argument(benchmark_audit)
+    benchmark_run = benchmark_subparsers.add_parser(
+        "run",
+        help="对固定任务执行真实模型效果实验，并在每项结束后原子保存记录",
+    )
+    benchmark_run.add_argument(
+        "--suite",
+        type=Path,
+        default=Path("benchmarks/任务集/第一版任务集.json"),
+    )
+    benchmark_run.add_argument("--project-root", type=Path, default=Path("."))
+    benchmark_run.add_argument(
+        "--results",
+        type=Path,
+        default=Path("benchmarks/结果/真实模型结果.json"),
+    )
+    benchmark_run.add_argument("--task", action="append", default=[])
+    benchmark_run.add_argument(
+        "--agent-strategy",
+        choices=tuple(item.value for item in AgentStrategy),
+        default=AgentStrategy.ADAPTIVE.value,
+    )
+    benchmark_run.add_argument(
+        "--model-strategy",
+        choices=tuple(item.value for item in ModelStrategy),
+        default=ModelStrategy.ADAPTIVE.value,
+    )
+    benchmark_run.add_argument(
+        "--all-strategies",
+        action="store_true",
+        help="显式执行 3×3 全部策略；不指定时只运行所选的一组策略",
+    )
+    benchmark_run.add_argument(
+        "--provider",
+        action="append",
+        choices=("deepseek", "doubao", "qianwen"),
+        default=[],
+        help="限制模型发现供应商，可重复；默认检查三家",
+    )
+    _json_argument(benchmark_run)
     return parser
 
 
@@ -130,6 +223,8 @@ def _dispatch(
 ) -> tuple[dict[str, Any], str]:
     if arguments.command == "models":
         return _models_doctor(arguments, config)
+    if arguments.command == "benchmark":
+        return _benchmark(arguments, config)
     repository = GitInspector(arguments.repository).repository_root
     layout = RuntimeLayout.create(repository, config)
     run_store = JsonRunStateStore(layout.run_state)
@@ -265,6 +360,159 @@ def _models_doctor(
         for item in results
     )
     return data, human
+
+
+def _benchmark(
+    arguments: argparse.Namespace,
+    config: EvoWeaveConfig,
+) -> tuple[dict[str, Any], str]:
+    if arguments.benchmark_command == "validate":
+        validation_report = validate_benchmark_suite(
+            arguments.project_root,
+            arguments.suite,
+        )
+        data = validation_report.model_dump(mode="json")
+        human = (
+            f"任务集 {validation_report.suite_id} 校验通过："
+            f"{validation_report.task_count} 个任务、"
+            f"{validation_report.fixture_count} 个固定仓库、"
+            f"{len(validation_report.verified_asset_sha256s)} 个图片产物。"
+        )
+        return data, human
+    if arguments.benchmark_command == "summarize":
+        suite, suite_digest = load_benchmark_suite(arguments.suite)
+        records = load_run_records(arguments.results)
+        markdown_path, json_path = BenchmarkReportWriter().write(
+            suite=suite,
+            suite_sha256=suite_digest,
+            records=records,
+            output_root=arguments.output,
+        )
+        data = {
+            "suite_id": suite.suite_id,
+            "record_count": len(records),
+            "markdown": str(markdown_path),
+            "json": str(json_path),
+        }
+        return data, f"评测汇总已生成：\n{markdown_path}\n{json_path}"
+    if arguments.benchmark_command == "audit":
+        suite, suite_digest = load_benchmark_suite(arguments.suite)
+        audit_report = PlanningAuditRunner(arguments.project_root).run(suite, suite_digest)
+        markdown_path, json_path = PlanningAuditWriter().write(
+            audit_report,
+            arguments.output,
+        )
+        data = {
+            "suite_id": suite.suite_id,
+            "task_count": audit_report.task_count,
+            "record_count": len(audit_report.records),
+            "markdown": str(markdown_path),
+            "json": str(json_path),
+        }
+        return data, f"规划审计已生成：\n{markdown_path}\n{json_path}"
+    if arguments.benchmark_command == "run":
+        validate_benchmark_suite(arguments.project_root, arguments.suite)
+        suite, suite_digest = load_benchmark_suite(arguments.suite)
+        providers = default_provider_configs(qianwen_base_url=config.qianwen_base_url)
+        selected_provider_names = set(arguments.provider) or {item.provider for item in providers}
+        gateway = OpenAICompatibleModelGateway(providers)
+        profiles: list[ModelProfile] = []
+        provider_failures: dict[str, str] = {}
+        for provider in providers:
+            if provider.provider not in selected_provider_names:
+                continue
+            try:
+                profiles.extend(
+                    item
+                    for item in gateway.available_profiles(provider.provider)
+                    if item.availability is ModelAvailability.AVAILABLE
+                )
+            except DomainError as exc:
+                provider_failures[provider.provider] = f"{exc.code.value}: {exc.message}"
+        if not profiles:
+            raise DomainError(
+                ErrorCode.MODEL_UNAVAILABLE,
+                "所选供应商没有发现任何可用模型",
+                details={"providers": provider_failures},
+            )
+        tasks = selected_tasks(suite, tuple(arguments.task))
+        agent_strategies = (
+            tuple(AgentStrategy)
+            if arguments.all_strategies
+            else (AgentStrategy(arguments.agent_strategy),)
+        )
+        model_strategies = (
+            tuple(ModelStrategy)
+            if arguments.all_strategies
+            else (ModelStrategy(arguments.model_strategy),)
+        )
+        store = BenchmarkResultStore(arguments.results)
+        runner = BenchmarkRunner(
+            project_root=arguments.project_root,
+            model_gateway=gateway,
+            model_profiles=tuple(profiles),
+            suite_sha256=suite_digest,
+            config=config.model_copy(update={"runtime_directory": ".runtime-benchmark"}),
+            hidden_acceptance_source=suite.hidden_acceptance_source,
+            hidden_acceptance_sha256=suite.hidden_acceptance_sha256,
+            evidence_output_root=Path(arguments.results).resolve().parent / "运行证据",
+        )
+        stored_records = store.load()
+        if any(item.suite_sha256 != suite_digest for item in stored_records):
+            raise DomainError(ErrorCode.INVALID_SPEC, "结果文件包含其他任务集版本")
+        if any(item.system_commit != runner.system_commit for item in stored_records):
+            raise DomainError(ErrorCode.INVALID_SPEC, "结果文件包含其他系统 Git 提交")
+        existing = {
+            (
+                item.system_commit,
+                item.benchmark_id,
+                item.agent_strategy,
+                item.model_strategy,
+                item.evidence_level,
+            )
+            for item in stored_records
+        }
+        completed = 0
+        skipped = 0
+        passed = 0
+        for agent_strategy in agent_strategies:
+            for model_strategy in model_strategies:
+                for task in tasks:
+                    key = (
+                        runner.system_commit,
+                        task.benchmark_id,
+                        agent_strategy,
+                        model_strategy,
+                        EvidenceLevel.LIVE_MODEL,
+                    )
+                    if key in existing:
+                        skipped += 1
+                        continue
+                    record = runner.run(
+                        task=task,
+                        agent_strategy=agent_strategy,
+                        model_strategy=model_strategy,
+                        evidence_level=EvidenceLevel.LIVE_MODEL,
+                    )
+                    store.append(record)
+                    existing.add(key)
+                    completed += 1
+                    passed += record.status.value == "passed"
+        data = {
+            "suite_id": suite.suite_id,
+            "completed": completed,
+            "passed": passed,
+            "skipped_existing": skipped,
+            "results": str(Path(arguments.results).resolve()),
+            "available_models": [item.key for item in profiles],
+            "provider_failures": provider_failures,
+        }
+        return (
+            data,
+            f"真实模型评测本次完成 {completed} 条，通过 {passed} 条，"
+            f"跳过已有记录 {skipped} 条。结果：{data['results']}",
+        )
+    raise ValueError(f"未知 benchmark 命令：{arguments.benchmark_command}")
 
 
 def _execute_update(

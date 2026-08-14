@@ -1,0 +1,16 @@
+{
+  "go_no_go": {
+    "evidence_level": null,
+    "reasons": [
+      "尚无任一真实性等级完成 12 个任务 × 3 种 Agent 策略 × 3 种模型策略的完整矩阵"
+    ],
+    "status": "pending"
+  },
+  "metrics": [],
+  "record_count": 0,
+  "suite_id": "evoweave_v1",
+  "suite_sha256": "842d8c4edfeaf1e02350a594ee473d5d9a8372de9371e2483593aa86ca65350e",
+  "suite_version": 3,
+  "system_commits": [],
+  "task_count": 12
+}

@@ -1,6 +1,6 @@
 """Structured result returned by every temporary worker."""
 
-from pydantic import Field, model_validator
+from pydantic import Field, JsonValue, model_validator
 
 from evoweave.domain.artifacts import ArtifactRef, EvidenceRef
 from evoweave.domain.base import DomainModel
@@ -14,6 +14,7 @@ class TaskFailure(DomainModel):
     code: ErrorCode
     message: str = Field(min_length=1, max_length=2_000)
     retryable: bool = False
+    details: dict[str, JsonValue] = Field(default_factory=dict)
 
 
 class TaskResult(DomainModel):

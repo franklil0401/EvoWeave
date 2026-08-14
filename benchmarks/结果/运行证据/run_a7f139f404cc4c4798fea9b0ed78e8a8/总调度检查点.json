@@ -1,0 +1,742 @@
+{
+  "run_id": "run_a7f139f404cc4c4798fea9b0ed78e8a8",
+  "version": 9,
+  "graph": {
+    "graph_id": "graph_e75ed9c0276242628f494ef8ef9652cb",
+    "run_id": "run_a7f139f404cc4c4798fea9b0ed78e8a8",
+    "version": 25,
+    "nodes": [
+      {
+        "task_id": "task_76f4ba06bac64a72ac61eec51c0d3aa4",
+        "task_spec_version": 1,
+        "status": "succeeded",
+        "attempts": 3
+      },
+      {
+        "task_id": "task_ab1c5704f40a4be28fb789f4bf4180b2",
+        "task_spec_version": 1,
+        "status": "succeeded",
+        "attempts": 3
+      }
+    ],
+    "edges": [
+      {
+        "source": "task_76f4ba06bac64a72ac61eec51c0d3aa4",
+        "target": "task_ab1c5704f40a4be28fb789f4bf4180b2",
+        "relation": "depends_on"
+      }
+    ],
+    "created_at": "2026-08-14T11:32:12.162269Z"
+  },
+  "task_specs": [
+    {
+      "spec_id": "spec_0b9ff7193ec94bc1891be3b63b76b1bf",
+      "task_id": "task_76f4ba06bac64a72ac61eec51c0d3aa4",
+      "change_spec_id": "spec_a4dae99442ed489ab46d46b19d455d66",
+      "goal": "为普通会员增加九五折并补充对应测试\n本任务只负责写范围：calculator.py；可以读取授权仓库证据，但不得修改其他路径。",
+      "base_commit": "c0eca3a1137c62190990bcd56ba95930866b941b",
+      "acceptance_criteria": [
+        "MEMBER 返回九五折",
+        "VIP 行为不变",
+        "新增测试通过"
+      ],
+      "depends_on": [],
+      "input_artifact_ids": [],
+      "context_artifact_ids": [
+        "artifact_8548fbbdcade4f5899a7ee88f7b64fb0"
+      ],
+      "read_scope": [
+        "calculator.py",
+        "pyproject.toml",
+        "tests/test_calculator.py"
+      ],
+      "write_scope": [
+        "calculator.py"
+      ],
+      "required_modalities": [
+        "text"
+      ],
+      "difficulty": {
+        "difficulty": "medium",
+        "rationale": "仓库证据规则评分 0；单一、明确且低风险的候选范围；结构性难度下限：任务需要协调多个独立写范围",
+        "evidence_ids": [
+          "evidence_5e6da827a16c6b423fde3344",
+          "evidence_8e1c5ebecce8d4fff0fa86c1",
+          "evidence_6bb23b8852e46c002e886135",
+          "evidence_7563da8de0ecca0489827be1",
+          "evidence_e600be3260adccdf676eea32"
+        ],
+        "version": 1
+      },
+      "model_requirement": {
+        "requirement_id": "spec_39977e4db843d18abde7bb89",
+        "task_id": "task_76f4ba06bac64a72ac61eec51c0d3aa4",
+        "difficulty": "medium",
+        "required_modalities": [
+          "text"
+        ],
+        "min_context_tokens": 32000,
+        "min_output_tokens": 4000,
+        "requires_tool_calling": true,
+        "requires_structured_output": true,
+        "requires_thinking": false,
+        "version": 1
+      },
+      "risk_level": "low",
+      "version": 1
+    },
+    {
+      "spec_id": "spec_08e9afb9b9d9408ca436956b90a1d5e9",
+      "task_id": "task_ab1c5704f40a4be28fb789f4bf4180b2",
+      "change_spec_id": "spec_a4dae99442ed489ab46d46b19d455d66",
+      "goal": "为普通会员增加九五折并补充对应测试\n本任务只负责写范围：tests/test_calculator.py；可以读取授权仓库证据，但不得修改其他路径。",
+      "base_commit": "c0eca3a1137c62190990bcd56ba95930866b941b",
+      "acceptance_criteria": [
+        "MEMBER 返回九五折",
+        "VIP 行为不变",
+        "新增测试通过"
+      ],
+      "depends_on": [
+        "task_76f4ba06bac64a72ac61eec51c0d3aa4"
+      ],
+      "input_artifact_ids": [],
+      "context_artifact_ids": [
+        "artifact_8548fbbdcade4f5899a7ee88f7b64fb0"
+      ],
+      "read_scope": [
+        "calculator.py",
+        "pyproject.toml",
+        "tests/test_calculator.py"
+      ],
+      "write_scope": [
+        "tests/test_calculator.py"
+      ],
+      "required_modalities": [
+        "text"
+      ],
+      "difficulty": {
+        "difficulty": "medium",
+        "rationale": "仓库证据规则评分 0；单一、明确且低风险的候选范围；结构性难度下限：任务需要协调多个独立写范围",
+        "evidence_ids": [
+          "evidence_0cb2b9e45815b951f8839a48",
+          "evidence_4aa53e18a068df24f83b131a",
+          "evidence_6bb23b8852e46c002e886135",
+          "evidence_7563da8de0ecca0489827be1",
+          "evidence_cc276e7e12c0184afd5bf6b5",
+          "evidence_e600be3260adccdf676eea32",
+          "evidence_27279cba53c4a20e975ffca5",
+          "evidence_2c72326a314c750d0c5eb4b4",
+          "evidence_7c47d07c8ecf4edf8d56a969",
+          "evidence_93299b3a8833983feecd7c9c",
+          "evidence_5e6da827a16c6b423fde3344"
+        ],
+        "version": 1
+      },
+      "model_requirement": {
+        "requirement_id": "spec_eba50ec5c76f504dd3da24cd",
+        "task_id": "task_ab1c5704f40a4be28fb789f4bf4180b2",
+        "difficulty": "medium",
+        "required_modalities": [
+          "text"
+        ],
+        "min_context_tokens": 32000,
+        "min_output_tokens": 4000,
+        "requires_tool_calling": true,
+        "requires_structured_output": true,
+        "requires_thinking": false,
+        "version": 1
+      },
+      "risk_level": "low",
+      "version": 1
+    }
+  ],
+  "execution_specs": [
+    {
+      "spec_id": "spec_d4edfbbb1e734d6db0beb2cdf5c6c177",
+      "run_id": "run_a7f139f404cc4c4798fea9b0ed78e8a8",
+      "agent_id": "agent_692f2ec41d104c10b49d66c7c700430a",
+      "task_id": "task_76f4ba06bac64a72ac61eec51c0d3aa4",
+      "task_spec_id": "spec_0b9ff7193ec94bc1891be3b63b76b1bf",
+      "task_spec_version": 1,
+      "base_commit": "c0eca3a1137c62190990bcd56ba95930866b941b",
+      "goal": "为普通会员增加九五折并补充对应测试\n本任务只负责写范围：calculator.py；可以读取授权仓库证据，但不得修改其他路径。",
+      "acceptance_criteria": [
+        "MEMBER 返回九五折",
+        "VIP 行为不变",
+        "新增测试通过"
+      ],
+      "required_modalities": [
+        "text"
+      ],
+      "model_routing": {
+        "decision_id": "spec_c3e9337c42d54b5a803ed5bc817acd2d",
+        "requirement_id": "spec_39977e4db843d18abde7bb89",
+        "requirement_version": 1,
+        "selected_model_key": "doubao:doubao-seed-2-1-turbo-260628",
+        "selected_availability": "available",
+        "selected_snapshot": null,
+        "reason": "任务难度为 medium，选择满足全部硬约束的 medium 档最高优先级模型",
+        "fallback_model_keys": [
+          "qianwen:qwen3.7-plus",
+          "deepseek:deepseek-v4-pro",
+          "doubao:doubao-seed-evolving"
+        ],
+        "rejected_candidates": [
+          {
+            "model_key": "deepseek:deepseek-v4-flash",
+            "reasons": [
+              "能力档位低于任务所需 medium"
+            ]
+          },
+          {
+            "model_key": "doubao:doubao-seed-2-0-mini-260428",
+            "reasons": [
+              "能力档位低于任务所需 medium"
+            ]
+          },
+          {
+            "model_key": "qianwen:qwen3.7-flash",
+            "reasons": [
+              "能力档位低于任务所需 medium"
+            ]
+          }
+        ],
+        "capability_snapshot_at": "2026-08-14T11:32:11.125817Z",
+        "version": 1
+      },
+      "tool_names": [
+        "file.read",
+        "file.search",
+        "file.write"
+      ],
+      "allowed_commands": [],
+      "read_scope": [
+        "calculator.py",
+        "pyproject.toml",
+        "tests/test_calculator.py"
+      ],
+      "write_scope": [
+        "calculator.py"
+      ],
+      "context_artifact_ids": [
+        "artifact_8548fbbdcade4f5899a7ee88f7b64fb0"
+      ],
+      "input_artifact_ids": [],
+      "runtime_limits": {
+        "max_steps": 32,
+        "max_input_tokens": 1000000,
+        "max_output_tokens": 16384,
+        "max_tool_calls": 32,
+        "timeout_seconds": 900
+      },
+      "output_schema": "TaskResult",
+      "version": 1
+    },
+    {
+      "spec_id": "spec_3d2ad0cac4c5401690eaca3c94752414",
+      "run_id": "run_a7f139f404cc4c4798fea9b0ed78e8a8",
+      "agent_id": "agent_b10c3a9e2607423b9a3b076d6c59e127",
+      "task_id": "task_76f4ba06bac64a72ac61eec51c0d3aa4",
+      "task_spec_id": "spec_0b9ff7193ec94bc1891be3b63b76b1bf",
+      "task_spec_version": 1,
+      "base_commit": "c0eca3a1137c62190990bcd56ba95930866b941b",
+      "goal": "为普通会员增加九五折并补充对应测试\n本任务只负责写范围：calculator.py；可以读取授权仓库证据，但不得修改其他路径。",
+      "acceptance_criteria": [
+        "MEMBER 返回九五折",
+        "VIP 行为不变",
+        "新增测试通过"
+      ],
+      "required_modalities": [
+        "text"
+      ],
+      "model_routing": {
+        "decision_id": "spec_8defb0bd786e49d0b6e820137f61a7ba",
+        "requirement_id": "spec_39977e4db843d18abde7bb89",
+        "requirement_version": 1,
+        "selected_model_key": "qianwen:qwen3.7-plus",
+        "selected_availability": "available",
+        "selected_snapshot": null,
+        "reason": "模型 doubao:doubao-seed-2-1-turbo-260628 执行失败（model_unavailable），按已记录回退链切换到 qianwen:qwen3.7-plus",
+        "fallback_model_keys": [
+          "deepseek:deepseek-v4-pro",
+          "doubao:doubao-seed-evolving"
+        ],
+        "rejected_candidates": [
+          {
+            "model_key": "deepseek:deepseek-v4-flash",
+            "reasons": [
+              "能力档位低于任务所需 medium"
+            ]
+          },
+          {
+            "model_key": "doubao:doubao-seed-2-0-mini-260428",
+            "reasons": [
+              "能力档位低于任务所需 medium"
+            ]
+          },
+          {
+            "model_key": "qianwen:qwen3.7-flash",
+            "reasons": [
+              "能力档位低于任务所需 medium"
+            ]
+          },
+          {
+            "model_key": "doubao:doubao-seed-2-1-turbo-260628",
+            "reasons": [
+              "本次调用失败：model_unavailable"
+            ]
+          }
+        ],
+        "capability_snapshot_at": "2026-08-14T11:32:11.125817Z",
+        "version": 2
+      },
+      "tool_names": [
+        "file.read",
+        "file.search",
+        "file.write"
+      ],
+      "allowed_commands": [],
+      "read_scope": [
+        "calculator.py",
+        "pyproject.toml",
+        "tests/test_calculator.py"
+      ],
+      "write_scope": [
+        "calculator.py"
+      ],
+      "context_artifact_ids": [
+        "artifact_8548fbbdcade4f5899a7ee88f7b64fb0"
+      ],
+      "input_artifact_ids": [],
+      "runtime_limits": {
+        "max_steps": 32,
+        "max_input_tokens": 1000000,
+        "max_output_tokens": 16384,
+        "max_tool_calls": 32,
+        "timeout_seconds": 900
+      },
+      "output_schema": "TaskResult",
+      "version": 2
+    },
+    {
+      "spec_id": "spec_cfe057d173444b02818878fc57979c1c",
+      "run_id": "run_a7f139f404cc4c4798fea9b0ed78e8a8",
+      "agent_id": "agent_f749549afaee4bffb3e31066034e8b85",
+      "task_id": "task_76f4ba06bac64a72ac61eec51c0d3aa4",
+      "task_spec_id": "spec_0b9ff7193ec94bc1891be3b63b76b1bf",
+      "task_spec_version": 1,
+      "base_commit": "c0eca3a1137c62190990bcd56ba95930866b941b",
+      "goal": "为普通会员增加九五折并补充对应测试\n本任务只负责写范围：calculator.py；可以读取授权仓库证据，但不得修改其他路径。",
+      "acceptance_criteria": [
+        "MEMBER 返回九五折",
+        "VIP 行为不变",
+        "新增测试通过"
+      ],
+      "required_modalities": [
+        "text"
+      ],
+      "model_routing": {
+        "decision_id": "spec_5f1195471cc9454db5d6c5c908e49a8a",
+        "requirement_id": "spec_39977e4db843d18abde7bb89",
+        "requirement_version": 1,
+        "selected_model_key": "deepseek:deepseek-v4-pro",
+        "selected_availability": "available",
+        "selected_snapshot": null,
+        "reason": "模型 qianwen:qwen3.7-plus 执行失败（invalid_model_output），按已记录回退链切换到 deepseek:deepseek-v4-pro",
+        "fallback_model_keys": [
+          "doubao:doubao-seed-evolving"
+        ],
+        "rejected_candidates": [
+          {
+            "model_key": "deepseek:deepseek-v4-flash",
+            "reasons": [
+              "能力档位低于任务所需 medium"
+            ]
+          },
+          {
+            "model_key": "doubao:doubao-seed-2-0-mini-260428",
+            "reasons": [
+              "能力档位低于任务所需 medium"
+            ]
+          },
+          {
+            "model_key": "qianwen:qwen3.7-flash",
+            "reasons": [
+              "能力档位低于任务所需 medium"
+            ]
+          },
+          {
+            "model_key": "doubao:doubao-seed-2-1-turbo-260628",
+            "reasons": [
+              "本次调用失败：model_unavailable"
+            ]
+          },
+          {
+            "model_key": "qianwen:qwen3.7-plus",
+            "reasons": [
+              "本次调用失败：invalid_model_output"
+            ]
+          }
+        ],
+        "capability_snapshot_at": "2026-08-14T11:32:11.125817Z",
+        "version": 3
+      },
+      "tool_names": [
+        "file.read",
+        "file.search",
+        "file.write"
+      ],
+      "allowed_commands": [],
+      "read_scope": [
+        "calculator.py",
+        "pyproject.toml",
+        "tests/test_calculator.py"
+      ],
+      "write_scope": [
+        "calculator.py"
+      ],
+      "context_artifact_ids": [
+        "artifact_8548fbbdcade4f5899a7ee88f7b64fb0"
+      ],
+      "input_artifact_ids": [],
+      "runtime_limits": {
+        "max_steps": 32,
+        "max_input_tokens": 1000000,
+        "max_output_tokens": 16384,
+        "max_tool_calls": 32,
+        "timeout_seconds": 900
+      },
+      "output_schema": "TaskResult",
+      "version": 3
+    },
+    {
+      "spec_id": "spec_ac78500a91344016a7e8c0ec18393742",
+      "run_id": "run_a7f139f404cc4c4798fea9b0ed78e8a8",
+      "agent_id": "agent_f1e802647d0a46c083b61bf9331d2da0",
+      "task_id": "task_ab1c5704f40a4be28fb789f4bf4180b2",
+      "task_spec_id": "spec_08e9afb9b9d9408ca436956b90a1d5e9",
+      "task_spec_version": 1,
+      "base_commit": "c0eca3a1137c62190990bcd56ba95930866b941b",
+      "goal": "为普通会员增加九五折并补充对应测试\n本任务只负责写范围：tests/test_calculator.py；可以读取授权仓库证据，但不得修改其他路径。",
+      "acceptance_criteria": [
+        "MEMBER 返回九五折",
+        "VIP 行为不变",
+        "新增测试通过"
+      ],
+      "required_modalities": [
+        "text"
+      ],
+      "model_routing": {
+        "decision_id": "spec_11904941d79148d5b02d5b3df2bf8a7c",
+        "requirement_id": "spec_eba50ec5c76f504dd3da24cd",
+        "requirement_version": 1,
+        "selected_model_key": "doubao:doubao-seed-2-1-turbo-260628",
+        "selected_availability": "available",
+        "selected_snapshot": null,
+        "reason": "任务难度为 medium，选择满足全部硬约束的 medium 档最高优先级模型",
+        "fallback_model_keys": [
+          "qianwen:qwen3.7-plus",
+          "deepseek:deepseek-v4-pro",
+          "doubao:doubao-seed-evolving"
+        ],
+        "rejected_candidates": [
+          {
+            "model_key": "deepseek:deepseek-v4-flash",
+            "reasons": [
+              "能力档位低于任务所需 medium"
+            ]
+          },
+          {
+            "model_key": "doubao:doubao-seed-2-0-mini-260428",
+            "reasons": [
+              "能力档位低于任务所需 medium"
+            ]
+          },
+          {
+            "model_key": "qianwen:qwen3.7-flash",
+            "reasons": [
+              "能力档位低于任务所需 medium"
+            ]
+          }
+        ],
+        "capability_snapshot_at": "2026-08-14T11:32:11.125817Z",
+        "version": 1
+      },
+      "tool_names": [
+        "file.read",
+        "file.search",
+        "file.write"
+      ],
+      "allowed_commands": [],
+      "read_scope": [
+        "calculator.py",
+        "pyproject.toml",
+        "tests/test_calculator.py"
+      ],
+      "write_scope": [
+        "tests/test_calculator.py"
+      ],
+      "context_artifact_ids": [
+        "artifact_8548fbbdcade4f5899a7ee88f7b64fb0"
+      ],
+      "input_artifact_ids": [],
+      "runtime_limits": {
+        "max_steps": 32,
+        "max_input_tokens": 1000000,
+        "max_output_tokens": 16384,
+        "max_tool_calls": 32,
+        "timeout_seconds": 900
+      },
+      "output_schema": "TaskResult",
+      "version": 1
+    },
+    {
+      "spec_id": "spec_2b25136c9bc5428f8751dd7482acff5c",
+      "run_id": "run_a7f139f404cc4c4798fea9b0ed78e8a8",
+      "agent_id": "agent_a7ffb52768bb464fae5695af13536b19",
+      "task_id": "task_ab1c5704f40a4be28fb789f4bf4180b2",
+      "task_spec_id": "spec_08e9afb9b9d9408ca436956b90a1d5e9",
+      "task_spec_version": 1,
+      "base_commit": "c0eca3a1137c62190990bcd56ba95930866b941b",
+      "goal": "为普通会员增加九五折并补充对应测试\n本任务只负责写范围：tests/test_calculator.py；可以读取授权仓库证据，但不得修改其他路径。",
+      "acceptance_criteria": [
+        "MEMBER 返回九五折",
+        "VIP 行为不变",
+        "新增测试通过"
+      ],
+      "required_modalities": [
+        "text"
+      ],
+      "model_routing": {
+        "decision_id": "spec_e526fc06ea524bac8c79e157cd74d87d",
+        "requirement_id": "spec_eba50ec5c76f504dd3da24cd",
+        "requirement_version": 1,
+        "selected_model_key": "qianwen:qwen3.7-plus",
+        "selected_availability": "available",
+        "selected_snapshot": null,
+        "reason": "模型 doubao:doubao-seed-2-1-turbo-260628 执行失败（model_unavailable），按已记录回退链切换到 qianwen:qwen3.7-plus",
+        "fallback_model_keys": [
+          "deepseek:deepseek-v4-pro",
+          "doubao:doubao-seed-evolving"
+        ],
+        "rejected_candidates": [
+          {
+            "model_key": "deepseek:deepseek-v4-flash",
+            "reasons": [
+              "能力档位低于任务所需 medium"
+            ]
+          },
+          {
+            "model_key": "doubao:doubao-seed-2-0-mini-260428",
+            "reasons": [
+              "能力档位低于任务所需 medium"
+            ]
+          },
+          {
+            "model_key": "qianwen:qwen3.7-flash",
+            "reasons": [
+              "能力档位低于任务所需 medium"
+            ]
+          },
+          {
+            "model_key": "doubao:doubao-seed-2-1-turbo-260628",
+            "reasons": [
+              "本次调用失败：model_unavailable"
+            ]
+          }
+        ],
+        "capability_snapshot_at": "2026-08-14T11:32:11.125817Z",
+        "version": 2
+      },
+      "tool_names": [
+        "file.read",
+        "file.search",
+        "file.write"
+      ],
+      "allowed_commands": [],
+      "read_scope": [
+        "calculator.py",
+        "pyproject.toml",
+        "tests/test_calculator.py"
+      ],
+      "write_scope": [
+        "tests/test_calculator.py"
+      ],
+      "context_artifact_ids": [
+        "artifact_8548fbbdcade4f5899a7ee88f7b64fb0"
+      ],
+      "input_artifact_ids": [],
+      "runtime_limits": {
+        "max_steps": 32,
+        "max_input_tokens": 1000000,
+        "max_output_tokens": 16384,
+        "max_tool_calls": 32,
+        "timeout_seconds": 900
+      },
+      "output_schema": "TaskResult",
+      "version": 2
+    },
+    {
+      "spec_id": "spec_aebc62e495f74fbd864389b681bb31ad",
+      "run_id": "run_a7f139f404cc4c4798fea9b0ed78e8a8",
+      "agent_id": "agent_371aff2d24e24a4d8225175299bbfdab",
+      "task_id": "task_ab1c5704f40a4be28fb789f4bf4180b2",
+      "task_spec_id": "spec_08e9afb9b9d9408ca436956b90a1d5e9",
+      "task_spec_version": 1,
+      "base_commit": "c0eca3a1137c62190990bcd56ba95930866b941b",
+      "goal": "为普通会员增加九五折并补充对应测试\n本任务只负责写范围：tests/test_calculator.py；可以读取授权仓库证据，但不得修改其他路径。",
+      "acceptance_criteria": [
+        "MEMBER 返回九五折",
+        "VIP 行为不变",
+        "新增测试通过"
+      ],
+      "required_modalities": [
+        "text"
+      ],
+      "model_routing": {
+        "decision_id": "spec_8ea22aa42fac44aaad297f87a9de3f67",
+        "requirement_id": "spec_eba50ec5c76f504dd3da24cd",
+        "requirement_version": 1,
+        "selected_model_key": "deepseek:deepseek-v4-pro",
+        "selected_availability": "available",
+        "selected_snapshot": null,
+        "reason": "模型 qianwen:qwen3.7-plus 执行失败（invalid_model_output），按已记录回退链切换到 deepseek:deepseek-v4-pro",
+        "fallback_model_keys": [
+          "doubao:doubao-seed-evolving"
+        ],
+        "rejected_candidates": [
+          {
+            "model_key": "deepseek:deepseek-v4-flash",
+            "reasons": [
+              "能力档位低于任务所需 medium"
+            ]
+          },
+          {
+            "model_key": "doubao:doubao-seed-2-0-mini-260428",
+            "reasons": [
+              "能力档位低于任务所需 medium"
+            ]
+          },
+          {
+            "model_key": "qianwen:qwen3.7-flash",
+            "reasons": [
+              "能力档位低于任务所需 medium"
+            ]
+          },
+          {
+            "model_key": "doubao:doubao-seed-2-1-turbo-260628",
+            "reasons": [
+              "本次调用失败：model_unavailable"
+            ]
+          },
+          {
+            "model_key": "qianwen:qwen3.7-plus",
+            "reasons": [
+              "本次调用失败：invalid_model_output"
+            ]
+          }
+        ],
+        "capability_snapshot_at": "2026-08-14T11:32:11.125817Z",
+        "version": 3
+      },
+      "tool_names": [
+        "file.read",
+        "file.search",
+        "file.write"
+      ],
+      "allowed_commands": [],
+      "read_scope": [
+        "calculator.py",
+        "pyproject.toml",
+        "tests/test_calculator.py"
+      ],
+      "write_scope": [
+        "tests/test_calculator.py"
+      ],
+      "context_artifact_ids": [
+        "artifact_8548fbbdcade4f5899a7ee88f7b64fb0"
+      ],
+      "input_artifact_ids": [],
+      "runtime_limits": {
+        "max_steps": 32,
+        "max_input_tokens": 1000000,
+        "max_output_tokens": 16384,
+        "max_tool_calls": 32,
+        "timeout_seconds": 900
+      },
+      "output_schema": "TaskResult",
+      "version": 3
+    }
+  ],
+  "active_leases": [],
+  "allocation_decisions": [
+    {
+      "allocation_id": "spec_1c4853059d16400191c415e77edf6ca2",
+      "run_id": "run_a7f139f404cc4c4798fea9b0ed78e8a8",
+      "graph_version": 2,
+      "ready_task_ids": [
+        "task_76f4ba06bac64a72ac61eec51c0d3aa4"
+      ],
+      "selected_task_ids": [
+        "task_76f4ba06bac64a72ac61eec51c0d3aa4"
+      ],
+      "available_slots": 6,
+      "reason": "实例数由就绪任务、并发槽位和写集合独立性共同决定"
+    },
+    {
+      "allocation_id": "spec_dc7dc96344154623bd0fcd7864464bc8",
+      "run_id": "run_a7f139f404cc4c4798fea9b0ed78e8a8",
+      "graph_version": 14,
+      "ready_task_ids": [
+        "task_ab1c5704f40a4be28fb789f4bf4180b2"
+      ],
+      "selected_task_ids": [
+        "task_ab1c5704f40a4be28fb789f4bf4180b2"
+      ],
+      "available_slots": 6,
+      "reason": "实例数由就绪任务、并发槽位和写集合独立性共同决定"
+    }
+  ],
+  "result_summaries": [
+    {
+      "task_id": "task_76f4ba06bac64a72ac61eec51c0d3aa4",
+      "agent_id": "agent_f749549afaee4bffb3e31066034e8b85",
+      "execution_spec_id": "spec_cfe057d173444b02818878fc57979c1c",
+      "status": "succeeded",
+      "summary": "已在 calculator.py 中为 MEMBER 类型增加 95 折返回逻辑：VIP 仍返回 90%，MEMBER 返回 95%，其他类型保持原价。现有测试文件未修改。",
+      "artifacts": [
+        {
+          "artifact_id": "artifact_aa87d02ff2b44a6fbb4814ea5949537b",
+          "kind": "patch",
+          "media_type": "text/x-diff",
+          "size_bytes": 266,
+          "sha256": "6f29773e640f8206a8688198949a8bd3b20ecf625635a47cf1aecfc95001c678"
+        }
+      ],
+      "suggestions": []
+    },
+    {
+      "task_id": "task_ab1c5704f40a4be28fb789f4bf4180b2",
+      "agent_id": "agent_371aff2d24e24a4d8225175299bbfdab",
+      "execution_spec_id": "spec_aebc62e495f74fbd864389b681bb31ad",
+      "status": "succeeded",
+      "summary": "已在 tests/test_calculator.py 新增 test_member_discount，断言 calculate_discount(100, \"MEMBER\") == 95，并保留原 VIP 折扣测试不变。",
+      "artifacts": [
+        {
+          "artifact_id": "artifact_79c0f8f6352746ef95425d88b50abbb4",
+          "kind": "patch",
+          "media_type": "text/x-diff",
+          "size_bytes": 256,
+          "sha256": "8a5357fc65a378f8435c8ae446dd2fe67710ac4d8ec947ed7f87e6f0e92666e4"
+        }
+      ],
+      "suggestions": []
+    }
+  ],
+  "processed_decisions": [],
+  "progress_state": null,
+  "decision_count": 0,
+  "acceptance_satisfied": false,
+  "finished": false,
+  "finish_summary": null
+}

@@ -1,11 +1,17 @@
 """Evidence-backed task count, modality, and dependency planning without fixed roles."""
 
 from dataclasses import dataclass
+from typing import Protocol
 
 from evoweave.application.configuration import EvoWeaveConfig
 from evoweave.domain.enums import InputModality, RiskLevel, TaskDifficulty
 from evoweave.domain.identifiers import SpecId, TaskId
-from evoweave.domain.repository_models import RepositoryFile, RepositoryProfile
+from evoweave.domain.repository_models import (
+    RepositoryFile,
+    RepositoryProfile,
+    RepositoryTaskAssessment,
+    difficulty_rank,
+)
 from evoweave.domain.run_models import RunManifest
 from evoweave.domain.task_spec import TaskSpec
 from evoweave.domain.validation import path_is_within_scopes
@@ -24,6 +30,19 @@ _VISUAL_PATH_MARKERS = (
     "ui",
 )
 _VISUAL_SUFFIXES = (".css", ".html", ".jsx", ".scss", ".svelte", ".tsx", ".vue")
+_VISUAL_OBJECTIVE_TERMS = ("ui", "原型", "图片", "图像", "截图", "架构图", "界面", "视觉")
+_IMAGE_NEGATIVE_TERMS = ("与任务无关", "不需要读图", "忽略图片", "无需图片", "无关图片")
+_HIGH_COMPLEXITY_TERMS = (
+    "架构",
+    "数据流",
+    "冲突",
+    "迁移",
+    "并发",
+    "权限",
+    "安全",
+    "支付",
+    "已有失败",
+)
 
 
 @dataclass(frozen=True, slots=True)
@@ -34,6 +53,14 @@ class AdaptiveTaskPlan:
     @property
     def agent_count(self) -> int:
         return len(self.task_specs)
+
+
+class TaskPlanner(Protocol):
+    def plan(
+        self,
+        manifest: RunManifest,
+        profile: RepositoryProfile,
+    ) -> AdaptiveTaskPlan: ...
 
 
 class AdaptiveTaskPlanner:
@@ -53,7 +80,18 @@ class AdaptiveTaskPlanner:
             split_directory_lines=self._config.split_directory_lines,
         )
         task_ids = tuple(TaskId.new() for _ in groups)
-        visual_groups = _visual_group_indexes(groups, bool(change.input_artifacts))
+        visual_groups = _visual_group_indexes(
+            groups,
+            bool(change.input_artifacts),
+            change.objective,
+        )
+        difficulty_floor, floor_reasons = _task_structure_difficulty_floor(
+            objective=change.objective,
+            acceptance_criteria=change.acceptance_criteria,
+            allowed_paths=change.allowed_paths,
+            groups=groups,
+            files=profile.files,
+        )
         readable_paths = tuple(item.path for item in profile.files if item.line_count > 0)
         context_artifacts = (
             (manifest.repository_profile_artifact_id,)
@@ -83,6 +121,11 @@ class AdaptiveTaskPlanner:
                 task_id=task_id,
                 impact=impact,
                 required_modalities=modalities,
+            )
+            assessment = _apply_difficulty_floor(
+                assessment,
+                minimum=difficulty_floor,
+                reasons=floor_reasons,
             )
             read_scope = tuple(dict.fromkeys((*readable_paths, *write_scope)))
             specs.append(
@@ -123,6 +166,75 @@ class AdaptiveTaskPlanner:
             f"其中 {len(visual_groups)} 个任务接收图片。"
         )
         return AdaptiveTaskPlan(task_specs=planned, rationale=rationale)
+
+
+def _task_structure_difficulty_floor(
+    *,
+    objective: str,
+    acceptance_criteria: tuple[str, ...],
+    allowed_paths: tuple[str, ...],
+    groups: tuple[tuple[str, ...], ...],
+    files: tuple[RepositoryFile, ...],
+) -> tuple[TaskDifficulty, tuple[str, ...]]:
+    reasons: list[str] = []
+    minimum = TaskDifficulty.LOW
+    if len(groups) >= 2:
+        minimum = TaskDifficulty.MEDIUM
+        reasons.append("任务需要协调多个独立写范围")
+    broad_scopes = tuple(scope for scope in allowed_paths if _is_broad_scope(scope, files))
+    if broad_scopes:
+        minimum = TaskDifficulty.HIGH
+        reasons.append("用户授权的是目录或宽泛范围：" + "、".join(broad_scopes))
+    text = "\n".join((objective, *acceptance_criteria)).casefold()
+    matched_terms = tuple(term for term in _HIGH_COMPLEXITY_TERMS if term in text)
+    if matched_terms:
+        minimum = TaskDifficulty.HIGH
+        reasons.append("需求包含高复杂度语义：" + "、".join(matched_terms))
+    return minimum, tuple(reasons)
+
+
+def _is_broad_scope(scope: str, files: tuple[RepositoryFile, ...]) -> bool:
+    if any(item.path == scope for item in files):
+        return False
+    descendants = tuple(item for item in files if path_is_within_scopes(item.path, (scope,)))
+    leaf = scope.rsplit("/", 1)[-1]
+    return len(descendants) >= 2 or "." not in leaf
+
+
+def _apply_difficulty_floor(
+    assessment: RepositoryTaskAssessment,
+    *,
+    minimum: TaskDifficulty,
+    reasons: tuple[str, ...],
+) -> RepositoryTaskAssessment:
+    current = assessment.difficulty.difficulty
+    if difficulty_rank(current) >= difficulty_rank(minimum):
+        return assessment
+    context_tokens = {
+        TaskDifficulty.LOW: 8_000,
+        TaskDifficulty.MEDIUM: 32_000,
+        TaskDifficulty.HIGH: 64_000,
+    }[minimum]
+    output_tokens = {
+        TaskDifficulty.LOW: 2_000,
+        TaskDifficulty.MEDIUM: 4_000,
+        TaskDifficulty.HIGH: 8_000,
+    }[minimum]
+    rationale = assessment.difficulty.rationale + "；结构性难度下限：" + "；".join(reasons)
+    difficulty = assessment.difficulty.model_copy(
+        update={"difficulty": minimum, "rationale": rationale}
+    )
+    requirement = assessment.model_requirement.model_copy(
+        update={
+            "difficulty": minimum,
+            "min_context_tokens": context_tokens,
+            "min_output_tokens": output_tokens,
+            "requires_thinking": minimum is TaskDifficulty.HIGH,
+        }
+    )
+    return assessment.model_copy(
+        update={"difficulty": difficulty, "model_requirement": requirement}
+    )
 
 
 def _write_groups(
@@ -172,15 +284,23 @@ def _write_groups(
 def _visual_group_indexes(
     groups: tuple[tuple[str, ...], ...],
     has_images: bool,
+    objective: str,
 ) -> frozenset[int]:
     if not has_images:
+        return frozenset()
+    folded_objective = objective.casefold()
+    if any(term in folded_objective for term in _IMAGE_NEGATIVE_TERMS):
         return frozenset()
     matched = {
         index
         for index, scopes in enumerate(groups)
         if any(_is_visual_path(scope) for scope in scopes)
     }
-    return frozenset(matched or {0})
+    if matched:
+        return frozenset(matched)
+    if any(term in folded_objective for term in _VISUAL_OBJECTIVE_TERMS):
+        return frozenset({0})
+    return frozenset()
 
 
 def _is_visual_path(path: str) -> bool:

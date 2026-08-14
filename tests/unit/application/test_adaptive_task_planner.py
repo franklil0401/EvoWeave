@@ -88,6 +88,35 @@ def test_planner_marks_security_or_payment_change_as_high_risk(
     assert plan.task_specs[0].risk_level is RiskLevel.HIGH
 
 
+def test_planner_does_not_expose_an_explicitly_irrelevant_image(
+    committed_repository: Callable[[str], Path],
+) -> None:
+    manifest, profile, config = _analyzed(
+        committed_repository,
+        objective="让价格匹配忽略大小写；附图与代码任务无关",
+        allowed_paths=("src/shop/pricing.py",),
+    )
+    image = InputArtifactRef(
+        artifact_id=ArtifactId.new(),
+        kind=ArtifactKind.INPUT_IMAGE,
+        media_type="image/png",
+        size_bytes=3,
+        sha256="b" * 64,
+        storage_key="sha256/bb/example",
+        source=ArtifactSource.CONTROLLED_INGESTION,
+        security_status=ArtifactSecurityStatus.ACCEPTED,
+        width_px=1,
+        height_px=1,
+    )
+    change = manifest.change_spec.model_copy(update={"input_artifacts": (image,)})
+    manifest = manifest.model_copy(update={"change_spec": change})
+
+    plan = AdaptiveTaskPlanner(config).plan(manifest, profile)
+
+    assert all(InputModality.IMAGE not in item.required_modalities for item in plan.task_specs)
+    assert all(not item.input_artifact_ids for item in plan.task_specs)
+
+
 def _analyzed(
     committed_repository: Callable[[str], Path],
     *,

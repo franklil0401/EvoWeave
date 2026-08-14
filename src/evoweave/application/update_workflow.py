@@ -6,7 +6,11 @@ from dataclasses import dataclass
 
 from evoweave.agent_runtime.context_builder import ContextBuilder
 from evoweave.agent_runtime.runtime import WorkerRuntime
-from evoweave.application.adaptive_task_planner import AdaptiveTaskPlan, AdaptiveTaskPlanner
+from evoweave.application.adaptive_task_planner import (
+    AdaptiveTaskPlan,
+    AdaptiveTaskPlanner,
+    TaskPlanner,
+)
 from evoweave.application.configuration import EvoWeaveConfig
 from evoweave.application.run_state import JsonRunStateStore
 from evoweave.application.runtime_layout import RuntimeLayout
@@ -28,6 +32,7 @@ from evoweave.domain.identifiers import AgentId, SpecId, WorkspaceId
 from evoweave.domain.integration_models import (
     IntegratedPatchSet,
     IntegrationWorkspaceState,
+    ValidationCommand,
     ValidationReport,
 )
 from evoweave.domain.model_routing import (
@@ -35,7 +40,8 @@ from evoweave.domain.model_routing import (
     ModelProfile,
     ModelRoutingDecision,
 )
-from evoweave.domain.ports import ArtifactStore, CommandRunner, ModelGateway
+from evoweave.domain.policies import GraphPolicy
+from evoweave.domain.ports import ArtifactStore, CommandRunner, ModelGateway, ModelRouter
 from evoweave.domain.repository_models import RepositoryProfile
 from evoweave.domain.resources import RuntimeLimits
 from evoweave.domain.run_models import RunManifest
@@ -93,8 +99,9 @@ def prepare_task_plan(
     manifest: RunManifest,
     profile: RepositoryProfile,
     approve_high_risk: bool,
+    task_planner: TaskPlanner | None = None,
 ) -> AdaptiveTaskPlan:
-    plan = AdaptiveTaskPlanner(config).plan(manifest, profile)
+    plan = (task_planner or AdaptiveTaskPlanner(config)).plan(manifest, profile)
     high_risk_tasks = tuple(item for item in plan.task_specs if item.risk_level is RiskLevel.HIGH)
     if high_risk_tasks and not approve_high_risk:
         if manifest.status is not RunStatus.WAITING_FOR_INPUT:
@@ -122,6 +129,9 @@ class SingleTaskUpdateWorkflow:
         model_profiles: tuple[ModelProfile, ...],
         validation_runner_factory: ValidationRunnerFactory,
         approve_high_risk: bool = False,
+        task_planner: TaskPlanner | None = None,
+        model_router: ModelRouter | None = None,
+        additional_validation_commands: tuple[ValidationCommand, ...] = (),
     ) -> None:
         self._config = config
         self._layout = layout
@@ -131,6 +141,9 @@ class SingleTaskUpdateWorkflow:
         self._model_profiles = model_profiles
         self._validation_runner_factory = validation_runner_factory
         self._approve_high_risk = approve_high_risk
+        self._task_planner = task_planner
+        self._model_router = model_router
+        self._additional_validation_commands = additional_validation_commands
 
     def execute(
         self,
@@ -150,6 +163,7 @@ class SingleTaskUpdateWorkflow:
             manifest=manifest,
             profile=profile,
             approve_high_risk=self._approve_high_risk,
+            task_planner=self._task_planner,
         )
         manifest = self._run_store.transition(
             manifest.run_id,
@@ -178,20 +192,24 @@ class SingleTaskUpdateWorkflow:
             orchestration_store = SQLiteOrchestrationStore(
                 SQLiteDatabase(self._layout.orchestration_database)
             )
+            graph_policy = GraphPolicy()
             orchestrator = Orchestrator(
                 graph=TaskGraph.create(
                     run_id=manifest.run_id,
                     task_specs=task_plan.task_specs,
+                    policy=graph_policy,
                 ),
                 graph_store=orchestration_store,
                 decision_ledger=orchestration_store,
                 checkpoint_manager=CheckpointManager(orchestration_store),
+                policy=graph_policy,
             )
-            scheduler = Scheduler()
+            scheduler = Scheduler(graph_policy)
             agent_factory = AgentFactory(
-                model_router=RuleBasedModelRouter(),
+                model_router=self._model_router or RuleBasedModelRouter(),
                 model_profiles=self._model_profiles,
             )
+            task_spec_by_id = {item.task_id: item for item in task_plan.task_specs}
             runtime = WorkerRuntime(
                 model_gateway=self._model_gateway,
                 tool_executor=ToolExecutor(CapabilityRegistry(default_capabilities())),
@@ -208,8 +226,12 @@ class SingleTaskUpdateWorkflow:
                 batch = orchestrator.dispatch(
                     scheduler=scheduler,
                     agent_factory=agent_factory,
-                    capability_plan_for=lambda _task_id: CapabilityPlan(
-                        tool_names=("file.read", "file.search", "file.write"),
+                    capability_plan_for=lambda task_id: CapabilityPlan(
+                        tool_names=(
+                            ("file.read", "file.search", "file.write")
+                            if task_spec_by_id[task_id].write_scope
+                            else ("file.read", "file.search")
+                        ),
                         runtime_limits=RuntimeLimits(
                             max_steps=self._config.max_worker_steps,
                             max_tool_calls=self._config.max_worker_tool_calls,
@@ -245,6 +267,7 @@ class SingleTaskUpdateWorkflow:
                             current_execution,
                             result,
                             self._model_profiles,
+                            max_attempts=graph_policy.max_attempts_per_task,
                         )
                         if fallback is not None:
                             current_execution = orchestrator.reroute_execution(
@@ -263,19 +286,21 @@ class SingleTaskUpdateWorkflow:
                         raise DomainError(
                             failure.code if failure is not None else ErrorCode.INVALID_MODEL_OUTPUT,
                             failure.message if failure is not None else "Worker 未成功完成",
+                            details=failure.details if failure is not None else None,
                         )
                     successful_executions.append(current_execution)
-                    patches.append(
-                        GitPatchCollector(self._artifact_store).collect(
-                            lease=current_worker_lease,
-                            execution_spec=current_execution,
-                            supporting_artifacts=tuple(
-                                artifact
-                                for artifact in result.artifacts
-                                if artifact.kind.value in {"command_log", "test_report"}
-                            ),
+                    if current_execution.write_scope:
+                        patches.append(
+                            GitPatchCollector(self._artifact_store).collect(
+                                lease=current_worker_lease,
+                                execution_spec=current_execution,
+                                supporting_artifacts=tuple(
+                                    artifact
+                                    for artifact in result.artifacts
+                                    if artifact.kind.value in {"command_log", "test_report"}
+                                ),
+                            )
                         )
-                    )
                     completed_tasks += 1
             applier = PatchApplier(integration_manager.worktree_root)
             integration_state = PatchIntegrationService(
@@ -315,9 +340,12 @@ class SingleTaskUpdateWorkflow:
                 and item.path.casefold().endswith(".py")
                 and "__pycache__" not in item.path.casefold().split("/")
             )
-            commands = PythonValidationPlanBuilder().build(
-                local_test_paths=test_paths[:8],
-                impacted_test_paths=test_paths,
+            commands = (
+                *PythonValidationPlanBuilder().build(
+                    local_test_paths=test_paths[:8],
+                    impacted_test_paths=test_paths,
+                ),
+                *self._additional_validation_commands,
             )
             validation_report = DeterministicValidationGate(self._artifact_store).run(
                 state=integration_state,
@@ -384,6 +412,8 @@ def _fallback_decision(
     execution: AgentExecutionSpec,
     result: TaskResult,
     profiles: tuple[ModelProfile, ...],
+    *,
+    max_attempts: int,
 ) -> ModelRoutingDecision | None:
     failure = result.failure
     if result.status is ResultStatus.SUCCEEDED or failure is None:
@@ -393,6 +423,8 @@ def _fallback_decision(
         ErrorCode.MODEL_CAPABILITY_MISMATCH,
         ErrorCode.INVALID_MODEL_OUTPUT,
     }:
+        return None
+    if execution.version >= max_attempts:
         return None
     previous = execution.model_routing
     if not previous.fallback_model_keys:

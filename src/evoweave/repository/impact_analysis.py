@@ -19,7 +19,9 @@ from evoweave.repository.git_inspector import GitInspector
 from evoweave.repository.lexical_search import LexicalSearcher
 
 _TOKEN_PATTERN = re.compile(r"[A-Za-z_][A-Za-z0-9_.-]{2,}|[\u4e00-\u9fff]{2,}")
-_PATH_PATTERN = re.compile(r"(?:[A-Za-z0-9_.-]+/)+[A-Za-z0-9_.-]+")
+_PATH_PATTERN = re.compile(
+    r"(?<![A-Za-z0-9_.-])(?:[A-Za-z0-9_.-]+/)*[A-Za-z0-9_-]+\.[A-Za-z0-9_.-]+"
+)
 _STOP_WORDS = {
     "and",
     "for",

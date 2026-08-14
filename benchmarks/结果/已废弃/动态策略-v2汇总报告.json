@@ -1,0 +1,37 @@
+{
+  "go_no_go": {
+    "evidence_level": null,
+    "reasons": [
+      "尚无任一真实性等级完成 12 个任务 × 3 种 Agent 策略 × 3 种模型策略的完整矩阵"
+    ],
+    "status": "pending"
+  },
+  "metrics": [
+    {
+      "agent_strategy": "adaptive_agent",
+      "average_agent_count": 2.167,
+      "average_duration_ms": 142979.833,
+      "average_tokens": 17398.5,
+      "conflict_rate": 0.0,
+      "difficulty_match_rate": 1.0,
+      "evidence_level": "live_model",
+      "fallback_rate": 0.5,
+      "image_success_rate": 0.0,
+      "initial_route_success_rate": 0.666667,
+      "invalid_task_rate": 0.3125,
+      "localization_recall": 0.917,
+      "model_strategy": "adaptive_model",
+      "orchestrator_context_ratio": 0.038301,
+      "original_image_exposure_rate": 1.0,
+      "patch_efficiency": 1.0,
+      "regression_rate": 0.0,
+      "run_count": 12,
+      "success_rate": 0.333333
+    }
+  ],
+  "record_count": 12,
+  "suite_id": "evoweave_v1",
+  "suite_sha256": "29f7b0219f4d7cd19ee01e5ff6d9907ed3c60429408c5834f05c7fd35b2e6f9f",
+  "suite_version": 2,
+  "task_count": 12
+}

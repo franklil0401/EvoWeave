@@ -13,7 +13,6 @@ from evoweave.capabilities.tool_executor import ToolExecutor
 from evoweave.domain.agent_execution_spec import AgentExecutionSpec
 from evoweave.domain.artifacts import ImageIngestionPolicy
 from evoweave.domain.enums import InputModality, ResultStatus
-from evoweave.domain.errors import ErrorCode
 from evoweave.domain.identifiers import AgentId, ArtifactId, RunId, SpecId, TaskId
 from evoweave.domain.model_routing import ModelRoutingDecision
 from evoweave.domain.ports import ImageInput, ModelResponse
@@ -59,14 +58,14 @@ def _spec(
 
 def _runtime(
     *,
-    response: str,
+    responses: tuple[str, ...],
     task_id: TaskId,
     workspace: FakeWorkspace,
     store: InMemoryArtifactStore,
 ) -> WorkerRuntime:
     return WorkerRuntime(
         model_gateway=ScriptedModelGateway(
-            responses=(ModelResponse(model_key=MODEL_KEY, text=response),)
+            responses=tuple(ModelResponse(model_key=MODEL_KEY, text=item) for item in responses)
         ),
         tool_executor=ToolExecutor(CapabilityRegistry(default_capabilities())),
         context_builder=ContextBuilder(store),
@@ -79,18 +78,31 @@ def _runtime(
 def test_path_traversal_from_model_is_normalized_to_structured_denial() -> None:
     task_id = TaskId.new()
     store = InMemoryArtifactStore()
-    decision = json.dumps(
-        {"action": "tool", "tool_name": "file.read", "arguments": {"path": "src/../secret"}}
+    responses = (
+        json.dumps(
+            {
+                "action": "tool",
+                "tool_name": "file.read",
+                "arguments": {"path": "src/../secret"},
+            }
+        ),
+        json.dumps(
+            {"action": "tool", "tool_name": "file.read", "arguments": {"path": "src/app.py"}}
+        ),
+        json.dumps({"action": "finish", "status": "succeeded", "summary": "已纠正路径"}),
     )
     result = _runtime(
-        response=decision,
+        responses=responses,
         task_id=task_id,
-        workspace=FakeWorkspace(task_id=task_id, read_scope=("src",)),
+        workspace=FakeWorkspace(
+            task_id=task_id,
+            files={"src/app.py": "safe\n"},
+            read_scope=("src",),
+        ),
         store=store,
     ).execute(_spec(task_id, tools=("file.read",)))
-    assert result.status is ResultStatus.FAILED
-    assert result.failure is not None
-    assert result.failure.code is ErrorCode.WORKSPACE_ACCESS_DENIED
+    assert result.status is ResultStatus.SUCCEEDED
+    assert result.failure is None
 
 
 def test_prompt_in_image_metadata_cannot_grant_write_capability() -> None:
@@ -104,12 +116,18 @@ def test_prompt_in_image_metadata_cannot_grant_write_capability() -> None:
         policy=ImageIngestionPolicy(),
     )
     task_id = TaskId.new()
-    decision = json.dumps(
-        {
-            "action": "tool",
-            "tool_name": "file.write",
-            "arguments": {"path": "src/app.py", "content": "compromised"},
-        }
+    responses = (
+        json.dumps(
+            {
+                "action": "tool",
+                "tool_name": "file.write",
+                "arguments": {"path": "src/app.py", "content": "compromised"},
+            }
+        ),
+        json.dumps(
+            {"action": "tool", "tool_name": "file.read", "arguments": {"path": "src/app.py"}}
+        ),
+        json.dumps({"action": "finish", "status": "succeeded", "summary": "保持只读权限"}),
     )
     workspace = FakeWorkspace(
         task_id=task_id,
@@ -118,7 +136,7 @@ def test_prompt_in_image_metadata_cannot_grant_write_capability() -> None:
         write_scope=("src",),
     )
     result = _runtime(
-        response=decision,
+        responses=responses,
         task_id=task_id,
         workspace=workspace,
         store=store,
@@ -130,6 +148,6 @@ def test_prompt_in_image_metadata_cannot_grant_write_capability() -> None:
             modalities=(InputModality.TEXT, InputModality.IMAGE),
         )
     )
-    assert result.failure is not None
-    assert result.failure.code is ErrorCode.CAPABILITY_DENIED
+    assert result.status is ResultStatus.SUCCEEDED
+    assert result.failure is None
     assert workspace.read_text("src/app.py") == "safe\n"

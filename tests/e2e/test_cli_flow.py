@@ -2,7 +2,7 @@ import json
 from collections.abc import Callable
 from pathlib import Path
 
-from evoweave.interfaces.cli import main
+from evoweave.interfaces.cli import build_parser, main
 
 
 def test_cli_analyze_status_resume_and_export_are_cross_process_durable(
@@ -88,3 +88,59 @@ def test_cli_high_risk_preflight_waits_before_docker_or_model_discovery(
     assert main(["status", str(repository), "--json"]) == 0
     status = json.loads(capsys.readouterr().out)
     assert status["data"]["runs"][0]["status"] == "waiting_for_input"
+
+
+def test_cli_benchmark_validates_fixed_suite_and_keeps_empty_results_pending(
+    tmp_path: Path,
+    capsys,
+) -> None:
+    project_root = Path(__file__).parents[2]
+    suite = project_root / "benchmarks/任务集/第一版任务集.json"
+    results = project_root / "benchmarks/结果/结果模板.json"
+
+    assert (
+        main(
+            [
+                "benchmark",
+                "validate",
+                "--project-root",
+                str(project_root),
+                "--suite",
+                str(suite),
+                "--json",
+            ]
+        )
+        == 0
+    )
+    validation = json.loads(capsys.readouterr().out)
+    assert validation["data"]["task_count"] == 12
+
+    assert (
+        main(
+            [
+                "benchmark",
+                "summarize",
+                "--suite",
+                str(suite),
+                "--results",
+                str(results),
+                "--output",
+                str(tmp_path),
+                "--json",
+            ]
+        )
+        == 0
+    )
+    summary = json.loads(capsys.readouterr().out)
+    report = json.loads(Path(summary["data"]["json"]).read_text(encoding="utf-8"))
+    assert summary["data"]["record_count"] == 0
+    assert report["go_no_go"]["status"] == "pending"
+
+
+def test_cli_benchmark_run_defaults_to_one_adaptive_strategy_pair() -> None:
+    arguments = build_parser().parse_args(["benchmark", "run", "--task", "bench-01-single-file"])
+
+    assert arguments.agent_strategy == "adaptive_agent"
+    assert arguments.model_strategy == "adaptive_model"
+    assert arguments.all_strategies is False
+    assert arguments.task == ["bench-01-single-file"]

@@ -20,6 +20,12 @@ def test_requirement_clues_extract_paths_and_symbols_without_duplicates() -> Non
     assert len(clues.terms) == len(set(clues.terms))
 
 
+def test_requirement_clues_extract_root_level_filename() -> None:
+    clues = RequirementClueExtractor().extract("只修改 calculator.py 并保持测试通过")
+
+    assert clues.paths == ("calculator.py",)
+
+
 def test_baseline_runner_keeps_preexisting_failure_identity() -> None:
     command = ValidationCommand(
         command_id="pytest",

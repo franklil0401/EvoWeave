@@ -1,0 +1,402 @@
+{
+  "run_id": "run_23e104503af44b0dae4c2960d757fee4",
+  "version": 5,
+  "graph": {
+    "graph_id": "graph_da6b866956014dada74e309880f9db91",
+    "run_id": "run_23e104503af44b0dae4c2960d757fee4",
+    "version": 13,
+    "nodes": [
+      {
+        "task_id": "task_daaaa47afdd44e1e9528acf9c7a1363a",
+        "task_spec_version": 1,
+        "status": "failed",
+        "attempts": 3
+      }
+    ],
+    "edges": [],
+    "created_at": "2026-08-14T11:54:01.430437Z"
+  },
+  "task_specs": [
+    {
+      "spec_id": "spec_3183ae261ebc4af7b48458393eb9d6dc",
+      "task_id": "task_daaaa47afdd44e1e9528acf9c7a1363a",
+      "change_spec_id": "spec_4fb6d39fd12645c4b596fb2e33afdc43",
+      "goal": "为支付折扣增加 authorized 关键字权限参数和安全校验，未授权时拒绝计算\n本任务只负责写范围：calculator.py；可以读取授权仓库证据，但不得修改其他路径。",
+      "base_commit": "c0eca3a1137c62190990bcd56ba95930866b941b",
+      "acceptance_criteria": [
+        "未授权调用抛出 PermissionError",
+        "authorized=True 时 VIP 仍为九折",
+        "批准后仍受路径与测试门禁"
+      ],
+      "depends_on": [],
+      "input_artifact_ids": [],
+      "context_artifact_ids": [
+        "artifact_927de653222e4f6686d12a525e114571"
+      ],
+      "read_scope": [
+        "calculator.py",
+        "pyproject.toml",
+        "tests/test_calculator.py"
+      ],
+      "write_scope": [
+        "calculator.py"
+      ],
+      "required_modalities": [
+        "text"
+      ],
+      "difficulty": {
+        "difficulty": "high",
+        "rationale": "仓库证据规则评分 4；包含风险信号：安全、支付、权限控制、身份认证；结构性难度下限：需求包含高复杂度语义：权限、安全、支付",
+        "evidence_ids": [
+          "evidence_5e6da827a16c6b423fde3344",
+          "evidence_8e1c5ebecce8d4fff0fa86c1",
+          "evidence_6bb23b8852e46c002e886135",
+          "evidence_7563da8de0ecca0489827be1",
+          "evidence_e600be3260adccdf676eea32"
+        ],
+        "version": 1
+      },
+      "model_requirement": {
+        "requirement_id": "spec_ecdaae88fc973224160226da",
+        "task_id": "task_daaaa47afdd44e1e9528acf9c7a1363a",
+        "difficulty": "high",
+        "required_modalities": [
+          "text"
+        ],
+        "min_context_tokens": 64000,
+        "min_output_tokens": 8000,
+        "requires_tool_calling": true,
+        "requires_structured_output": true,
+        "requires_thinking": true,
+        "version": 1
+      },
+      "risk_level": "high",
+      "version": 1
+    }
+  ],
+  "execution_specs": [
+    {
+      "spec_id": "spec_35e82b2c450246338b6802cf2d625270",
+      "run_id": "run_23e104503af44b0dae4c2960d757fee4",
+      "agent_id": "agent_5179acab572448b695ad05fbff35bd05",
+      "task_id": "task_daaaa47afdd44e1e9528acf9c7a1363a",
+      "task_spec_id": "spec_3183ae261ebc4af7b48458393eb9d6dc",
+      "task_spec_version": 1,
+      "base_commit": "c0eca3a1137c62190990bcd56ba95930866b941b",
+      "goal": "为支付折扣增加 authorized 关键字权限参数和安全校验，未授权时拒绝计算\n本任务只负责写范围：calculator.py；可以读取授权仓库证据，但不得修改其他路径。",
+      "acceptance_criteria": [
+        "未授权调用抛出 PermissionError",
+        "authorized=True 时 VIP 仍为九折",
+        "批准后仍受路径与测试门禁"
+      ],
+      "required_modalities": [
+        "text"
+      ],
+      "model_routing": {
+        "decision_id": "spec_3f4cbbad4f4e4a7a886e0c62693e434c",
+        "requirement_id": "spec_ecdaae88fc973224160226da",
+        "requirement_version": 1,
+        "selected_model_key": "deepseek:deepseek-v4-pro",
+        "selected_availability": "available",
+        "selected_snapshot": null,
+        "reason": "任务难度为 high，选择满足全部硬约束的 high 档最高优先级模型",
+        "fallback_model_keys": [
+          "doubao:doubao-seed-evolving",
+          "qianwen:qwen3.8-max"
+        ],
+        "rejected_candidates": [
+          {
+            "model_key": "deepseek:deepseek-v4-flash",
+            "reasons": [
+              "能力档位低于任务所需 high"
+            ]
+          },
+          {
+            "model_key": "doubao:doubao-seed-2-0-mini-260428",
+            "reasons": [
+              "能力档位低于任务所需 high"
+            ]
+          },
+          {
+            "model_key": "doubao:doubao-seed-2-1-turbo-260628",
+            "reasons": [
+              "能力档位低于任务所需 high"
+            ]
+          },
+          {
+            "model_key": "qianwen:qwen3.7-flash",
+            "reasons": [
+              "能力档位低于任务所需 high"
+            ]
+          },
+          {
+            "model_key": "qianwen:qwen3.7-plus",
+            "reasons": [
+              "能力档位低于任务所需 high"
+            ]
+          }
+        ],
+        "capability_snapshot_at": "2026-08-14T11:32:11.125817Z",
+        "version": 1
+      },
+      "tool_names": [
+        "file.read",
+        "file.search",
+        "file.write"
+      ],
+      "allowed_commands": [],
+      "read_scope": [
+        "calculator.py",
+        "pyproject.toml",
+        "tests/test_calculator.py"
+      ],
+      "write_scope": [
+        "calculator.py"
+      ],
+      "context_artifact_ids": [
+        "artifact_927de653222e4f6686d12a525e114571"
+      ],
+      "input_artifact_ids": [],
+      "runtime_limits": {
+        "max_steps": 32,
+        "max_input_tokens": 1000000,
+        "max_output_tokens": 16384,
+        "max_tool_calls": 32,
+        "timeout_seconds": 900
+      },
+      "output_schema": "TaskResult",
+      "version": 1
+    },
+    {
+      "spec_id": "spec_0c5f48a6c9754e709c1aa88a42747a19",
+      "run_id": "run_23e104503af44b0dae4c2960d757fee4",
+      "agent_id": "agent_5e45d90c5fb74264ae5b50025cf38e38",
+      "task_id": "task_daaaa47afdd44e1e9528acf9c7a1363a",
+      "task_spec_id": "spec_3183ae261ebc4af7b48458393eb9d6dc",
+      "task_spec_version": 1,
+      "base_commit": "c0eca3a1137c62190990bcd56ba95930866b941b",
+      "goal": "为支付折扣增加 authorized 关键字权限参数和安全校验，未授权时拒绝计算\n本任务只负责写范围：calculator.py；可以读取授权仓库证据，但不得修改其他路径。",
+      "acceptance_criteria": [
+        "未授权调用抛出 PermissionError",
+        "authorized=True 时 VIP 仍为九折",
+        "批准后仍受路径与测试门禁"
+      ],
+      "required_modalities": [
+        "text"
+      ],
+      "model_routing": {
+        "decision_id": "spec_4794c3c3cd064158a8508bb864ceaf99",
+        "requirement_id": "spec_ecdaae88fc973224160226da",
+        "requirement_version": 1,
+        "selected_model_key": "doubao:doubao-seed-evolving",
+        "selected_availability": "available",
+        "selected_snapshot": null,
+        "reason": "模型 deepseek:deepseek-v4-pro 执行失败（invalid_model_output），按已记录回退链切换到 doubao:doubao-seed-evolving",
+        "fallback_model_keys": [
+          "qianwen:qwen3.8-max"
+        ],
+        "rejected_candidates": [
+          {
+            "model_key": "deepseek:deepseek-v4-flash",
+            "reasons": [
+              "能力档位低于任务所需 high"
+            ]
+          },
+          {
+            "model_key": "doubao:doubao-seed-2-0-mini-260428",
+            "reasons": [
+              "能力档位低于任务所需 high"
+            ]
+          },
+          {
+            "model_key": "doubao:doubao-seed-2-1-turbo-260628",
+            "reasons": [
+              "能力档位低于任务所需 high"
+            ]
+          },
+          {
+            "model_key": "qianwen:qwen3.7-flash",
+            "reasons": [
+              "能力档位低于任务所需 high"
+            ]
+          },
+          {
+            "model_key": "qianwen:qwen3.7-plus",
+            "reasons": [
+              "能力档位低于任务所需 high"
+            ]
+          },
+          {
+            "model_key": "deepseek:deepseek-v4-pro",
+            "reasons": [
+              "本次调用失败：invalid_model_output"
+            ]
+          }
+        ],
+        "capability_snapshot_at": "2026-08-14T11:32:11.125817Z",
+        "version": 2
+      },
+      "tool_names": [
+        "file.read",
+        "file.search",
+        "file.write"
+      ],
+      "allowed_commands": [],
+      "read_scope": [
+        "calculator.py",
+        "pyproject.toml",
+        "tests/test_calculator.py"
+      ],
+      "write_scope": [
+        "calculator.py"
+      ],
+      "context_artifact_ids": [
+        "artifact_927de653222e4f6686d12a525e114571"
+      ],
+      "input_artifact_ids": [],
+      "runtime_limits": {
+        "max_steps": 32,
+        "max_input_tokens": 1000000,
+        "max_output_tokens": 16384,
+        "max_tool_calls": 32,
+        "timeout_seconds": 900
+      },
+      "output_schema": "TaskResult",
+      "version": 2
+    },
+    {
+      "spec_id": "spec_beadee4a2a0442389ac3853ea6d8ba6f",
+      "run_id": "run_23e104503af44b0dae4c2960d757fee4",
+      "agent_id": "agent_4249db7d535d4752b11a73845dd89330",
+      "task_id": "task_daaaa47afdd44e1e9528acf9c7a1363a",
+      "task_spec_id": "spec_3183ae261ebc4af7b48458393eb9d6dc",
+      "task_spec_version": 1,
+      "base_commit": "c0eca3a1137c62190990bcd56ba95930866b941b",
+      "goal": "为支付折扣增加 authorized 关键字权限参数和安全校验，未授权时拒绝计算\n本任务只负责写范围：calculator.py；可以读取授权仓库证据，但不得修改其他路径。",
+      "acceptance_criteria": [
+        "未授权调用抛出 PermissionError",
+        "authorized=True 时 VIP 仍为九折",
+        "批准后仍受路径与测试门禁"
+      ],
+      "required_modalities": [
+        "text"
+      ],
+      "model_routing": {
+        "decision_id": "spec_ab1a35c1e685414d8d67017dd9f7c471",
+        "requirement_id": "spec_ecdaae88fc973224160226da",
+        "requirement_version": 1,
+        "selected_model_key": "qianwen:qwen3.8-max",
+        "selected_availability": "available",
+        "selected_snapshot": null,
+        "reason": "模型 doubao:doubao-seed-evolving 执行失败（invalid_model_output），按已记录回退链切换到 qianwen:qwen3.8-max",
+        "fallback_model_keys": [],
+        "rejected_candidates": [
+          {
+            "model_key": "deepseek:deepseek-v4-flash",
+            "reasons": [
+              "能力档位低于任务所需 high"
+            ]
+          },
+          {
+            "model_key": "doubao:doubao-seed-2-0-mini-260428",
+            "reasons": [
+              "能力档位低于任务所需 high"
+            ]
+          },
+          {
+            "model_key": "doubao:doubao-seed-2-1-turbo-260628",
+            "reasons": [
+              "能力档位低于任务所需 high"
+            ]
+          },
+          {
+            "model_key": "qianwen:qwen3.7-flash",
+            "reasons": [
+              "能力档位低于任务所需 high"
+            ]
+          },
+          {
+            "model_key": "qianwen:qwen3.7-plus",
+            "reasons": [
+              "能力档位低于任务所需 high"
+            ]
+          },
+          {
+            "model_key": "deepseek:deepseek-v4-pro",
+            "reasons": [
+              "本次调用失败：invalid_model_output"
+            ]
+          },
+          {
+            "model_key": "doubao:doubao-seed-evolving",
+            "reasons": [
+              "本次调用失败：invalid_model_output"
+            ]
+          }
+        ],
+        "capability_snapshot_at": "2026-08-14T11:32:11.125817Z",
+        "version": 3
+      },
+      "tool_names": [
+        "file.read",
+        "file.search",
+        "file.write"
+      ],
+      "allowed_commands": [],
+      "read_scope": [
+        "calculator.py",
+        "pyproject.toml",
+        "tests/test_calculator.py"
+      ],
+      "write_scope": [
+        "calculator.py"
+      ],
+      "context_artifact_ids": [
+        "artifact_927de653222e4f6686d12a525e114571"
+      ],
+      "input_artifact_ids": [],
+      "runtime_limits": {
+        "max_steps": 32,
+        "max_input_tokens": 1000000,
+        "max_output_tokens": 16384,
+        "max_tool_calls": 32,
+        "timeout_seconds": 900
+      },
+      "output_schema": "TaskResult",
+      "version": 3
+    }
+  ],
+  "active_leases": [],
+  "allocation_decisions": [
+    {
+      "allocation_id": "spec_cd0bd2717d98485ca37f53086b13d31e",
+      "run_id": "run_23e104503af44b0dae4c2960d757fee4",
+      "graph_version": 2,
+      "ready_task_ids": [
+        "task_daaaa47afdd44e1e9528acf9c7a1363a"
+      ],
+      "selected_task_ids": [
+        "task_daaaa47afdd44e1e9528acf9c7a1363a"
+      ],
+      "available_slots": 6,
+      "reason": "实例数由就绪任务、并发槽位和写集合独立性共同决定"
+    }
+  ],
+  "result_summaries": [
+    {
+      "task_id": "task_daaaa47afdd44e1e9528acf9c7a1363a",
+      "agent_id": "agent_4249db7d535d4752b11a73845dd89330",
+      "execution_spec_id": "spec_beadee4a2a0442389ac3853ea6d8ba6f",
+      "status": "failed",
+      "summary": "模型服务网络请求失败",
+      "artifacts": [],
+      "suggestions": []
+    }
+  ],
+  "processed_decisions": [],
+  "progress_state": null,
+  "decision_count": 0,
+  "acceptance_satisfied": false,
+  "finished": false,
+  "finish_summary": null
+}

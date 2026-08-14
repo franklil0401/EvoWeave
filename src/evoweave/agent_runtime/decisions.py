@@ -1,5 +1,6 @@
 """Finite structured decisions accepted from the model loop."""
 
+import json
 from typing import Annotated, Literal, cast
 
 from pydantic import Field, JsonValue, TypeAdapter, ValidationError, model_validator
@@ -42,12 +43,44 @@ _DECISION_ADAPTER: TypeAdapter[WorkerDecision] = TypeAdapter(WorkerDecision)
 def parse_worker_decision(text: str) -> WorkerDecision:
     try:
         return _DECISION_ADAPTER.validate_json(text)
-    except ValidationError as exc:
+    except ValidationError as direct_error:
+        try:
+            payload = _extract_single_json_object(text)
+            return _DECISION_ADAPTER.validate_python(payload)
+        except (json.JSONDecodeError, TypeError, ValueError, ValidationError) as exc:
+            errors = (
+                exc.errors(include_url=False)
+                if isinstance(exc, ValidationError)
+                else [{"type": type(exc).__name__, "msg": str(exc)}]
+            )
+            raise DomainError(
+                ErrorCode.INVALID_MODEL_OUTPUT,
+                "模型输出不符合 Worker 决策协议",
+                details={
+                    "direct_errors": direct_error.errors(include_url=False),
+                    "extraction_errors": errors,
+                },
+            ) from exc
+
+
+def _extract_single_json_object(text: str) -> dict[str, object]:
+    """Accept one object wrapped by prose or one Markdown fence, never trailing data."""
+
+    start = text.find("{")
+    if start < 0:
+        raise ValueError("模型输出不包含 JSON 对象")
+    payload, consumed = json.JSONDecoder().raw_decode(text[start:])
+    if not isinstance(payload, dict):
+        raise TypeError("Worker 决策必须是 JSON 对象")
+    suffix = text[start + consumed :].strip()
+    if suffix == "```":
+        suffix = ""
+    if suffix:
         raise DomainError(
             ErrorCode.INVALID_MODEL_OUTPUT,
-            "模型输出不符合 Worker 决策协议",
-            details={"errors": exc.errors(include_url=False)},
-        ) from exc
+            "模型输出在决策 JSON 后包含额外内容",
+        )
+    return payload
 
 
 def worker_decision_json_schema() -> dict[str, JsonValue]:

@@ -235,7 +235,7 @@ def test_one_runtime_executes_locator_modifier_and_validator_specs() -> None:
     assert "Worker 决策 JSON Schema" in locator_prompt
 
 
-def test_ungranted_tool_is_rejected_by_runtime() -> None:
+def test_ungranted_tool_is_rejected_and_model_can_self_correct() -> None:
     run_id, task_id = RunId.new(), TaskId.new()
     workspace = FakeWorkspace(
         task_id=task_id,
@@ -245,16 +245,50 @@ def test_ungranted_tool_is_rejected_by_runtime() -> None:
     )
     recorder = InMemoryEventRecorder()
     runtime = _runtime(
-        responses=(_response(_tool("file.write", {"path": "src/app.py", "content": "bad"})),),
+        responses=(
+            _response(_tool("file.write", {"path": "src/app.py", "content": "bad"})),
+            _response(_tool("file.read", {"path": "src/app.py"})),
+            _response(_finish()),
+        ),
         workspaces={task_id: workspace},
         store=InMemoryArtifactStore(),
         recorder=recorder,
     )
     result = runtime.execute(_spec(run_id=run_id, task_id=task_id, tools=("file.read",)))
-    assert result.status is ResultStatus.FAILED
-    assert result.failure is not None
-    assert result.failure.code is ErrorCode.CAPABILITY_DENIED
+    assert result.status is ResultStatus.SUCCEEDED
+    assert result.failure is None
     assert workspace.read_text("src/app.py") == "old\n"
+    assert EventType.TOOL_REJECTED in {event.event_type for event in recorder.events_for(run_id)}
+
+
+def test_escaping_search_path_is_rejected_and_model_can_retry() -> None:
+    run_id, task_id = RunId.new(), TaskId.new()
+    gateway = ScriptedModelGateway(
+        responses=(
+            _response(_tool("file.search", {"query": "value", "prefix": "../"})),
+            _response(_tool("file.search", {"query": "value", "prefix": "src"})),
+            _response(_finish()),
+        )
+    )
+    recorder = InMemoryEventRecorder()
+    runtime = _runtime(
+        responses=(),
+        workspaces={
+            task_id: FakeWorkspace(
+                task_id=task_id,
+                files={"src/app.py": "value = 1\n"},
+                read_scope=("src",),
+            )
+        },
+        store=InMemoryArtifactStore(),
+        recorder=recorder,
+        gateway=gateway,
+    )
+
+    result = runtime.execute(_spec(run_id=run_id, task_id=task_id, tools=("file.search",)))
+
+    assert result.status is ResultStatus.SUCCEEDED
+    assert any("工具拒绝观察" in message for message in gateway.requests[1].messages)
     assert EventType.TOOL_REJECTED in {event.event_type for event in recorder.events_for(run_id)}
 
 

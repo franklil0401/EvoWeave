@@ -35,7 +35,16 @@ from evoweave.domain.task_result import TaskResult
 _SYSTEM_MESSAGE = (
     "你是 EvoWeave 的通用临时执行实例。只能调用执行规格授予的能力。"
     "每次只输出一个符合 JSON 协议的 tool 或 finish 决定；不要输出私有推理过程。"
+    "授权修改已经满足目标后应立即 finish；不得反复写入相同内容。"
 )
+
+_RECOVERABLE_TOOL_ERRORS = {
+    ErrorCode.INVALID_SPEC,
+    ErrorCode.CAPABILITY_NOT_FOUND,
+    ErrorCode.CAPABILITY_DENIED,
+    ErrorCode.COMMAND_DENIED,
+    ErrorCode.WORKSPACE_ACCESS_DENIED,
+}
 
 
 class WorkerRuntime:
@@ -152,7 +161,27 @@ class WorkerRuntime:
                             EventType.TOOL_REJECTED,
                             {"tool_name": decision.tool_name, "error_code": error.code.value},
                         )
-                        raise
+                        if error.code not in _RECOVERABLE_TOOL_ERRORS:
+                            raise
+                        messages.append(
+                            "工具拒绝观察："
+                            + json.dumps(
+                                {
+                                    "tool_name": decision.tool_name,
+                                    "error_code": error.code.value,
+                                    "message": error.message,
+                                    "details": error.details,
+                                    "instruction": (
+                                        "该操作没有执行。请在现有能力和路径范围内修正参数；"
+                                        "不要重复同一个被拒绝的调用。"
+                                    ),
+                                },
+                                ensure_ascii=False,
+                                sort_keys=True,
+                                default=str,
+                            )
+                        )
+                        continue
                     evidence.extend(capability_result.evidence)
                     artifacts.extend(capability_result.artifacts)
                     for artifact in capability_result.artifacts:
@@ -177,6 +206,14 @@ class WorkerRuntime:
                             sort_keys=True,
                         )
                     )
+                    if (
+                        decision.tool_name == "file.write"
+                        and capability_result.details.get("changed") is False
+                    ):
+                        messages.append(
+                            "收尾约束：文件内容没有变化。不要再次提交相同写入；"
+                            "若验收条件已满足，立即输出 finish。"
+                        )
                     evidence_ids: list[JsonValue] = [
                         str(item.evidence_id) for item in capability_result.evidence
                     ]

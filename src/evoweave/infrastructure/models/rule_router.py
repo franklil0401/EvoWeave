@@ -39,18 +39,21 @@ class RuleBasedModelRouter:
     ) -> ModelRoutingDecision:
         minimum_tier = _REQUIRED_TIER[requirement.difficulty]
         rejected: list[ModelCandidateRejection] = []
-        eligible: list[ModelProfile] = []
+        hard_eligible: list[ModelProfile] = []
         for profile in sorted(profiles, key=lambda item: item.key):
             reasons = _hard_rejection_reasons(requirement, profile)
-            if _TIER_RANK[profile.tier] < _TIER_RANK[minimum_tier]:
-                reasons.append(f"能力档位低于任务所需 {minimum_tier.value}")
             if reasons:
                 rejected.append(
                     ModelCandidateRejection(model_key=profile.key, reasons=tuple(reasons))
                 )
             else:
-                eligible.append(profile)
-        if not eligible:
+                hard_eligible.append(profile)
+        primary_eligible = [
+            profile
+            for profile in hard_eligible
+            if _TIER_RANK[profile.tier] >= _TIER_RANK[minimum_tier]
+        ]
+        if not primary_eligible:
             raise DomainError(
                 ErrorCode.MODEL_CAPABILITY_MISMATCH,
                 "没有满足任务硬约束和难度档位的模型",
@@ -58,12 +61,25 @@ class RuleBasedModelRouter:
             )
 
         ordered = sorted(
-            eligible,
+            primary_eligible,
             key=lambda profile: self._sort_key(profile, minimum_tier),
         )
         selected, *remaining = ordered
-        fallbacks = remaining[: self._policy.max_fallbacks]
-        snapshot_at = _latest_checked_at(ordered)
+        lower_tier = sorted(
+            (
+                profile
+                for profile in hard_eligible
+                if _TIER_RANK[profile.tier] < _TIER_RANK[minimum_tier]
+            ),
+            key=self._fallback_sort_key,
+        )
+        fallbacks = [*remaining, *lower_tier][: self._policy.max_fallbacks]
+        snapshot_at = _latest_checked_at([selected, *fallbacks])
+        downgrade_note = (
+            "；故障回退可降档但不得放宽输入模态、上下文、工具和结构化输出硬约束"
+            if lower_tier
+            else ""
+        )
         return ModelRoutingDecision(
             decision_id=SpecId.new(),
             requirement_id=requirement.requirement_id,
@@ -72,7 +88,7 @@ class RuleBasedModelRouter:
             selected_snapshot=selected.snapshot,
             reason=(
                 f"任务难度为 {requirement.difficulty.value}，选择满足全部硬约束的"
-                f" {selected.tier.value} 档最高优先级模型"
+                f" {selected.tier.value} 档最高优先级模型{downgrade_note}"
             ),
             fallback_model_keys=tuple(profile.key for profile in fallbacks),
             rejected_candidates=tuple(rejected),
@@ -87,6 +103,11 @@ class RuleBasedModelRouter:
         tier_distance = _TIER_RANK[profile.tier] - _TIER_RANK[minimum_tier]
         provider_priority = provider_order.get(profile.provider, len(provider_order))
         return (tier_distance, profile.stable_priority, provider_priority, profile.key)
+
+    def _fallback_sort_key(self, profile: ModelProfile) -> tuple[int, int, int, str]:
+        provider_order = {name: index for index, name in enumerate(self._policy.provider_priority)}
+        provider_priority = provider_order.get(profile.provider, len(provider_order))
+        return (-_TIER_RANK[profile.tier], profile.stable_priority, provider_priority, profile.key)
 
 
 def _hard_rejection_reasons(

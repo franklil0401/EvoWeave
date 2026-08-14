@@ -1,6 +1,10 @@
 """Build final TaskResult from trusted runtime observations."""
 
+import json
 from collections.abc import Iterable
+from typing import cast
+
+from pydantic import JsonValue
 
 from evoweave.agent_runtime.decisions import FinishDecision
 from evoweave.domain.agent_execution_spec import AgentExecutionSpec
@@ -72,6 +76,10 @@ def build_failure_result(
             code=error.code,
             message=error.message,
             retryable=error.code in {ErrorCode.MODEL_UNAVAILABLE},
+            details=cast(
+                dict[str, JsonValue],
+                json.loads(json.dumps(error.details, ensure_ascii=False, default=str)),
+            ),
         ),
     )
 

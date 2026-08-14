@@ -6,11 +6,35 @@
     ],
     "status": "pending"
   },
-  "metrics": [],
-  "record_count": 0,
+  "metrics": [
+    {
+      "agent_strategy": "adaptive_agent",
+      "average_agent_count": 2.417,
+      "average_duration_ms": 152948.583,
+      "average_tokens": 55753.917,
+      "conflict_rate": 0.0,
+      "difficulty_match_rate": 1.0,
+      "evidence_level": "live_model",
+      "fallback_rate": 0.583333,
+      "image_success_rate": 0.0,
+      "initial_route_success_rate": 0.5,
+      "invalid_task_rate": 0.3125,
+      "localization_recall": 0.958,
+      "model_strategy": "adaptive_model",
+      "orchestrator_context_ratio": 0.037084,
+      "original_image_exposure_rate": 1.0,
+      "patch_efficiency": 1.0,
+      "regression_rate": 0.142857,
+      "run_count": 12,
+      "success_rate": 0.5
+    }
+  ],
+  "record_count": 12,
   "suite_id": "evoweave_v1",
   "suite_sha256": "842d8c4edfeaf1e02350a594ee473d5d9a8372de9371e2483593aa86ca65350e",
   "suite_version": 3,
-  "system_commits": [],
+  "system_commits": [
+    "10385091b453b4753f1a84a9b56388fb26a049ca"
+  ],
   "task_count": 12
 }

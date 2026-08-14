@@ -1,0 +1,27 @@
+diff --git a/calculator.py b/calculator.py
+index 77dd772982c4544e14c165bb5f964dc2cc53cf7b..075eabac364d5f2be83ca5779fdfd95897ce84e8 100644
+--- a/calculator.py
++++ b/calculator.py
+@@ -1,4 +1,6 @@
+ def calculate_discount(total: float, customer_type: str) -> float:
+     if customer_type == "VIP":
+         return total * 0.9
++    if customer_type == "MEMBER":
++        return total * 0.95
+     return total
+diff --git a/tests/test_calculator.py b/tests/test_calculator.py
+index cca07da8128bf710e3baaae5544ee4c65fed1a6b..55b85918167773662c66d3f397d4760518df994a 100644
+--- a/tests/test_calculator.py
++++ b/tests/test_calculator.py
+@@ -1,5 +1,9 @@
+ from calculator import calculate_discount
+ 
+ 
+-def test_vip_discount() -> None:
+-    assert calculate_discount(100, "VIP") == 90
++def test_vip_discount():
++    assert calculate_discount(100.0, "VIP") == 90.0
++
++
++def test_member_discount():
++    assert calculate_discount(100.0, "MEMBER") == 95.0

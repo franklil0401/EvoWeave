@@ -1,0 +1,79 @@
+[
+  {
+    "agent_id": "agent_b9f2141be5dc404dbd6164aff04bcdee",
+    "artifacts": [
+      {
+        "artifact_id": "artifact_5f8a7c6517d4485b9fc8a6cdbc88825d",
+        "created_at": "2026-08-14T13:27:42.664451Z",
+        "kind": "patch",
+        "media_type": "text/x-diff",
+        "sha256": "9a3aadc3ccdc8be1ef704d7d5bc017dfa119df0e73eccf917b42a0ddcc352c4b",
+        "size_bytes": 206,
+        "storage_key": "sha256/9a/9a3aadc3ccdc8be1ef704d7d5bc017dfa119df0e73eccf917b42a0ddcc352c4b"
+      }
+    ],
+    "evidence": [
+      {
+        "artifact_id": null,
+        "command": null,
+        "evidence_id": "evidence_1856ca6208a9410f8742132ab77c672d",
+        "kind": "file",
+        "line_end": null,
+        "line_start": null,
+        "repository_path": "app.py",
+        "summary": "已读取 app.py",
+        "symbol": null
+      },
+      {
+        "artifact_id": null,
+        "command": null,
+        "evidence_id": "evidence_1bac03f67fa84e6fb667fca6259b598b",
+        "kind": "file",
+        "line_end": null,
+        "line_start": null,
+        "repository_path": "tests/test_existing_failure.py",
+        "summary": "已读取 tests/test_existing_failure.py",
+        "symbol": null
+      },
+      {
+        "artifact_id": "artifact_5f8a7c6517d4485b9fc8a6cdbc88825d",
+        "command": null,
+        "evidence_id": "evidence_5ca2f26076e241958e935a7a77f3dc90",
+        "kind": "artifact",
+        "line_end": null,
+        "line_start": null,
+        "repository_path": null,
+        "summary": "已生成 app.py 的补丁",
+        "symbol": null
+      },
+      {
+        "artifact_id": null,
+        "command": null,
+        "evidence_id": "evidence_32f1e54171674838826436a0a28b106a",
+        "kind": "file",
+        "line_end": null,
+        "line_start": null,
+        "repository_path": "app.py",
+        "summary": "已读取 app.py",
+        "symbol": null
+      }
+    ],
+    "execution_spec_id": "spec_008e0c4be1544b41833948e52b7c634b",
+    "execution_spec_version": 1,
+    "failure": null,
+    "risk_level": "low",
+    "risk_notes": [],
+    "status": "succeeded",
+    "summary": "已在 app.py 中为除数为零添加 ValueError，异常消息包含 right 和 zero；未修改其他文件，现有测试 test_existing_failure 仍保留为既有失败。",
+    "task_id": "task_05c06f86ffc84477a929b047757c7bfb",
+    "usage": {
+      "cached_input_tokens": 0,
+      "elapsed_ms": 28687,
+      "input_tokens": 17164,
+      "output_tokens": 1883,
+      "reasoning_tokens": 1638,
+      "steps": 5,
+      "tool_calls": 4
+    }
+  }
+]

@@ -1,0 +1,186 @@
+{
+  "run_id": "run_f789687e980a4dbea272be35b0a60c95",
+  "version": 3,
+  "graph": {
+    "graph_id": "graph_c2b4213bf6774c5298d90612971a37ef",
+    "run_id": "run_f789687e980a4dbea272be35b0a60c95",
+    "version": 5,
+    "nodes": [
+      {
+        "task_id": "task_89b0b5a02cae49a781071742dc9358b0",
+        "task_spec_version": 1,
+        "status": "succeeded",
+        "attempts": 1
+      }
+    ],
+    "edges": [],
+    "created_at": "2026-08-14T13:01:59.969822Z"
+  },
+  "task_specs": [
+    {
+      "spec_id": "spec_57d318f12c284ddb921fb1e59580ee57",
+      "task_id": "task_89b0b5a02cae49a781071742dc9358b0",
+      "change_spec_id": "spec_f23c82abd3fa4af2a09503496b9f9d37",
+      "goal": "让 VIP 客户类型匹配不区分大小写\n本任务只负责写范围：calculator.py；可以读取授权仓库证据，但不得修改其他路径。",
+      "base_commit": "c0eca3a1137c62190990bcd56ba95930866b941b",
+      "acceptance_criteria": [
+        "vip、Vip 和 VIP 均获得九折",
+        "原有测试继续通过"
+      ],
+      "depends_on": [],
+      "input_artifact_ids": [],
+      "context_artifact_ids": [
+        "artifact_eb6c6200c65b431281fbdfd2e78f02f2"
+      ],
+      "read_scope": [
+        "calculator.py",
+        "pyproject.toml",
+        "tests/test_calculator.py"
+      ],
+      "write_scope": [
+        "calculator.py"
+      ],
+      "required_modalities": [
+        "text"
+      ],
+      "difficulty": {
+        "difficulty": "low",
+        "rationale": "仓库证据规则评分 0；单一、明确且低风险的候选范围",
+        "evidence_ids": [
+          "evidence_0b3b519f45fd124572c79472",
+          "evidence_0eda9518e7e4863fd05f3bc1",
+          "evidence_43716ab3738dae94937cfcd7",
+          "evidence_6bb23b8852e46c002e886135",
+          "evidence_7563da8de0ecca0489827be1",
+          "evidence_94cbac8e07cdb296a2bbc305",
+          "evidence_e600be3260adccdf676eea32",
+          "evidence_36708867b06350ef54d26996",
+          "evidence_5e6da827a16c6b423fde3344",
+          "evidence_8e1c5ebecce8d4fff0fa86c1",
+          "evidence_c27548a8f6722fbbe0d9a0d6"
+        ],
+        "version": 1
+      },
+      "model_requirement": {
+        "requirement_id": "spec_0f8b2701fba4785f7c1b460e",
+        "task_id": "task_89b0b5a02cae49a781071742dc9358b0",
+        "difficulty": "low",
+        "required_modalities": [
+          "text"
+        ],
+        "min_context_tokens": 8000,
+        "min_output_tokens": 2000,
+        "requires_tool_calling": true,
+        "requires_structured_output": true,
+        "requires_thinking": false,
+        "version": 1
+      },
+      "risk_level": "low",
+      "version": 1
+    }
+  ],
+  "execution_specs": [
+    {
+      "spec_id": "spec_3d8ee2766abe490793bd9a58eb36c538",
+      "run_id": "run_f789687e980a4dbea272be35b0a60c95",
+      "agent_id": "agent_8dccc6ccdfce49908530d01120b78b9d",
+      "task_id": "task_89b0b5a02cae49a781071742dc9358b0",
+      "task_spec_id": "spec_57d318f12c284ddb921fb1e59580ee57",
+      "task_spec_version": 1,
+      "base_commit": "c0eca3a1137c62190990bcd56ba95930866b941b",
+      "goal": "让 VIP 客户类型匹配不区分大小写\n本任务只负责写范围：calculator.py；可以读取授权仓库证据，但不得修改其他路径。",
+      "acceptance_criteria": [
+        "vip、Vip 和 VIP 均获得九折",
+        "原有测试继续通过"
+      ],
+      "required_modalities": [
+        "text"
+      ],
+      "model_routing": {
+        "decision_id": "spec_d2ede7f9c17543aca52cd9d695746ff4",
+        "requirement_id": "spec_0f8b2701fba4785f7c1b460e",
+        "requirement_version": 1,
+        "selected_model_key": "deepseek:deepseek-v4-flash",
+        "selected_availability": "available",
+        "selected_snapshot": null,
+        "reason": "任务难度为 low，选择满足全部硬约束的 low 档最高优先级模型",
+        "fallback_model_keys": [
+          "doubao:doubao-seed-2-0-mini-260428",
+          "qianwen:qwen3.7-flash",
+          "doubao:doubao-seed-2-1-turbo-260628"
+        ],
+        "rejected_candidates": [],
+        "capability_snapshot_at": "2026-08-14T13:01:58.916509Z",
+        "version": 1
+      },
+      "tool_names": [
+        "file.read",
+        "file.search",
+        "file.write"
+      ],
+      "allowed_commands": [],
+      "read_scope": [
+        "calculator.py",
+        "pyproject.toml",
+        "tests/test_calculator.py"
+      ],
+      "write_scope": [
+        "calculator.py"
+      ],
+      "context_artifact_ids": [
+        "artifact_eb6c6200c65b431281fbdfd2e78f02f2"
+      ],
+      "input_artifact_ids": [],
+      "runtime_limits": {
+        "max_steps": 32,
+        "max_input_tokens": 1000000,
+        "max_output_tokens": 16384,
+        "max_tool_calls": 32,
+        "timeout_seconds": 900
+      },
+      "output_schema": "TaskResult",
+      "version": 1
+    }
+  ],
+  "active_leases": [],
+  "allocation_decisions": [
+    {
+      "allocation_id": "spec_0eb166aee93b47d999cc4ad7c84c6e2b",
+      "run_id": "run_f789687e980a4dbea272be35b0a60c95",
+      "graph_version": 2,
+      "ready_task_ids": [
+        "task_89b0b5a02cae49a781071742dc9358b0"
+      ],
+      "selected_task_ids": [
+        "task_89b0b5a02cae49a781071742dc9358b0"
+      ],
+      "available_slots": 6,
+      "reason": "实例数由就绪任务、并发槽位和写集合独立性共同决定"
+    }
+  ],
+  "result_summaries": [
+    {
+      "task_id": "task_89b0b5a02cae49a781071742dc9358b0",
+      "agent_id": "agent_8dccc6ccdfce49908530d01120b78b9d",
+      "execution_spec_id": "spec_3d8ee2766abe490793bd9a58eb36c538",
+      "status": "succeeded",
+      "summary": "已修改 calculator.py，将客户类型比较改为不区分大小写（customer_type.lower() == \"vip\"）。vip、Vip、VIP 均会获得九折，原有测试继续通过。",
+      "artifacts": [
+        {
+          "artifact_id": "artifact_c8fe565044d045f88e962f523abf68f3",
+          "kind": "patch",
+          "media_type": "text/x-diff",
+          "size_bytes": 242,
+          "sha256": "4262c3bdfef019a16e3fe0a3a1e073fdd1bcd6d54246bbe0bc4890973010caa9"
+        }
+      ],
+      "suggestions": []
+    }
+  ],
+  "processed_decisions": [],
+  "progress_state": null,
+  "decision_count": 0,
+  "acceptance_satisfied": false,
+  "finished": false,
+  "finish_summary": null
+}

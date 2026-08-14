@@ -1,0 +1,170 @@
+{
+  "run_id": "run_d5f01d30426f4b84a3f1a6f843ad006f",
+  "version": 3,
+  "graph": {
+    "graph_id": "graph_921c5badc1f94498897006d896ef7738",
+    "run_id": "run_d5f01d30426f4b84a3f1a6f843ad006f",
+    "version": 5,
+    "nodes": [
+      {
+        "task_id": "task_00ccf8cbab704be889ec8f16d4bca598",
+        "task_spec_version": 1,
+        "status": "failed",
+        "attempts": 1
+      }
+    ],
+    "edges": [],
+    "created_at": "2026-08-14T13:48:32.704016Z"
+  },
+  "task_specs": [
+    {
+      "spec_id": "spec_c21711cf7b4f4212a5fe2148c39c9135",
+      "task_id": "task_00ccf8cbab704be889ec8f16d4bca598",
+      "change_spec_id": "spec_d2e65add1723465cbc8d18aeed63f2fc",
+      "goal": "为支付折扣增加 authorized 关键字权限参数和安全校验，未授权时拒绝计算\n本任务只负责写范围：calculator.py；可以读取授权仓库证据，但不得修改其他路径。",
+      "base_commit": "c0eca3a1137c62190990bcd56ba95930866b941b",
+      "acceptance_criteria": [
+        "未授权调用抛出 PermissionError",
+        "authorized=True 时 VIP 仍为九折",
+        "批准后仍受路径与测试门禁"
+      ],
+      "depends_on": [],
+      "input_artifact_ids": [],
+      "context_artifact_ids": [
+        "artifact_81cf1b2bffce4658a3d3d456fe91d106"
+      ],
+      "read_scope": [
+        "calculator.py",
+        "pyproject.toml",
+        "tests/test_calculator.py"
+      ],
+      "write_scope": [
+        "calculator.py"
+      ],
+      "required_modalities": [
+        "text"
+      ],
+      "difficulty": {
+        "difficulty": "high",
+        "rationale": "仓库证据规则评分 4；包含风险信号：安全、支付、权限控制、身份认证；结构性难度下限：需求包含高复杂度语义：权限、安全、支付",
+        "evidence_ids": [
+          "evidence_5e6da827a16c6b423fde3344",
+          "evidence_8e1c5ebecce8d4fff0fa86c1",
+          "evidence_6bb23b8852e46c002e886135",
+          "evidence_7563da8de0ecca0489827be1",
+          "evidence_e600be3260adccdf676eea32"
+        ],
+        "version": 1
+      },
+      "model_requirement": {
+        "requirement_id": "spec_533aacbb75d3c1c0d0dcee7f",
+        "task_id": "task_00ccf8cbab704be889ec8f16d4bca598",
+        "difficulty": "high",
+        "required_modalities": [
+          "text"
+        ],
+        "min_context_tokens": 64000,
+        "min_output_tokens": 8000,
+        "requires_tool_calling": true,
+        "requires_structured_output": true,
+        "requires_thinking": true,
+        "version": 1
+      },
+      "risk_level": "high",
+      "version": 1
+    }
+  ],
+  "execution_specs": [
+    {
+      "spec_id": "spec_ba8edb40fba34d78844453e0114038b0",
+      "run_id": "run_d5f01d30426f4b84a3f1a6f843ad006f",
+      "agent_id": "agent_9fb6d0f53a034ac4969cc471ac5e3a4a",
+      "task_id": "task_00ccf8cbab704be889ec8f16d4bca598",
+      "task_spec_id": "spec_c21711cf7b4f4212a5fe2148c39c9135",
+      "task_spec_version": 1,
+      "base_commit": "c0eca3a1137c62190990bcd56ba95930866b941b",
+      "goal": "为支付折扣增加 authorized 关键字权限参数和安全校验，未授权时拒绝计算\n本任务只负责写范围：calculator.py；可以读取授权仓库证据，但不得修改其他路径。",
+      "acceptance_criteria": [
+        "未授权调用抛出 PermissionError",
+        "authorized=True 时 VIP 仍为九折",
+        "批准后仍受路径与测试门禁"
+      ],
+      "required_modalities": [
+        "text"
+      ],
+      "model_routing": {
+        "decision_id": "spec_11f0aa9a2a194f6bb586d0d3c86582de",
+        "requirement_id": "spec_533aacbb75d3c1c0d0dcee7f",
+        "requirement_version": 1,
+        "selected_model_key": "doubao:doubao-seed-2-0-mini-260428",
+        "selected_availability": "available",
+        "selected_snapshot": null,
+        "reason": "benchmark fixed_low 对照固定使用单一模型；输入模态、上下文、工具和结构化输出硬约束仍然生效",
+        "fallback_model_keys": [],
+        "rejected_candidates": [],
+        "capability_snapshot_at": "2026-08-14T13:39:12.434064Z",
+        "version": 1
+      },
+      "tool_names": [
+        "file.read",
+        "file.search",
+        "file.write"
+      ],
+      "allowed_commands": [],
+      "read_scope": [
+        "calculator.py",
+        "pyproject.toml",
+        "tests/test_calculator.py"
+      ],
+      "write_scope": [
+        "calculator.py"
+      ],
+      "context_artifact_ids": [
+        "artifact_81cf1b2bffce4658a3d3d456fe91d106"
+      ],
+      "input_artifact_ids": [],
+      "runtime_limits": {
+        "max_steps": 32,
+        "max_input_tokens": 1000000,
+        "max_output_tokens": 16384,
+        "max_tool_calls": 32,
+        "timeout_seconds": 900
+      },
+      "output_schema": "TaskResult",
+      "version": 1
+    }
+  ],
+  "active_leases": [],
+  "allocation_decisions": [
+    {
+      "allocation_id": "spec_763e567d5121404fb833bedeb0cb3b29",
+      "run_id": "run_d5f01d30426f4b84a3f1a6f843ad006f",
+      "graph_version": 2,
+      "ready_task_ids": [
+        "task_00ccf8cbab704be889ec8f16d4bca598"
+      ],
+      "selected_task_ids": [
+        "task_00ccf8cbab704be889ec8f16d4bca598"
+      ],
+      "available_slots": 6,
+      "reason": "实例数由就绪任务、并发槽位和写集合独立性共同决定"
+    }
+  ],
+  "result_summaries": [
+    {
+      "task_id": "task_00ccf8cbab704be889ec8f16d4bca598",
+      "agent_id": "agent_9fb6d0f53a034ac4969cc471ac5e3a4a",
+      "execution_spec_id": "spec_ba8edb40fba34d78844453e0114038b0",
+      "status": "failed",
+      "summary": "Worker 已达到确定性运行上限",
+      "artifacts": [],
+      "suggestions": []
+    }
+  ],
+  "processed_decisions": [],
+  "progress_state": null,
+  "decision_count": 0,
+  "acceptance_satisfied": false,
+  "finished": false,
+  "finish_summary": null
+}

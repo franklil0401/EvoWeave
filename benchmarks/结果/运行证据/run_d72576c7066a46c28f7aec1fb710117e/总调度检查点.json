@@ -1,0 +1,179 @@
+{
+  "run_id": "run_d72576c7066a46c28f7aec1fb710117e",
+  "version": 3,
+  "graph": {
+    "graph_id": "graph_a95a0a0dedcc4a5d924e442e9b414ed0",
+    "run_id": "run_d72576c7066a46c28f7aec1fb710117e",
+    "version": 5,
+    "nodes": [
+      {
+        "task_id": "task_27cac489eaa74ab2b2a89255d249d4fb",
+        "task_spec_version": 1,
+        "status": "failed",
+        "attempts": 1
+      }
+    ],
+    "edges": [],
+    "created_at": "2026-08-14T13:40:38.830468Z"
+  },
+  "task_specs": [
+    {
+      "spec_id": "spec_4ea5fe1d7358430eaf6aa1e6dc5e9b76",
+      "task_id": "task_27cac489eaa74ab2b2a89255d249d4fb",
+      "change_spec_id": "spec_1870738f930a42f58cfeafb096ebea04",
+      "goal": "为普通会员增加九五折并补充对应测试\n本任务只负责写范围：calculator.py, tests/test_calculator.py；可以读取授权仓库证据，但不得修改其他路径。",
+      "base_commit": "c0eca3a1137c62190990bcd56ba95930866b941b",
+      "acceptance_criteria": [
+        "MEMBER 返回九五折",
+        "VIP 行为不变",
+        "新增测试通过"
+      ],
+      "depends_on": [],
+      "input_artifact_ids": [],
+      "context_artifact_ids": [
+        "artifact_b1950150cfea49df972e304ae26ead07"
+      ],
+      "read_scope": [
+        "calculator.py",
+        "pyproject.toml",
+        "tests/test_calculator.py"
+      ],
+      "write_scope": [
+        "calculator.py",
+        "tests/test_calculator.py"
+      ],
+      "required_modalities": [
+        "text"
+      ],
+      "difficulty": {
+        "difficulty": "low",
+        "rationale": "仓库证据规则评分 2；候选影响文件跨越多个文件",
+        "evidence_ids": [
+          "evidence_0cb2b9e45815b951f8839a48",
+          "evidence_4aa53e18a068df24f83b131a",
+          "evidence_6bb23b8852e46c002e886135",
+          "evidence_7563da8de0ecca0489827be1",
+          "evidence_cc276e7e12c0184afd5bf6b5",
+          "evidence_e600be3260adccdf676eea32",
+          "evidence_5e6da827a16c6b423fde3344",
+          "evidence_8e1c5ebecce8d4fff0fa86c1",
+          "evidence_27279cba53c4a20e975ffca5",
+          "evidence_2c72326a314c750d0c5eb4b4",
+          "evidence_7c47d07c8ecf4edf8d56a969",
+          "evidence_93299b3a8833983feecd7c9c"
+        ],
+        "version": 1
+      },
+      "model_requirement": {
+        "requirement_id": "spec_19327c837521f9db4c81967a",
+        "task_id": "task_27cac489eaa74ab2b2a89255d249d4fb",
+        "difficulty": "low",
+        "required_modalities": [
+          "text"
+        ],
+        "min_context_tokens": 8000,
+        "min_output_tokens": 2000,
+        "requires_tool_calling": true,
+        "requires_structured_output": true,
+        "requires_thinking": false,
+        "version": 1
+      },
+      "risk_level": "low",
+      "version": 1
+    }
+  ],
+  "execution_specs": [
+    {
+      "spec_id": "spec_24182ae7f7f44428aa07f2893951113b",
+      "run_id": "run_d72576c7066a46c28f7aec1fb710117e",
+      "agent_id": "agent_0039a5709e0d47dfafb9a82e498345cf",
+      "task_id": "task_27cac489eaa74ab2b2a89255d249d4fb",
+      "task_spec_id": "spec_4ea5fe1d7358430eaf6aa1e6dc5e9b76",
+      "task_spec_version": 1,
+      "base_commit": "c0eca3a1137c62190990bcd56ba95930866b941b",
+      "goal": "为普通会员增加九五折并补充对应测试\n本任务只负责写范围：calculator.py, tests/test_calculator.py；可以读取授权仓库证据，但不得修改其他路径。",
+      "acceptance_criteria": [
+        "MEMBER 返回九五折",
+        "VIP 行为不变",
+        "新增测试通过"
+      ],
+      "required_modalities": [
+        "text"
+      ],
+      "model_routing": {
+        "decision_id": "spec_2e43fc1dccf24d5baa8550db6b4b2ddf",
+        "requirement_id": "spec_19327c837521f9db4c81967a",
+        "requirement_version": 1,
+        "selected_model_key": "doubao:doubao-seed-2-0-mini-260428",
+        "selected_availability": "available",
+        "selected_snapshot": null,
+        "reason": "benchmark fixed_low 对照固定使用单一模型；输入模态、上下文、工具和结构化输出硬约束仍然生效",
+        "fallback_model_keys": [],
+        "rejected_candidates": [],
+        "capability_snapshot_at": "2026-08-14T13:39:12.434064Z",
+        "version": 1
+      },
+      "tool_names": [
+        "file.read",
+        "file.search",
+        "file.write"
+      ],
+      "allowed_commands": [],
+      "read_scope": [
+        "calculator.py",
+        "pyproject.toml",
+        "tests/test_calculator.py"
+      ],
+      "write_scope": [
+        "calculator.py",
+        "tests/test_calculator.py"
+      ],
+      "context_artifact_ids": [
+        "artifact_b1950150cfea49df972e304ae26ead07"
+      ],
+      "input_artifact_ids": [],
+      "runtime_limits": {
+        "max_steps": 32,
+        "max_input_tokens": 1000000,
+        "max_output_tokens": 16384,
+        "max_tool_calls": 32,
+        "timeout_seconds": 900
+      },
+      "output_schema": "TaskResult",
+      "version": 1
+    }
+  ],
+  "active_leases": [],
+  "allocation_decisions": [
+    {
+      "allocation_id": "spec_ea5b66e28076495481c466e696da4e78",
+      "run_id": "run_d72576c7066a46c28f7aec1fb710117e",
+      "graph_version": 2,
+      "ready_task_ids": [
+        "task_27cac489eaa74ab2b2a89255d249d4fb"
+      ],
+      "selected_task_ids": [
+        "task_27cac489eaa74ab2b2a89255d249d4fb"
+      ],
+      "available_slots": 6,
+      "reason": "实例数由就绪任务、并发槽位和写集合独立性共同决定"
+    }
+  ],
+  "result_summaries": [
+    {
+      "task_id": "task_27cac489eaa74ab2b2a89255d249d4fb",
+      "agent_id": "agent_0039a5709e0d47dfafb9a82e498345cf",
+      "execution_spec_id": "spec_24182ae7f7f44428aa07f2893951113b",
+      "status": "failed",
+      "summary": "Worker 已达到确定性运行上限",
+      "artifacts": [],
+      "suggestions": []
+    }
+  ],
+  "processed_decisions": [],
+  "progress_state": null,
+  "decision_count": 0,
+  "acceptance_satisfied": false,
+  "finished": false,
+  "finish_summary": null
+}

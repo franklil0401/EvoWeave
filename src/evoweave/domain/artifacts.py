@@ -26,6 +26,8 @@ class ImageIngestionPolicy(DomainModel):
     allowed_media_types: tuple[str, ...] = ("image/jpeg", "image/png", "image/webp")
     max_size_bytes: int = Field(default=20 * 1024 * 1024, ge=1)
     max_pixels: int = Field(default=40_000_000, ge=1)
+    min_width_px: int = Field(default=14, ge=1, le=100_000)
+    min_height_px: int = Field(default=14, ge=1, le=100_000)
 
     @field_validator("allowed_media_types")
     @classmethod

@@ -61,6 +61,17 @@ class PillowImageIngestor:
             raise DomainError(ErrorCode.IMAGE_REJECTED, "声明 MIME 与实际图片格式不一致")
         if width * height > policy.max_pixels:
             raise DomainError(ErrorCode.IMAGE_REJECTED, "图片像素数量超过摄取上限")
+        if width < policy.min_width_px or height < policy.min_height_px:
+            raise DomainError(
+                ErrorCode.IMAGE_REJECTED,
+                "图片宽高低于模型兼容下限",
+                details={
+                    "width_px": width,
+                    "height_px": height,
+                    "min_width_px": policy.min_width_px,
+                    "min_height_px": policy.min_height_px,
+                },
+            )
         if frame_count != 1:
             raise DomainError(ErrorCode.IMAGE_REJECTED, "第一版不接受多帧或动画图片")
 

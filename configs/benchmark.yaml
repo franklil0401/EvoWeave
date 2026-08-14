@@ -1,5 +1,5 @@
 {
-  "suite": "benchmarks/任务集/第一版任务集.json",
+  "suite": "benchmarks/任务集/第二版任务集.json",
   "results": "benchmarks/结果",
   "agent_strategies": ["single_agent", "fixed_multi_agent", "adaptive_agent"],
   "model_strategies": ["fixed_low", "fixed_high", "adaptive_model"],

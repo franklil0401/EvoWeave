@@ -18,7 +18,7 @@ from evoweave.domain.ports import ModelResponse
 from evoweave.infrastructure.models.fake import ScriptedModelGateway
 
 _PROJECT_ROOT = Path(__file__).parents[2]
-_SUITE_PATH = _PROJECT_ROOT / "benchmarks/任务集/第一版任务集.json"
+_SUITE_PATH = _PROJECT_ROOT / "benchmarks/任务集/第二版任务集.json"
 
 
 def test_runner_uses_hidden_acceptance_and_persists_unique_record(tmp_path: Path) -> None:

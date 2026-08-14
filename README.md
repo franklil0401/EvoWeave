@@ -27,30 +27,31 @@
 
 当前规划审计显示：简单任务只创建一个动态 Agent，两个图片相关任务共向两个必要 Agent 提供原图，图片负例不暴露原图，冻结人工难度匹配 12/12。第三版任务集已有 12 项任务级隐藏验收，并通过“基线必失败、正确实现必通过”的自洽测试；真实运行器会把结果同时绑定任务集摘要和系统 Git commit。两轮探索性真实调用分别发现隐藏验收和系统级验收漏洞，原始记录与证据均完整归档、不进入正式效果比较；模型回退场景现在会确定性注入一次首选模型故障，并要求新 Agent/新路由实际出现。
 
-提交 `10385091b453b4753f1a84a9b56388fb26a049ca` 上的 12 个任务 × 3 种 Agent 策略 × 3 种模型策略已经完成全部 108 条正式 `live_model` 运行。成功数依次为：单 Agent + 动态模型 7/12、动态 Agent + 动态模型 6/12、单 Agent + 固定高档 6/12、动态 Agent + 固定高档 4/12、固定多 Agent + 固定低档 3/12、动态 Agent + 固定低档 1/12，其余三组均为 0/12。自动 Go/No-Go 为 `no_go`：简单任务最小实例与总调度上下文压缩通过，但动态方案没有达到相对最佳基线的成功率/Token/时延性能门槛，首次路由可靠性门槛也未通过。现有证据支持“精简拓扑 + 动态选模”作为下一轮起点，但不支持无条件动态或固定拆分；弱模型也无法靠增加 Agent稳定补偿。主要改进方向是结构化输出修复、基于独立性收益的任务图收缩、视觉模型可用性和多次重复实验；当前“模型硬约束”报告还混用了首次路由成功率，需要在第二版评测协议中拆分。Docker 无网执行适配器已通过离线构造测试，但本开发机未安装 Docker CLI，因此真实容器实测仍是环境待办。
+提交 `10385091b453b4753f1a84a9b56388fb26a049ca` 上的 12 个任务 × 3 种 Agent 策略 × 3 种模型策略已经完成全部 108 条正式 `live_model` 运行。成功数依次为：单 Agent + 动态模型 7/12、动态 Agent + 动态模型 6/12、单 Agent + 固定高档 6/12、动态 Agent + 固定高档 4/12、固定多 Agent + 固定低档 3/12、动态 Agent + 固定低档 1/12，其余三组均为 0/12。自动 Go/No-Go 为 `no_go`：简单任务最小实例与总调度上下文压缩通过，但动态方案没有达到相对最佳基线的成功率/Token/时延性能门槛，首次路由可靠性门槛也未通过。现有证据支持“精简拓扑 + 动态选模”作为下一轮起点，但不支持无条件动态或固定拆分；弱模型也无法靠增加 Agent稳定补偿。主要改进方向是结构化输出修复、基于独立性收益的任务图收缩、视觉输入兼容性和多次重复实验；当前“模型硬约束”报告还混用了首次路由成功率，需要在第二版评测协议中拆分。Docker 无网执行适配器已通过离线构造测试，但本开发机未安装 Docker CLI，因此真实容器实测仍是环境待办。
 
 第一轮改进已实现但不会改写上述结果：Worker 能从说明文本中提取唯一有效决策并进行一次有界自纠；规划器只在独立并行、图片隔离或代码量达到阈值时扩展任务图；评测已拆分模型硬约束合规率与首次执行成功率，并通过 `--trials` 支持重复运行和跨次标准差。改进代码固定提交后，将在独立第二版目录先做规划审计，再决定真实矩阵的重复次数。
 
-改进基线提交 `d35af1f7fbed9ef5a38bac0ee7c98d9a4be67161` 的[第二版规划审计](benchmarks/结果/第二版/规划审计报告.md)已完成：动态平均 Agent 数由 1.33 降至 1.08，小型依赖任务 2、3、10 合并为单 Agent，明确独立任务 4 仍保留两个并行 Agent；难度匹配保持 12/12，图片暴露保持最小化。第二版尚未产生真实模型成功率。
+改进基线提交 `d35af1f7fbed9ef5a38bac0ee7c98d9a4be67161` 的首轮[第二版规划审计](benchmarks/结果/第二版/规划审计报告.md)显示：动态平均 Agent 数由 1.33 降至 1.08，小型依赖任务 2、3、10 合并为单 Agent，明确独立任务 4 仍保留两个并行 Agent；难度匹配保持 12/12，图片暴露保持最小化。随后确认第一版两个图片正例实际使用 4×4 像素占位图，低于豆包和千问接口最小边长，旧结果将图片参数拒绝误归类为“视觉服务不可用”。第二版任务集已换成可复现的 960×540 UI、1200×700 架构图和 720×480 负例图，并在付费调用前强制校验图片宽高；豆包 Mini 与千问 Flash 的真实图片探测均已成功。第二版尚未产生正式成功率。
 
 ## 评测与规划审计
 
 ```powershell
 uv run --no-editable evoweave benchmark validate `
-  --suite benchmarks/任务集/第一版任务集.json --project-root .
+  --suite benchmarks/任务集/第二版任务集.json --project-root .
 
 uv run --no-editable evoweave benchmark audit `
-  --suite benchmarks/任务集/第一版任务集.json `
-  --project-root . --output benchmarks/结果
+  --suite benchmarks/任务集/第二版任务集.json `
+  --project-root . --output benchmarks/结果/第二版
 
 uv run --no-editable evoweave benchmark summarize `
-  --suite benchmarks/任务集/第一版任务集.json `
-  --results benchmarks/结果/真实模型结果.json --output benchmarks/结果
+  --suite benchmarks/任务集/第二版任务集.json `
+  --results benchmarks/结果/第二版/真实模型结果.json `
+  --output benchmarks/结果/第二版
 
 # 真实 API：默认运行动态 Agent + 动态模型；可用 --task 只选部分任务
 uv run --no-editable evoweave benchmark run `
-  --suite benchmarks/任务集/第一版任务集.json `
-  --project-root . --results benchmarks/结果/真实模型结果.json
+  --suite benchmarks/任务集/第二版任务集.json `
+  --project-root . --results benchmarks/结果/第二版/真实模型结果.json
 ```
 
 汇总器不会为缺失实验补零；没有完整的 12 × 3 × 3 同等级运行记录时，效果结论保持 `PENDING`。
@@ -83,7 +84,7 @@ uv sync --group dev --frozen --no-editable
 ./scripts/运行全部检查.ps1
 ```
 
-当前阶段门禁为 Ruff、mypy 严格模式和 227 项完全离线的 pytest 测试，不需要 API Key。端到端测试覆盖单 Agent 更新、两个独立 Agent 真并发、依赖任务排序、模型回退次数上限、高风险暂停、真实 Git 补丁集成和宿主机可信 fixture 的真实 Pytest/Ruff 验证；基准测试还覆盖 12 项隐藏验收自洽性、故障注入、系统级验收、证据持久化、结构化输出有界修复、任务图收益门槛、路由指标拆分、重复实验方差和版本混用拒绝。
+当前阶段门禁为 Ruff、mypy 严格模式和 230 项完全离线的 pytest 测试，不需要 API Key。端到端测试覆盖单 Agent 更新、两个独立 Agent 真并发、依赖任务排序、模型回退次数上限、高风险暂停、真实 Git 补丁集成和宿主机可信 fixture 的真实 Pytest/Ruff 验证；基准测试还覆盖 12 项隐藏验收自洽性、故障注入、系统级验收、证据持久化、结构化输出有界修复、任务图收益门槛、路由指标拆分、重复实验方差、视觉输入尺寸门禁和版本混用拒绝。
 
 Windows 工作区路径包含中文时，当前统一使用非 editable 安装，避免 Python 3.12 在读取 `.pth` 路径时受系统编码影响；这不改变源码布局和打包结果。
 

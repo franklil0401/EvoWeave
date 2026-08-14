@@ -1,0 +1,505 @@
+{
+  "suite_id": "evoweave_v2",
+  "version": 4,
+  "hidden_acceptance_source": "benchmarks/任务集/隐藏验收/hidden_acceptance.py",
+  "hidden_acceptance_sha256": "2e684d9392fecc2fed5fc75ffa6d9ae874daffba5f5948601c7d3f3d496472bc",
+  "tasks": [
+    {
+      "benchmark_id": "bench-01-single-file",
+      "repository_source": "tests/fixtures/repositories/single_module",
+      "repository_fixture": "single_module",
+      "fixture_sha256": "68228af9073cc236eb1f4483c78459331aa2433921a4a3cff00aa1dc228f2f93",
+      "base_commit": "c0eca3a1137c62190990bcd56ba95930866b941b",
+      "objective": "让 VIP 客户类型匹配不区分大小写",
+      "acceptance_criteria": [
+        "vip、Vip 和 VIP 均获得九折",
+        "原有测试继续通过"
+      ],
+      "allowed_paths": [
+        "calculator.py"
+      ],
+      "forbidden_paths": [
+        "pyproject.toml"
+      ],
+      "input_artifacts": [],
+      "human_difficulty": "low",
+      "required_modalities": [
+        "text"
+      ],
+      "gold_paths": [
+        "calculator.py"
+      ],
+      "validation_argv": [
+        [
+          "python",
+          "-m",
+          "pytest",
+          "-q"
+        ]
+      ],
+      "baseline_status": "passing",
+      "scenario_tags": [
+        "single_file",
+        "simple"
+      ]
+    },
+    {
+      "benchmark_id": "bench-02-single-module",
+      "repository_source": "tests/fixtures/repositories/single_module",
+      "repository_fixture": "single_module",
+      "fixture_sha256": "68228af9073cc236eb1f4483c78459331aa2433921a4a3cff00aa1dc228f2f93",
+      "base_commit": "c0eca3a1137c62190990bcd56ba95930866b941b",
+      "objective": "为普通会员增加九五折并补充对应测试",
+      "acceptance_criteria": [
+        "MEMBER 返回九五折",
+        "VIP 行为不变",
+        "新增测试通过"
+      ],
+      "allowed_paths": [
+        "calculator.py",
+        "tests/test_calculator.py"
+      ],
+      "forbidden_paths": [
+        "pyproject.toml"
+      ],
+      "input_artifacts": [],
+      "human_difficulty": "medium",
+      "required_modalities": [
+        "text"
+      ],
+      "gold_paths": [
+        "calculator.py",
+        "tests/test_calculator.py"
+      ],
+      "validation_argv": [
+        [
+          "python",
+          "-m",
+          "pytest",
+          "-q"
+        ]
+      ],
+      "baseline_status": "passing",
+      "scenario_tags": [
+        "single_module"
+      ]
+    },
+    {
+      "benchmark_id": "bench-03-multi-serial",
+      "repository_source": "tests/fixtures/repositories/multi_module",
+      "repository_fixture": "multi_module",
+      "fixture_sha256": "b9f2800bb989ee560b01b0cc9f224138b0f33bd93045c911c2a5248c83b33a0f",
+      "base_commit": "15fdda6d2004e5291abacbf11c727bc977e51409",
+      "objective": "把价格接口改为 calculate_discount(total, customer) 直接接收 Customer，并同步更新依赖它的结账服务",
+      "acceptance_criteria": [
+        "价格函数新签名直接接收 Customer",
+        "checkout_total 使用新签名且服务测试通过"
+      ],
+      "allowed_paths": [
+        "src/shop/pricing.py",
+        "src/shop/service.py"
+      ],
+      "forbidden_paths": [
+        "src/shop/models.py"
+      ],
+      "input_artifacts": [],
+      "human_difficulty": "medium",
+      "required_modalities": [
+        "text"
+      ],
+      "gold_paths": [
+        "src/shop/pricing.py",
+        "src/shop/service.py"
+      ],
+      "validation_argv": [
+        [
+          "python",
+          "-m",
+          "pytest",
+          "-q"
+        ]
+      ],
+      "baseline_status": "passing",
+      "scenario_tags": [
+        "multi_serial"
+      ]
+    },
+    {
+      "benchmark_id": "bench-04-multi-parallel",
+      "repository_source": "tests/fixtures/repositories/multi_module",
+      "repository_fixture": "multi_module",
+      "fixture_sha256": "b9f2800bb989ee560b01b0cc9f224138b0f33bd93045c911c2a5248c83b33a0f",
+      "base_commit": "15fdda6d2004e5291abacbf11c727bc977e51409",
+      "objective": "同时为 Customer 增加 normalized_type 标准化属性，并让价格匹配独立支持大小写与首尾空格",
+      "acceptance_criteria": [
+        "Customer.normalized_type 返回去空格的大写值",
+        "价格模块独立支持大小写与空格",
+        "回归通过"
+      ],
+      "allowed_paths": [
+        "src/shop/models.py",
+        "src/shop/pricing.py"
+      ],
+      "forbidden_paths": [
+        "src/shop/service.py"
+      ],
+      "input_artifacts": [],
+      "human_difficulty": "medium",
+      "required_modalities": [
+        "text"
+      ],
+      "gold_paths": [
+        "src/shop/models.py",
+        "src/shop/pricing.py"
+      ],
+      "validation_argv": [
+        [
+          "python",
+          "-m",
+          "pytest",
+          "-q"
+        ]
+      ],
+      "baseline_status": "passing",
+      "scenario_tags": [
+        "multi_parallel"
+      ]
+    },
+    {
+      "benchmark_id": "bench-05-low-confidence",
+      "repository_source": "tests/fixtures/repositories/multi_module",
+      "repository_fixture": "multi_module",
+      "fixture_sha256": "b9f2800bb989ee560b01b0cc9f224138b0f33bd93045c911c2a5248c83b33a0f",
+      "base_commit": "15fdda6d2004e5291abacbf11c727bc977e51409",
+      "objective": "修复客户类型带首尾空格或大小写变化时，结账金额不符合优惠规则的问题",
+      "acceptance_criteria": [
+        "定位真实影响链",
+        "Customer 模型文件保持不变",
+        "VIP 的空格与大小写变体均获得九折",
+        "回归通过"
+      ],
+      "allowed_paths": [
+        "src/shop"
+      ],
+      "forbidden_paths": [
+        "pyproject.toml"
+      ],
+      "input_artifacts": [],
+      "human_difficulty": "high",
+      "required_modalities": [
+        "text"
+      ],
+      "gold_paths": [
+        "src/shop/pricing.py",
+        "src/shop/service.py"
+      ],
+      "validation_argv": [
+        [
+          "python",
+          "-m",
+          "pytest",
+          "-q"
+        ]
+      ],
+      "baseline_status": "passing",
+      "scenario_tags": [
+        "low_confidence"
+      ]
+    },
+    {
+      "benchmark_id": "bench-06-baseline-failure",
+      "repository_source": "tests/fixtures/repositories/baseline_failure",
+      "repository_fixture": "baseline_failure",
+      "fixture_sha256": "96e29335ab321c0c730ac24a99b691dba00c169120320fe7bc8b94a47bd5b7ab",
+      "base_commit": "ffb6556f85c458cc39c5a2865f323ee58850ae9f",
+      "objective": "让除数为零时抛出包含 right 和 zero 的 ValueError，同时不要掩盖已有失败",
+      "acceptance_criteria": [
+        "零除抛出明确的 ValueError",
+        "验证报告区分已有失败与新增失败"
+      ],
+      "allowed_paths": [
+        "app.py"
+      ],
+      "forbidden_paths": [
+        "tests/test_existing_failure.py"
+      ],
+      "input_artifacts": [],
+      "human_difficulty": "high",
+      "required_modalities": [
+        "text"
+      ],
+      "gold_paths": [
+        "app.py"
+      ],
+      "validation_argv": [
+        [
+          "python",
+          "-m",
+          "pytest",
+          "-q"
+        ]
+      ],
+      "baseline_status": "failing",
+      "scenario_tags": [
+        "baseline_failure"
+      ]
+    },
+    {
+      "benchmark_id": "bench-07-write-conflict",
+      "repository_source": "tests/fixtures/repositories/multi_module",
+      "repository_fixture": "multi_module",
+      "fixture_sha256": "b9f2800bb989ee560b01b0cc9f224138b0f33bd93045c911c2a5248c83b33a0f",
+      "base_commit": "15fdda6d2004e5291abacbf11c727bc977e51409",
+      "objective": "把 VIP 折扣调整为八五折，同时对客户类型执行 strip 和大小写规范化，并安全处理同一函数写冲突",
+      "acceptance_criteria": [
+        "冲突不被静默覆盖",
+        "VIP 空格与大小写变体均返回八五折"
+      ],
+      "allowed_paths": [
+        "src/shop/pricing.py"
+      ],
+      "forbidden_paths": [
+        "src/shop/service.py"
+      ],
+      "input_artifacts": [],
+      "human_difficulty": "high",
+      "required_modalities": [
+        "text"
+      ],
+      "gold_paths": [
+        "src/shop/pricing.py"
+      ],
+      "validation_argv": [
+        [
+          "python",
+          "-m",
+          "pytest",
+          "-q"
+        ]
+      ],
+      "baseline_status": "passing",
+      "scenario_tags": [
+        "write_conflict"
+      ]
+    },
+    {
+      "benchmark_id": "bench-08-high-risk",
+      "repository_source": "tests/fixtures/repositories/single_module",
+      "repository_fixture": "single_module",
+      "fixture_sha256": "68228af9073cc236eb1f4483c78459331aa2433921a4a3cff00aa1dc228f2f93",
+      "base_commit": "c0eca3a1137c62190990bcd56ba95930866b941b",
+      "objective": "为支付折扣增加 authorized 关键字权限参数和安全校验，未授权时拒绝计算",
+      "acceptance_criteria": [
+        "未授权调用抛出 PermissionError",
+        "authorized=True 时 VIP 仍为九折",
+        "批准后仍受路径与测试门禁"
+      ],
+      "allowed_paths": [
+        "calculator.py"
+      ],
+      "forbidden_paths": [
+        "pyproject.toml"
+      ],
+      "input_artifacts": [],
+      "human_difficulty": "high",
+      "required_modalities": [
+        "text"
+      ],
+      "gold_paths": [
+        "calculator.py"
+      ],
+      "validation_argv": [
+        [
+          "python",
+          "-m",
+          "pytest",
+          "-q"
+        ]
+      ],
+      "baseline_status": "passing",
+      "scenario_tags": [
+        "high_risk"
+      ]
+    },
+    {
+      "benchmark_id": "bench-09-image-ui",
+      "repository_source": "tests/fixtures/repositories/single_module",
+      "repository_fixture": "single_module",
+      "fixture_sha256": "68228af9073cc236eb1f4483c78459331aa2433921a4a3cff00aa1dc228f2f93",
+      "base_commit": "c0eca3a1137c62190990bcd56ba95930866b941b",
+      "objective": "根据截图新增登录折扣提示界面，包含 data-testid=discount-login-hint 的提示节点",
+      "acceptance_criteria": [
+        "界面包含“登录后可查看专属折扣”",
+        "提示节点具有指定 data-testid",
+        "后端折扣逻辑不被修改"
+      ],
+      "allowed_paths": [
+        "web/login.html"
+      ],
+      "forbidden_paths": [
+        "calculator.py"
+      ],
+      "input_artifacts": [
+        {
+          "source": "benchmarks/任务集/输入/界面截图-第二版.png.b64",
+          "sha256": "daee63ad4cc66f1e7af50a6b649bda153c3cf258c8510ec064e87063e24ccff9",
+          "media_type": "image/png",
+          "needed_by_task": true
+        }
+      ],
+      "human_difficulty": "high",
+      "required_modalities": [
+        "text",
+        "image"
+      ],
+      "gold_paths": [
+        "web/login.html"
+      ],
+      "validation_argv": [
+        [
+          "python",
+          "-m",
+          "pytest",
+          "-q"
+        ]
+      ],
+      "baseline_status": "passing",
+      "scenario_tags": [
+        "image_relevant"
+      ]
+    },
+    {
+      "benchmark_id": "bench-10-image-architecture",
+      "repository_source": "tests/fixtures/repositories/multi_module",
+      "repository_fixture": "multi_module",
+      "fixture_sha256": "b9f2800bb989ee560b01b0cc9f224138b0f33bd93045c911c2a5248c83b33a0f",
+      "base_commit": "15fdda6d2004e5291abacbf11c727bc977e51409",
+      "objective": "参考架构图把价格模块改为 discount_amount(total, customer_type) 返回优惠金额，并由服务层执行原价减优惠金额",
+      "acceptance_criteria": [
+        "价格模块返回优惠金额",
+        "服务层负责计算最终金额",
+        "模块测试通过"
+      ],
+      "allowed_paths": [
+        "src/shop/pricing.py",
+        "src/shop/service.py"
+      ],
+      "forbidden_paths": [
+        "src/shop/models.py"
+      ],
+      "input_artifacts": [
+        {
+          "source": "benchmarks/任务集/输入/架构图-第二版.png.b64",
+          "sha256": "9faa29e636147df00ac5c72ff5609cd91bc8addddbc66d7b8c10a770cc42451d",
+          "media_type": "image/png",
+          "needed_by_task": true
+        }
+      ],
+      "human_difficulty": "high",
+      "required_modalities": [
+        "text",
+        "image"
+      ],
+      "gold_paths": [
+        "src/shop/pricing.py",
+        "src/shop/service.py"
+      ],
+      "validation_argv": [
+        [
+          "python",
+          "-m",
+          "pytest",
+          "-q"
+        ]
+      ],
+      "baseline_status": "passing",
+      "scenario_tags": [
+        "image_relevant",
+        "multi_serial"
+      ]
+    },
+    {
+      "benchmark_id": "bench-11-image-negative",
+      "repository_source": "tests/fixtures/repositories/multi_module",
+      "repository_fixture": "multi_module",
+      "fixture_sha256": "b9f2800bb989ee560b01b0cc9f224138b0f33bd93045c911c2a5248c83b33a0f",
+      "base_commit": "15fdda6d2004e5291abacbf11c727bc977e51409",
+      "objective": "让价格匹配忽略客户类型大小写；附图与代码任务无关",
+      "acceptance_criteria": [
+        "纯文本任务不接收原图",
+        "价格测试通过"
+      ],
+      "allowed_paths": [
+        "src/shop/pricing.py"
+      ],
+      "forbidden_paths": [
+        "src/shop/service.py"
+      ],
+      "input_artifacts": [
+        {
+          "source": "benchmarks/任务集/输入/无关图片-第二版.png.b64",
+          "sha256": "ae844b4f0a4c9f15c5cfa0cae4f0002ba4a9beffb97466cedd1e72718ebfb700",
+          "media_type": "image/png",
+          "needed_by_task": false
+        }
+      ],
+      "human_difficulty": "low",
+      "required_modalities": [
+        "text"
+      ],
+      "gold_paths": [
+        "src/shop/pricing.py"
+      ],
+      "validation_argv": [
+        [
+          "python",
+          "-m",
+          "pytest",
+          "-q"
+        ]
+      ],
+      "baseline_status": "passing",
+      "scenario_tags": [
+        "image_negative"
+      ]
+    },
+    {
+      "benchmark_id": "bench-12-model-fallback",
+      "repository_source": "tests/fixtures/repositories/single_module",
+      "repository_fixture": "single_module",
+      "fixture_sha256": "68228af9073cc236eb1f4483c78459331aa2433921a4a3cff00aa1dc228f2f93",
+      "base_commit": "c0eca3a1137c62190990bcd56ba95930866b941b",
+      "objective": "首选模型不可用时继续完成客户类型大小写修复",
+      "acceptance_criteria": [
+        "创建新 Agent 和新版路由",
+        "最终补丁通过测试"
+      ],
+      "allowed_paths": [
+        "calculator.py"
+      ],
+      "forbidden_paths": [
+        "pyproject.toml"
+      ],
+      "input_artifacts": [],
+      "human_difficulty": "low",
+      "required_modalities": [
+        "text"
+      ],
+      "gold_paths": [
+        "calculator.py"
+      ],
+      "validation_argv": [
+        [
+          "python",
+          "-m",
+          "pytest",
+          "-q"
+        ]
+      ],
+      "baseline_status": "passing",
+      "scenario_tags": [
+        "model_fallback"
+      ]
+    }
+  ]
+}

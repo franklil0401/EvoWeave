@@ -509,7 +509,7 @@ def test_timeout_is_deterministic_with_injected_clock() -> None:
 def test_runtime_only_attaches_original_image_to_visual_spec() -> None:
     store = InMemoryArtifactStore()
     buffer = BytesIO()
-    Image.new("RGB", (2, 2), color="green").save(buffer, format="PNG")
+    Image.new("RGB", (16, 16), color="green").save(buffer, format="PNG")
     image = PillowImageIngestor(store).ingest_image(
         ImageInput(data=buffer.getvalue(), declared_media_type="image/png"),
         policy=ImageIngestionPolicy(),

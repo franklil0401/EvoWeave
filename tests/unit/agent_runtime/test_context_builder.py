@@ -19,7 +19,7 @@ from evoweave.infrastructure.artifacts.memory import InMemoryArtifactStore
 
 def _png() -> bytes:
     buffer = BytesIO()
-    Image.new("RGB", (3, 2), color="blue").save(buffer, format="PNG")
+    Image.new("RGB", (16, 16), color="blue").save(buffer, format="PNG")
     return buffer.getvalue()
 
 

@@ -25,7 +25,8 @@ from evoweave.benchmarking.suite_loader import (
 )
 
 _PROJECT_ROOT = Path(__file__).parents[2]
-_SUITE_PATH = _PROJECT_ROOT / "benchmarks/任务集/第一版任务集.json"
+_SUITE_PATH = _PROJECT_ROOT / "benchmarks/任务集/第二版任务集.json"
+_LEGACY_SUITE_PATH = _PROJECT_ROOT / "benchmarks/任务集/第一版任务集.json"
 _SUITE_DIGEST = sha256(_SUITE_PATH.read_bytes()).hexdigest()
 
 
@@ -44,8 +45,15 @@ def test_fixed_suite_verifies_tasks_commits_and_image_hashes(tmp_path: Path) -> 
     assert report.image_task_count == 2
     assert report.image_negative_count == 1
     assert len(report.verified_asset_sha256s) == 3
+    assert len(report.verified_image_dimensions) == 3
+    assert all("x" in item for item in report.verified_image_dimensions)
     assert report.verified_hidden_acceptance_sha256 == suite.hidden_acceptance_sha256
     assert materialized.base_commit == suite.tasks[0].base_commit
+
+
+def test_legacy_suite_exposes_too_small_visual_placeholders() -> None:
+    with pytest.raises(ValueError, match="图片宽高低于模型兼容下限"):
+        validate_benchmark_suite(_PROJECT_ROOT, _LEGACY_SUITE_PATH)
 
 
 def test_adaptive_planning_matches_locked_difficulty_labels() -> None:

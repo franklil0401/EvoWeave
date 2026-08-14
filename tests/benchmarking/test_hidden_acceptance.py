@@ -9,7 +9,7 @@ from evoweave.benchmarking.materializer import FixtureMaterializer
 from evoweave.benchmarking.suite_loader import load_benchmark_suite
 
 _PROJECT_ROOT = Path(__file__).parents[2]
-_SUITE_PATH = _PROJECT_ROOT / "benchmarks/任务集/第一版任务集.json"
+_SUITE_PATH = _PROJECT_ROOT / "benchmarks/任务集/第二版任务集.json"
 _HIDDEN = _PROJECT_ROOT / "benchmarks/任务集/隐藏验收/hidden_acceptance.py"
 
 

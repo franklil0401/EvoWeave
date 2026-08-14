@@ -159,7 +159,7 @@ class OpenAICompatibleModelGateway:
             body=payload,
             timeout_seconds=self._timeout_seconds,
         )
-        data = _response_json(response)
+        data = _response_json(response, has_attachments=bool(request.attachments))
         try:
             text = data["choices"][0]["message"]["content"]
             usage = data.get("usage", {})
@@ -303,12 +303,24 @@ def _split_model_key(model_key: str) -> tuple[str, str]:
     return provider, model_id
 
 
-def _response_json(response: HttpResponse) -> dict[str, Any]:
+def _response_json(response: HttpResponse, *, has_attachments: bool = False) -> dict[str, Any]:
     if not 200 <= response.status < 300:
+        provider_error_code = _provider_error_code(response.body)
+        if response.status == 400:
+            code = (
+                ErrorCode.IMAGE_REJECTED if has_attachments else ErrorCode.MODEL_CAPABILITY_MISMATCH
+            )
+            message = "模型拒绝图片输入" if has_attachments else "模型请求参数不兼容"
+        else:
+            code = ErrorCode.MODEL_UNAVAILABLE
+            message = "模型服务返回非成功状态"
         raise DomainError(
-            ErrorCode.MODEL_UNAVAILABLE,
-            "模型服务返回非成功状态",
-            details={"http_status": response.status},
+            code,
+            message,
+            details={
+                "http_status": response.status,
+                "provider_error_code": provider_error_code,
+            },
         )
     try:
         data = json.loads(response.body)
@@ -317,6 +329,19 @@ def _response_json(response: HttpResponse) -> dict[str, Any]:
     if not isinstance(data, dict):
         raise DomainError(ErrorCode.INVALID_MODEL_OUTPUT, "模型服务 JSON 顶层必须为对象")
     return data
+
+
+def _provider_error_code(body: bytes) -> str | None:
+    try:
+        data = json.loads(body)
+    except (json.JSONDecodeError, UnicodeDecodeError):
+        return None
+    if not isinstance(data, dict) or not isinstance(data.get("error"), dict):
+        return None
+    value = data["error"].get("code")
+    if not isinstance(value, str) or not value or len(value) > 128:
+        return None
+    return value
 
 
 def _content_text(value: object) -> str:

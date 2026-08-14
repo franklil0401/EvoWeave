@@ -16,7 +16,7 @@ from evoweave.infrastructure.artifacts.memory import InMemoryArtifactStore
 def _image_bytes(
     *,
     image_format: str = "PNG",
-    size: tuple[int, int] = (4, 3),
+    size: tuple[int, int] = (16, 16),
     frames: int = 1,
 ) -> bytes:
     buffer = BytesIO()
@@ -41,7 +41,7 @@ def test_valid_png_is_decoded_hashed_and_persisted() -> None:
     )
     assert isinstance(store.get_ref(ref.artifact_id), InputArtifactRef)
     assert ref.security_status is ArtifactSecurityStatus.ACCEPTED
-    assert (ref.width_px, ref.height_px) == (4, 3)
+    assert (ref.width_px, ref.height_px) == (16, 16)
     assert store.get_bytes(ref.artifact_id) == data
 
 
@@ -75,9 +75,23 @@ def test_image_byte_limit_is_checked_before_decode() -> None:
 def test_image_pixel_limit_is_enforced() -> None:
     with pytest.raises(DomainError, match="像素"):
         PillowImageIngestor(InMemoryArtifactStore()).ingest_image(
-            ImageInput(data=_image_bytes(size=(10, 10)), declared_media_type="image/png"),
-            policy=ImageIngestionPolicy(max_pixels=99),
+            ImageInput(data=_image_bytes(size=(16, 16)), declared_media_type="image/png"),
+            policy=ImageIngestionPolicy(max_pixels=255),
         )
+
+
+def test_image_provider_dimension_floor_is_enforced() -> None:
+    with pytest.raises(DomainError, match="兼容下限") as error:
+        PillowImageIngestor(InMemoryArtifactStore()).ingest_image(
+            ImageInput(data=_image_bytes(size=(13, 16)), declared_media_type="image/png"),
+            policy=ImageIngestionPolicy(),
+        )
+    assert error.value.details == {
+        "width_px": 13,
+        "height_px": 16,
+        "min_width_px": 14,
+        "min_height_px": 14,
+    }
 
 
 def test_animated_image_is_rejected() -> None:

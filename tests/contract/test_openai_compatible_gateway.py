@@ -1,7 +1,11 @@
 import json
 from collections.abc import Mapping
 
-from evoweave.domain.ports import ModelRequest
+import pytest
+
+from evoweave.domain.errors import DomainError, ErrorCode
+from evoweave.domain.identifiers import ArtifactId
+from evoweave.domain.ports import ModelAttachment, ModelRequest
 from evoweave.infrastructure.models.doctor import ModelDoctor
 from evoweave.infrastructure.models.openai_compatible import (
     HttpResponse,
@@ -111,3 +115,57 @@ def test_network_doctor_lists_models_without_completions() -> None:
     assert result.reachable is True
     assert result.discovered_model_ids == ("deepseek-v4-flash", "other")
     assert [item["method"] for item in transport.calls] == ["GET"]
+
+
+class ImageRejectionTransport(FakeTransport):
+    def request(
+        self,
+        *,
+        method: str,
+        url: str,
+        headers: Mapping[str, str],
+        body: bytes | None,
+        timeout_seconds: int,
+    ) -> HttpResponse:
+        return HttpResponse(
+            status=400,
+            body=json.dumps(
+                {
+                    "error": {
+                        "code": "invalid_parameter_error",
+                        "message": "provider message must not be persisted",
+                    }
+                }
+            ).encode(),
+        )
+
+
+def test_gateway_classifies_image_rejection_without_provider_message() -> None:
+    gateway = OpenAICompatibleModelGateway(
+        default_provider_configs(),
+        transport=ImageRejectionTransport(),
+        environment={"Qianwen_api_key": "secret-for-test"},
+    )
+
+    with pytest.raises(DomainError) as error:
+        gateway.complete(
+            ModelRequest(
+                model_key="qianwen:qwen3.7-flash",
+                messages=("system", "user"),
+                max_output_tokens=64,
+                attachments=(
+                    ModelAttachment(
+                        artifact_id=ArtifactId.new(),
+                        media_type="image/png",
+                        data=b"png",
+                    ),
+                ),
+            )
+        )
+
+    assert error.value.code is ErrorCode.IMAGE_REJECTED
+    assert error.value.message == "模型拒绝图片输入"
+    assert error.value.details == {
+        "http_status": 400,
+        "provider_error_code": "invalid_parameter_error",
+    }

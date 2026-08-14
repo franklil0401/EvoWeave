@@ -9,7 +9,12 @@ from pydantic import Field
 
 from evoweave.benchmarking.materializer import FixtureMaterializer, fixture_sha256
 from evoweave.benchmarking.models import BenchmarkSuite, BenchmarkTask
+from evoweave.domain.artifacts import ImageIngestionPolicy
 from evoweave.domain.base import DomainModel
+from evoweave.domain.errors import DomainError
+from evoweave.domain.ports import ImageInput
+from evoweave.infrastructure.artifacts.image_ingestor import PillowImageIngestor
+from evoweave.infrastructure.artifacts.memory import InMemoryArtifactStore
 
 
 class SuiteValidationReport(DomainModel):
@@ -21,6 +26,7 @@ class SuiteValidationReport(DomainModel):
     image_negative_count: int = Field(ge=1)
     verified_commits: tuple[str, ...]
     verified_asset_sha256s: tuple[str, ...]
+    verified_image_dimensions: tuple[str, ...]
     verified_hidden_acceptance_sha256: str = Field(pattern=r"^[0-9a-f]{64}$")
 
 
@@ -73,6 +79,8 @@ def validate_benchmark_suite(
             verified_commits.append(materialized.base_commit)
 
     verified_assets: set[str] = set()
+    verified_dimensions: set[str] = set()
+    image_ingestor = PillowImageIngestor(InMemoryArtifactStore())
     for task in suite.tasks:
         for artifact in task.input_artifacts:
             source = (root / artifact.source).resolve(strict=True)
@@ -86,7 +94,21 @@ def validate_benchmark_suite(
             digest = sha256(data).hexdigest()
             if digest != artifact.sha256:
                 raise ValueError(f"benchmark 图片摘要漂移：{artifact.source}")
+            try:
+                ref = image_ingestor.ingest_image(
+                    ImageInput(
+                        data=data,
+                        declared_media_type=artifact.media_type,
+                        original_name=source.name.removesuffix(".b64"),
+                    ),
+                    policy=ImageIngestionPolicy(),
+                )
+            except DomainError as exc:
+                raise ValueError(
+                    f"benchmark 图片不满足模型兼容要求：{artifact.source}（{exc.message}）"
+                ) from exc
             verified_assets.add(digest)
+            verified_dimensions.add(f"{digest}:{ref.width_px}x{ref.height_px}")
 
     return SuiteValidationReport(
         suite_id=suite.suite_id,
@@ -97,5 +119,6 @@ def validate_benchmark_suite(
         image_negative_count=sum("image_negative" in task.scenario_tags for task in suite.tasks),
         verified_commits=tuple(sorted(verified_commits)),
         verified_asset_sha256s=tuple(sorted(verified_assets)),
+        verified_image_dimensions=tuple(sorted(verified_dimensions)),
         verified_hidden_acceptance_sha256=hidden_digest,
     )

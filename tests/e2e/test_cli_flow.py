@@ -97,7 +97,7 @@ def test_cli_benchmark_validates_fixed_suite_and_keeps_empty_results_pending(
     capsys,
 ) -> None:
     project_root = Path(__file__).parents[2]
-    suite = project_root / "benchmarks/任务集/第一版任务集.json"
+    suite = project_root / "benchmarks/任务集/第二版任务集.json"
     results = project_root / "benchmarks/结果/结果模板.json"
 
     assert (

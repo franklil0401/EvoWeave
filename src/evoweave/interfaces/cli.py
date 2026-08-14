@@ -127,7 +127,7 @@ def build_parser() -> argparse.ArgumentParser:
     benchmark_validate.add_argument(
         "--suite",
         type=Path,
-        default=Path("benchmarks/任务集/第一版任务集.json"),
+        default=Path("benchmarks/任务集/第二版任务集.json"),
     )
     benchmark_validate.add_argument("--project-root", type=Path, default=Path("."))
     _json_argument(benchmark_validate)
@@ -138,7 +138,7 @@ def build_parser() -> argparse.ArgumentParser:
     benchmark_summarize.add_argument(
         "--suite",
         type=Path,
-        default=Path("benchmarks/任务集/第一版任务集.json"),
+        default=Path("benchmarks/任务集/第二版任务集.json"),
     )
     benchmark_summarize.add_argument("--results", type=Path, required=True)
     benchmark_summarize.add_argument("--output", type=Path, required=True)
@@ -150,7 +150,7 @@ def build_parser() -> argparse.ArgumentParser:
     benchmark_audit.add_argument(
         "--suite",
         type=Path,
-        default=Path("benchmarks/任务集/第一版任务集.json"),
+        default=Path("benchmarks/任务集/第二版任务集.json"),
     )
     benchmark_audit.add_argument("--project-root", type=Path, default=Path("."))
     benchmark_audit.add_argument("--output", type=Path, required=True)
@@ -162,7 +162,7 @@ def build_parser() -> argparse.ArgumentParser:
     benchmark_run.add_argument(
         "--suite",
         type=Path,
-        default=Path("benchmarks/任务集/第一版任务集.json"),
+        default=Path("benchmarks/任务集/第二版任务集.json"),
     )
     benchmark_run.add_argument("--project-root", type=Path, default=Path("."))
     benchmark_run.add_argument(

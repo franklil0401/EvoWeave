@@ -4,7 +4,7 @@ import subprocess
 from pathlib import Path
 
 from evoweave.domain.errors import DomainError, ErrorCode
-from evoweave.domain.identifiers import WorkspaceId
+from evoweave.domain.identifiers import IntegrationId, WorkspaceId
 
 
 class GitWorktreeController:
@@ -26,7 +26,7 @@ class GitWorktreeController:
     def worktree_root(self) -> Path:
         return self._worktree_root
 
-    def path_for(self, workspace_id: WorkspaceId) -> Path:
+    def path_for(self, workspace_id: WorkspaceId | IntegrationId) -> Path:
         path = (self._worktree_root / str(workspace_id)).resolve()
         if path.parent != self._worktree_root:
             raise DomainError(ErrorCode.WORKSPACE_ACCESS_DENIED, "工作区目标路径越界")
@@ -35,7 +35,7 @@ class GitWorktreeController:
     def create(
         self,
         *,
-        workspace_id: WorkspaceId,
+        workspace_id: WorkspaceId | IntegrationId,
         branch_name: str,
         base_commit: str,
     ) -> Path:

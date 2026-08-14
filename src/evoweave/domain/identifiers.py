@@ -83,3 +83,7 @@ class WorkspaceId(Identifier):
 
 class TaskLeaseId(Identifier):
     prefix = "lease"
+
+
+class IntegrationId(Identifier):
+    prefix = "integration"

@@ -86,6 +86,44 @@ class TaskLeaseStatus(StrEnum):
     EXPIRED = "expired"
 
 
+class IntegrationStatus(StrEnum):
+    CREATING = "creating"
+    ACTIVE = "active"
+    RELEASING = "releasing"
+    RELEASED = "released"
+    FAILED = "failed"
+
+
+class PatchConflictKind(StrEnum):
+    BASE_MISMATCH = "base_mismatch"
+    INTEGRITY = "integrity"
+    SYNTAX = "syntax"
+    PATH_SCOPE = "path_scope"
+    SENSITIVE_PATH = "sensitive_path"
+    WRITE_SET = "write_set"
+    APPLY = "apply"
+
+
+class ValidationPhase(StrEnum):
+    BASELINE = "baseline"
+    CANDIDATE = "candidate"
+    CANDIDATE_RETRY = "candidate_retry"
+
+
+class ValidationScope(StrEnum):
+    LOCAL = "local"
+    IMPACT = "impact"
+    FULL = "full"
+    LINT = "lint"
+
+
+class FailureClassification(StrEnum):
+    PRE_EXISTING = "pre_existing"
+    NEW = "new"
+    RESOLVED = "resolved"
+    UNSTABLE = "unstable"
+
+
 class TaskDifficulty(StrEnum):
     LOW = "low"
     MEDIUM = "medium"

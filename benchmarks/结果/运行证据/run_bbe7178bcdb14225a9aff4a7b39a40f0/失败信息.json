@@ -1,0 +1,38 @@
+{
+  "details": {
+    "direct_errors": [
+      {
+        "ctx": {
+          "error": "expected value at line 1 column 1"
+        },
+        "input": "```json\n{\n  \"action\": \"finish\",\n  \"status\": \"failed\",\n  \"summary\": \"经检查，calculator.py 中的 calculate_discount 函数仅支持 'VIP' 类型，不支持 'vip' 和 'Vip'，不满足验收条件。测试文件也缺少相关测试用例。风险在于现有实现缺乏大小写兼容性，可能导致非预期行为。由于当前处于只读模式且无法修改文件，无法完成功能修正，故判定任务失败。\",\n  \"risk_level\": \"low\",\n  \"risk_notes\": [\n    \"代码缺乏对 customer_type 的大小写不敏感处理\"\n  ]\n}\n```",
+        "loc": [],
+        "msg": "Invalid JSON: expected value at line 1 column 1",
+        "type": "json_invalid"
+      }
+    ],
+    "extraction_errors": [
+      {
+        "ctx": {
+          "error": "非成功决定必须包含失败代码和消息"
+        },
+        "input": {
+          "action": "finish",
+          "risk_level": "low",
+          "risk_notes": [
+            "代码缺乏对 customer_type 的大小写不敏感处理"
+          ],
+          "status": "failed",
+          "summary": "经检查，calculator.py 中的 calculate_discount 函数仅支持 'VIP' 类型，不支持 'vip' 和 'Vip'，不满足验收条件。测试文件也缺少相关测试用例。风险在于现有实现缺乏大小写兼容性，可能导致非预期行为。由于当前处于只读模式且无法修改文件，无法完成功能修正，故判定任务失败。"
+        },
+        "loc": [
+          "finish"
+        ],
+        "msg": "Value error, 非成功决定必须包含失败代码和消息",
+        "type": "value_error"
+      }
+    ]
+  },
+  "error_code": "invalid_model_output",
+  "message": "模型输出不符合 Worker 决策协议"
+}

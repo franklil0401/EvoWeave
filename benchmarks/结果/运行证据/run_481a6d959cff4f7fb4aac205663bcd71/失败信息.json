@@ -1,0 +1,5 @@
+{
+  "details": {},
+  "error_code": "validation_failed",
+  "message": "验收不通过：pricing.calculate_discount 仅对 customer_type == 'VIP' 精确匹配。'VIP' 的空格/大小写变体（如 'vip'、' VIP '、'Vip'）不会获得九折；tests/test_service.py 仅覆盖精确 'VIP'。另 src/shop/legacy_broken.py 存在语法错误，可能影响 ruff/mypy 回归。"
+}

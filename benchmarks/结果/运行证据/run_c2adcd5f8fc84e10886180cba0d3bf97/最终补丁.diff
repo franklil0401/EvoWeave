@@ -1,0 +1,12 @@
+diff --git a/src/shop/pricing.py b/src/shop/pricing.py
+index 77dd772982c4544e14c165bb5f964dc2cc53cf7b..d4caae6c450f81b3758be0716b5fee15ec9830a2 100644
+--- a/src/shop/pricing.py
++++ b/src/shop/pricing.py
+@@ -1,4 +1,4 @@
+ def calculate_discount(total: float, customer_type: str) -> float:
+-    if customer_type == "VIP":
++    if customer_type.lower() == "VIP":
+         return total * 0.9
+-    return total
++    return total
+\ No newline at end of file

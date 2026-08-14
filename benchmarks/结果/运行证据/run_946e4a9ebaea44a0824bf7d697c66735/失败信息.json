@@ -1,0 +1,5 @@
+{
+  "details": {},
+  "error_code": "validation_failed",
+  "message": "价格函数 calculate_discount 的签名仍为 (total: float, customer_type: str)，未直接接收 Customer 对象，不满足验收条件。"
+}

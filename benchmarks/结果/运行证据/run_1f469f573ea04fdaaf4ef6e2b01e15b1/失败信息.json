@@ -1,0 +1,5 @@
+{
+  "details": {},
+  "error_code": "validation_failed",
+  "message": "当前代码未实现 MEMBER 九五折逻辑，且无对应新增测试；仅 VIP 行为保持正确（9 折未变）。"
+}

@@ -1,0 +1,263 @@
+{
+  "run_id": "run_a2011c60af7444c7bb83b8ae579d5519",
+  "version": 4,
+  "graph": {
+    "graph_id": "graph_3d94680780f34cfea70ef1f2076c1e20",
+    "run_id": "run_a2011c60af7444c7bb83b8ae579d5519",
+    "version": 9,
+    "nodes": [
+      {
+        "task_id": "task_0b9759b333ac435699836b228c488ac9",
+        "task_spec_version": 1,
+        "status": "failed",
+        "attempts": 2
+      }
+    ],
+    "edges": [],
+    "created_at": "2026-08-14T12:48:29.264899Z"
+  },
+  "task_specs": [
+    {
+      "spec_id": "spec_b6feda0df48345059ecf22c2a340b3ee",
+      "task_id": "task_0b9759b333ac435699836b228c488ac9",
+      "change_spec_id": "spec_80d3911c18e449c4a993c133e73c9a60",
+      "goal": "让价格匹配忽略客户类型大小写；附图与代码任务无关\n本任务只负责写范围：src/shop/pricing.py；可以读取授权仓库证据，但不得修改其他路径。",
+      "base_commit": "15fdda6d2004e5291abacbf11c727bc977e51409",
+      "acceptance_criteria": [
+        "纯文本任务不接收原图",
+        "价格测试通过"
+      ],
+      "depends_on": [],
+      "input_artifact_ids": [],
+      "context_artifact_ids": [
+        "artifact_2386b580ab574bdf8709bd7c84b7171b"
+      ],
+      "read_scope": [
+        ".github/workflows/ci.yml",
+        "pyproject.toml",
+        "src/shop/__init__.py",
+        "src/shop/legacy_broken.py",
+        "src/shop/models.py",
+        "src/shop/pricing.py",
+        "src/shop/service.py",
+        "tests/test_service.py"
+      ],
+      "write_scope": [
+        "src/shop/pricing.py"
+      ],
+      "required_modalities": [
+        "text"
+      ],
+      "difficulty": {
+        "difficulty": "low",
+        "rationale": "仓库证据规则评分 0；单一、明确且低风险的候选范围",
+        "evidence_ids": [
+          "evidence_1dc740337b2854b6c0b155be",
+          "evidence_65407f4fe0f339d057c8189d",
+          "evidence_860316578bf7ace3a4ac60cc",
+          "evidence_583d010c4675fa2b5541bd97",
+          "evidence_7615d891088b843690416a09",
+          "evidence_8641529085cab769d26abdd1",
+          "evidence_8a0c0e1dbfe0841efb0509f1",
+          "evidence_3616d3b9402cea2dd3889ca7",
+          "evidence_fd0b317dc5e16a4e8d4564c2",
+          "evidence_0b4ce13b603cc451de040304",
+          "evidence_9a7de0ea556122ec1b77d253",
+          "evidence_5bc229732d3c9973b3c45a51",
+          "evidence_8111f34bcc970d42a5797940",
+          "evidence_e7b59004e0b0ac35c0ddb924"
+        ],
+        "version": 1
+      },
+      "model_requirement": {
+        "requirement_id": "spec_729f697f0fe638ccbb00030a",
+        "task_id": "task_0b9759b333ac435699836b228c488ac9",
+        "difficulty": "low",
+        "required_modalities": [
+          "text"
+        ],
+        "min_context_tokens": 8000,
+        "min_output_tokens": 2000,
+        "requires_tool_calling": true,
+        "requires_structured_output": true,
+        "requires_thinking": false,
+        "version": 1
+      },
+      "risk_level": "low",
+      "version": 1
+    }
+  ],
+  "execution_specs": [
+    {
+      "spec_id": "spec_6b0806ae1eaa43f495635d78e74ae8e7",
+      "run_id": "run_a2011c60af7444c7bb83b8ae579d5519",
+      "agent_id": "agent_1b4b51a2baf843ef96f356bb604a562b",
+      "task_id": "task_0b9759b333ac435699836b228c488ac9",
+      "task_spec_id": "spec_b6feda0df48345059ecf22c2a340b3ee",
+      "task_spec_version": 1,
+      "base_commit": "15fdda6d2004e5291abacbf11c727bc977e51409",
+      "goal": "让价格匹配忽略客户类型大小写；附图与代码任务无关\n本任务只负责写范围：src/shop/pricing.py；可以读取授权仓库证据，但不得修改其他路径。",
+      "acceptance_criteria": [
+        "纯文本任务不接收原图",
+        "价格测试通过"
+      ],
+      "required_modalities": [
+        "text"
+      ],
+      "model_routing": {
+        "decision_id": "spec_fa3aea08e0944644987023f3077c8af5",
+        "requirement_id": "spec_729f697f0fe638ccbb00030a",
+        "requirement_version": 1,
+        "selected_model_key": "deepseek:deepseek-v4-flash",
+        "selected_availability": "available",
+        "selected_snapshot": null,
+        "reason": "任务难度为 low，选择满足全部硬约束的 low 档最高优先级模型",
+        "fallback_model_keys": [
+          "doubao:doubao-seed-2-0-mini-260428",
+          "qianwen:qwen3.7-flash",
+          "doubao:doubao-seed-2-1-turbo-260628"
+        ],
+        "rejected_candidates": [],
+        "capability_snapshot_at": "2026-08-14T12:27:30.295242Z",
+        "version": 1
+      },
+      "tool_names": [
+        "file.read",
+        "file.search",
+        "file.write"
+      ],
+      "allowed_commands": [],
+      "read_scope": [
+        ".github/workflows/ci.yml",
+        "pyproject.toml",
+        "src/shop/__init__.py",
+        "src/shop/legacy_broken.py",
+        "src/shop/models.py",
+        "src/shop/pricing.py",
+        "src/shop/service.py",
+        "tests/test_service.py"
+      ],
+      "write_scope": [
+        "src/shop/pricing.py"
+      ],
+      "context_artifact_ids": [
+        "artifact_2386b580ab574bdf8709bd7c84b7171b"
+      ],
+      "input_artifact_ids": [],
+      "runtime_limits": {
+        "max_steps": 32,
+        "max_input_tokens": 1000000,
+        "max_output_tokens": 16384,
+        "max_tool_calls": 32,
+        "timeout_seconds": 900
+      },
+      "output_schema": "TaskResult",
+      "version": 1
+    },
+    {
+      "spec_id": "spec_6c3e7685cd72454c99fc3f63d1bf5da2",
+      "run_id": "run_a2011c60af7444c7bb83b8ae579d5519",
+      "agent_id": "agent_a3324b9211fd4a5b8eb427b6d34ca46b",
+      "task_id": "task_0b9759b333ac435699836b228c488ac9",
+      "task_spec_id": "spec_b6feda0df48345059ecf22c2a340b3ee",
+      "task_spec_version": 1,
+      "base_commit": "15fdda6d2004e5291abacbf11c727bc977e51409",
+      "goal": "让价格匹配忽略客户类型大小写；附图与代码任务无关\n本任务只负责写范围：src/shop/pricing.py；可以读取授权仓库证据，但不得修改其他路径。",
+      "acceptance_criteria": [
+        "纯文本任务不接收原图",
+        "价格测试通过"
+      ],
+      "required_modalities": [
+        "text"
+      ],
+      "model_routing": {
+        "decision_id": "spec_eb59da3a45e146bc9c1b692751528138",
+        "requirement_id": "spec_729f697f0fe638ccbb00030a",
+        "requirement_version": 1,
+        "selected_model_key": "doubao:doubao-seed-2-0-mini-260428",
+        "selected_availability": "available",
+        "selected_snapshot": null,
+        "reason": "模型 deepseek:deepseek-v4-flash 执行失败（invalid_model_output），按已记录回退链切换到 doubao:doubao-seed-2-0-mini-260428",
+        "fallback_model_keys": [
+          "qianwen:qwen3.7-flash",
+          "doubao:doubao-seed-2-1-turbo-260628"
+        ],
+        "rejected_candidates": [
+          {
+            "model_key": "deepseek:deepseek-v4-flash",
+            "reasons": [
+              "本次调用失败：invalid_model_output"
+            ]
+          }
+        ],
+        "capability_snapshot_at": "2026-08-14T12:27:30.295242Z",
+        "version": 2
+      },
+      "tool_names": [
+        "file.read",
+        "file.search",
+        "file.write"
+      ],
+      "allowed_commands": [],
+      "read_scope": [
+        ".github/workflows/ci.yml",
+        "pyproject.toml",
+        "src/shop/__init__.py",
+        "src/shop/legacy_broken.py",
+        "src/shop/models.py",
+        "src/shop/pricing.py",
+        "src/shop/service.py",
+        "tests/test_service.py"
+      ],
+      "write_scope": [
+        "src/shop/pricing.py"
+      ],
+      "context_artifact_ids": [
+        "artifact_2386b580ab574bdf8709bd7c84b7171b"
+      ],
+      "input_artifact_ids": [],
+      "runtime_limits": {
+        "max_steps": 32,
+        "max_input_tokens": 1000000,
+        "max_output_tokens": 16384,
+        "max_tool_calls": 32,
+        "timeout_seconds": 900
+      },
+      "output_schema": "TaskResult",
+      "version": 2
+    }
+  ],
+  "active_leases": [],
+  "allocation_decisions": [
+    {
+      "allocation_id": "spec_364fe3e0dbf14b5291e966a52d74ed07",
+      "run_id": "run_a2011c60af7444c7bb83b8ae579d5519",
+      "graph_version": 2,
+      "ready_task_ids": [
+        "task_0b9759b333ac435699836b228c488ac9"
+      ],
+      "selected_task_ids": [
+        "task_0b9759b333ac435699836b228c488ac9"
+      ],
+      "available_slots": 6,
+      "reason": "实例数由就绪任务、并发槽位和写集合独立性共同决定"
+    }
+  ],
+  "result_summaries": [
+    {
+      "task_id": "task_0b9759b333ac435699836b228c488ac9",
+      "agent_id": "agent_a3324b9211fd4a5b8eb427b6d34ca46b",
+      "execution_spec_id": "spec_6c3e7685cd72454c99fc3f63d1bf5da2",
+      "status": "failed",
+      "summary": "Worker 已达到确定性运行上限",
+      "artifacts": [],
+      "suggestions": []
+    }
+  ],
+  "processed_decisions": [],
+  "progress_state": null,
+  "decision_count": 0,
+  "acceptance_satisfied": false,
+  "finished": false,
+  "finish_summary": null
+}

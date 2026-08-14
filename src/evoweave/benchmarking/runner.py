@@ -50,7 +50,7 @@ from evoweave.domain.errors import DomainError, ErrorCode
 from evoweave.domain.identifiers import SpecId, TaskId
 from evoweave.domain.integration_models import ValidationCommand, ValidationReport
 from evoweave.domain.model_routing import ModelProfile
-from evoweave.domain.ports import ModelGateway
+from evoweave.domain.ports import ModelGateway, ModelRequest, ModelResponse
 from evoweave.domain.repository_models import RepositoryProfile, difficulty_rank
 from evoweave.domain.run_models import RunManifest
 from evoweave.domain.task_result import TaskResult
@@ -74,6 +74,31 @@ class _FrozenPlanner:
     ) -> AdaptiveTaskPlan:
         del manifest, profile
         return self.plan_value
+
+
+class _OneShotUnavailableGateway:
+    """Inject one auditable primary failure for the locked fallback scenario."""
+
+    def __init__(self, delegate: ModelGateway) -> None:
+        self._delegate = delegate
+        self._injected = False
+
+    def list_profiles(self) -> tuple[ModelProfile, ...]:
+        return self._delegate.list_profiles()
+
+    def complete(self, request: ModelRequest) -> ModelResponse:
+        if not self._injected:
+            self._injected = True
+            raise DomainError(
+                ErrorCode.MODEL_UNAVAILABLE,
+                "benchmark 注入首选模型不可用故障",
+                details={
+                    "fault_injected": True,
+                    "model_key": request.model_key,
+                    "scenario": "model_fallback",
+                },
+            )
+        return self._delegate.complete(request)
 
 
 class BenchmarkRunner:
@@ -173,12 +198,13 @@ class BenchmarkRunner:
                 timeout_seconds=120,
             )
             try:
+                task_gateway = _gateway_for_task(task, self._gateway)
                 outcome = SingleTaskUpdateWorkflow(
                     config=self._config,
                     layout=layout,
                     run_store=run_store,
                     artifact_store=artifact_store,
-                    model_gateway=self._gateway,
+                    model_gateway=task_gateway,
                     model_profiles=selected_profiles,
                     validation_runner_factory=lambda lease: LocalWorkspaceCommandRunner(
                         lease=lease,
@@ -233,13 +259,23 @@ class BenchmarkRunner:
             )
             route_valid, fallback_count = _route_metrics(checkpoint, outcome.task_results)
             context = _context_metrics(checkpoint, artifact_store)
+            image_agent_count = sum(
+                InputModality.IMAGE in item.required_modalities
+                for item in checkpoint.execution_specs
+            )
+            system_accepted, system_violations = _system_acceptance(
+                task,
+                checkpoint,
+                fallback_count=fallback_count,
+                image_agent_count=image_agent_count,
+            )
             evidence_directory = self._persist_success_evidence(
                 layout=layout,
                 outcome=outcome,
                 checkpoint=checkpoint,
                 artifact_store=artifact_store,
             )
-            passed = target_passed and regression_passed
+            passed = target_passed and regression_passed and system_accepted
             return BenchmarkRunRecord(
                 benchmark_id=task.benchmark_id,
                 run_id=str(outcome.manifest.run_id),
@@ -268,17 +304,19 @@ class BenchmarkRunner:
                 initial_route_valid=route_valid,
                 fallback_count=fallback_count,
                 predicted_difficulty=predicted_difficulty,
-                image_agent_count=sum(
-                    InputModality.IMAGE in item.required_modalities
-                    for item in checkpoint.execution_specs
-                ),
+                image_agent_count=image_agent_count,
                 selected_model_keys=tuple(
                     dict.fromkeys(
                         item.model_routing.selected_model_key for item in checkpoint.execution_specs
                     )
                 ),
                 evidence_directory=evidence_directory,
-                failure_reason=(None if passed else "任务级隐藏验收或无新增回归门禁未通过"),
+                failure_reason=_completed_failure_reason(
+                    passed=passed,
+                    target_passed=target_passed,
+                    regression_passed=regression_passed,
+                    system_violations=system_violations,
+                ),
             )
 
     def _persist_success_evidence(
@@ -486,6 +524,50 @@ def _route_metrics(
     )
     fallback_count = max(0, len(checkpoint.execution_specs) - len(checkpoint.task_specs))
     return initial_valid, fallback_count
+
+
+def _gateway_for_task(task: BenchmarkTask, gateway: ModelGateway) -> ModelGateway:
+    if "model_fallback" in task.scenario_tags:
+        return _OneShotUnavailableGateway(gateway)
+    return gateway
+
+
+def _system_acceptance(
+    task: BenchmarkTask,
+    checkpoint: OrchestrationCheckpoint,
+    *,
+    fallback_count: int,
+    image_agent_count: int,
+) -> tuple[bool, tuple[str, ...]]:
+    violations: list[str] = []
+    if "image_relevant" in task.scenario_tags and image_agent_count == 0:
+        violations.append("图片相关任务没有任何 Agent 接收原图")
+    if "image_negative" in task.scenario_tags and image_agent_count != 0:
+        violations.append("图片负例向 Agent 暴露了原图")
+    if "model_fallback" in task.scenario_tags:
+        if fallback_count < 1:
+            violations.append("模型回退场景没有发生路由回退")
+        if len(checkpoint.execution_specs) <= len(checkpoint.task_specs):
+            violations.append("模型回退场景没有创建新版 Agent 执行规格")
+    return not violations, tuple(violations)
+
+
+def _completed_failure_reason(
+    *,
+    passed: bool,
+    target_passed: bool,
+    regression_passed: bool,
+    system_violations: tuple[str, ...],
+) -> str | None:
+    if passed:
+        return None
+    reasons: list[str] = []
+    if not target_passed:
+        reasons.append("任务级隐藏验收未通过")
+    if not regression_passed:
+        reasons.append("出现新增回归或不稳定失败")
+    reasons.extend(system_violations)
+    return "；".join(reasons) or "完成记录未满足通过条件"
 
 
 def _context_metrics(

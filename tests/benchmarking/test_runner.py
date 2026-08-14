@@ -137,11 +137,86 @@ def test_failed_run_preserves_model_usage_and_structured_details(tmp_path: Path)
     assert failure["details"]["direct_errors"]
 
 
-def _profile() -> ModelProfile:
+def test_model_fallback_scenario_injects_failure_and_requires_new_agent(
+    tmp_path: Path,
+) -> None:
+    suite, suite_digest = load_benchmark_suite(_SUITE_PATH)
+    primary = _profile("primary", tier=ModelTier.LOW, priority=0)
+    fallback = _profile("fallback", tier=ModelTier.LOW, priority=1)
+    gateway = ScriptedModelGateway(
+        profiles=(primary, fallback),
+        responses=(
+            _response(
+                {
+                    "action": "tool",
+                    "tool_name": "file.read",
+                    "arguments": {"path": "calculator.py"},
+                },
+                model_key=fallback.key,
+            ),
+            _response(
+                {
+                    "action": "tool",
+                    "tool_name": "file.write",
+                    "arguments": {
+                        "path": "calculator.py",
+                        "content": (
+                            "def calculate_discount("
+                            "total: float, customer_type: str) -> float:\n"
+                            '    if customer_type.upper() == "VIP":\n'
+                            "        return total * 0.9\n"
+                            "    return total\n"
+                        ),
+                    },
+                },
+                model_key=fallback.key,
+            ),
+            _response(
+                {
+                    "action": "finish",
+                    "status": "succeeded",
+                    "summary": "回退模型完成修改",
+                },
+                model_key=fallback.key,
+            ),
+        ),
+    )
+
+    record = BenchmarkRunner(
+        project_root=_PROJECT_ROOT,
+        model_gateway=gateway,
+        model_profiles=(primary, fallback),
+        suite_sha256=suite_digest,
+        hidden_acceptance_source=suite.hidden_acceptance_source,
+        hidden_acceptance_sha256=suite.hidden_acceptance_sha256,
+        evidence_output_root=tmp_path / "evidence",
+        system_commit="a" * 40,
+    ).run(
+        task=suite.tasks[11],
+        agent_strategy=AgentStrategy.ADAPTIVE,
+        model_strategy=ModelStrategy.ADAPTIVE,
+        evidence_level=EvidenceLevel.OFFLINE_REPLAY,
+    )
+
+    assert record.status is BenchmarkRunStatus.PASSED
+    assert record.fallback_count == 1
+    assert record.agent_count == 2
+    assert record.selected_model_keys == (primary.key, fallback.key)
+    result_path = tmp_path / "evidence" / record.run_id / "任务结果.json"
+    results = json.loads(result_path.read_text(encoding="utf-8"))
+    assert results[0]["failure"]["details"]["fault_injected"] is True
+
+
+def _profile(
+    model_id: str = "worker",
+    *,
+    tier: ModelTier = ModelTier.HIGH,
+    priority: int = 100,
+) -> ModelProfile:
     return ModelProfile(
         provider="fake",
-        model_id="worker",
-        tier=ModelTier.HIGH,
+        model_id=model_id,
+        tier=tier,
         availability=ModelAvailability.AVAILABLE,
         input_modalities=(InputModality.TEXT, InputModality.IMAGE),
         context_window_tokens=128_000,
@@ -150,12 +225,17 @@ def _profile() -> ModelProfile:
         supports_structured_output=True,
         supports_thinking=True,
         checked_at=datetime(2026, 1, 1, tzinfo=UTC),
+        stable_priority=priority,
     )
 
 
-def _response(payload: dict[str, object]) -> ModelResponse:
+def _response(
+    payload: dict[str, object],
+    *,
+    model_key: str = "fake:worker",
+) -> ModelResponse:
     return ModelResponse(
-        model_key="fake:worker",
+        model_key=model_key,
         text=json.dumps(payload, ensure_ascii=False),
         input_tokens=10,
         output_tokens=5,

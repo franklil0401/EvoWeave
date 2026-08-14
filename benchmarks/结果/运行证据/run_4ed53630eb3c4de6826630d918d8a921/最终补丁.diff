@@ -1,0 +1,11 @@
+diff --git a/app.py b/app.py
+index 5fb99ef8755b6a67cb980bf1c1f288edcbbe6d97..6a3ece4a1a41bb4660142a91297e3cff32e57b84 100644
+--- a/app.py
++++ b/app.py
+@@ -1,2 +1,4 @@
+ def divide(left: int, right: int) -> float:
+-    return left / right
++    if right == 0:
++        raise ValueError("division by zero: right must not be zero")
++    return left / right
+\ No newline at end of file

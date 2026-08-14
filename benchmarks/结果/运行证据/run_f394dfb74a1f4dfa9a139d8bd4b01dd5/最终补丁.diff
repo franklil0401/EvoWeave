@@ -1,0 +1,12 @@
+diff --git a/calculator.py b/calculator.py
+index 77dd772982c4544e14c165bb5f964dc2cc53cf7b..883ab40b3e4414a739cd697bd132083fbe5e3136 100644
+--- a/calculator.py
++++ b/calculator.py
+@@ -1,4 +1,4 @@
+ def calculate_discount(total: float, customer_type: str) -> float:
+-    if customer_type == "VIP":
++    if customer_type.upper() == "VIP":
+         return total * 0.9
+-    return total
++    return total
+\ No newline at end of file

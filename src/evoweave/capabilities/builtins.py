@@ -181,6 +181,9 @@ class CommandRunCapability:
         log = (
             f"argv={list(result.argv)!r}\n"
             f"exit_code={result.exit_code}\n"
+            f"timed_out={result.timed_out}\n"
+            f"duration_ms={result.duration_ms}\n"
+            f"output_truncated={result.output_truncated}\n"
             f"stdout:\n{result.stdout}\n"
             f"stderr:\n{result.stderr}\n"
         )
@@ -201,6 +204,9 @@ class CommandRunCapability:
             details={
                 "argv": list(result.argv),
                 "exit_code": result.exit_code,
+                "timed_out": result.timed_out,
+                "duration_ms": result.duration_ms,
+                "output_truncated": result.output_truncated,
                 "stdout": result.stdout,
                 "stderr": result.stderr,
             },

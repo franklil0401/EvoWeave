@@ -135,6 +135,13 @@ class CommandResult:
     exit_code: int
     stdout: str = ""
     stderr: str = ""
+    timed_out: bool = False
+    duration_ms: int = 0
+    output_truncated: bool = False
+
+    def __post_init__(self) -> None:
+        if self.duration_ms < 0:
+            raise ValueError("duration_ms 不能为负数")
 
 
 @runtime_checkable

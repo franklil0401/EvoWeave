@@ -11,7 +11,14 @@ from evoweave.domain.enums import (
     ArtifactSource,
     EvidenceKind,
 )
-from evoweave.domain.identifiers import ArtifactId, EvidenceId, TaskId
+from evoweave.domain.identifiers import (
+    AgentId,
+    ArtifactId,
+    EvidenceId,
+    SpecId,
+    TaskId,
+    WorkspaceId,
+)
 from evoweave.domain.validation import validate_repository_path, validate_unique_strings
 
 
@@ -101,8 +108,13 @@ class EvidenceRef(DomainModel):
 class PatchArtifact(DomainModel):
     ref: ArtifactRef
     task_id: TaskId
+    agent_id: AgentId
+    execution_spec_id: SpecId
+    execution_spec_version: int = Field(ge=1)
+    workspace_id: WorkspaceId
     base_commit: str = Field(pattern=r"^[0-9a-f]{40,64}$")
     changed_paths: tuple[str, ...] = Field(min_length=1)
+    supporting_artifact_ids: tuple[ArtifactId, ...] = ()
 
     @field_validator("changed_paths")
     @classmethod
@@ -114,4 +126,8 @@ class PatchArtifact(DomainModel):
     def validate_patch(self) -> "PatchArtifact":
         if self.ref.kind is not ArtifactKind.PATCH:
             raise ValueError("PatchArtifact.ref.kind 必须为 patch")
+        if len(set(self.supporting_artifact_ids)) != len(self.supporting_artifact_ids):
+            raise ValueError("supporting_artifact_ids 不能重复")
+        if self.ref.artifact_id in self.supporting_artifact_ids:
+            raise ValueError("补丁自身不能作为 supporting artifact")
         return self

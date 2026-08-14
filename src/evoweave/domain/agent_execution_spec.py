@@ -21,6 +21,7 @@ class AgentExecutionSpec(DomainModel):
     task_id: TaskId
     task_spec_id: SpecId
     task_spec_version: int = Field(ge=1)
+    base_commit: str = Field(pattern=r"^[0-9a-f]{40,64}$")
     goal: str = Field(min_length=1, max_length=10_000)
     acceptance_criteria: tuple[str, ...] = Field(min_length=1)
     required_modalities: tuple[InputModality, ...] = (InputModality.TEXT,)

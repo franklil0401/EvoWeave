@@ -192,6 +192,7 @@ def test_failed_model_reroute_creates_new_execution_spec_version() -> None:
         task_id=task_id,
         task_spec_id=SpecId.new(),
         task_spec_version=1,
+        base_commit="a" * 40,
         goal="执行简单任务",
         acceptance_criteria=("完成",),
         model_routing=initial_decision,

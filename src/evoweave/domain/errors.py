@@ -27,6 +27,13 @@ class ErrorCode(StrEnum):
     ARTIFACT_NOT_FOUND = "artifact_not_found"
     ARTIFACT_INTEGRITY_ERROR = "artifact_integrity_error"
     WORKSPACE_ACCESS_DENIED = "workspace_access_denied"
+    WORKSPACE_LEASE_NOT_FOUND = "workspace_lease_not_found"
+    WORKSPACE_STATE_INVALID = "workspace_state_invalid"
+    WORKTREE_OPERATION_FAILED = "worktree_operation_failed"
+    PATCH_REJECTED = "patch_rejected"
+    PATCH_EMPTY = "patch_empty"
+    COMMAND_TIMEOUT = "command_timeout"
+    SANDBOX_UNAVAILABLE = "sandbox_unavailable"
     SCRIPT_EXHAUSTED = "script_exhausted"
 
 

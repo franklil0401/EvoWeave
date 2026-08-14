@@ -28,7 +28,7 @@ class CommandPolicy:
                 f"命令未被执行规格授权：{executable}",
             )
         for argument in argv:
-            if any(fragment in argument for fragment in _FORBIDDEN_FRAGMENTS):
+            if "\x00" in argument or any(fragment in argument for fragment in _FORBIDDEN_FRAGMENTS):
                 raise DomainError(
                     ErrorCode.COMMAND_DENIED,
                     "命令参数包含禁止的 shell 控制字符",

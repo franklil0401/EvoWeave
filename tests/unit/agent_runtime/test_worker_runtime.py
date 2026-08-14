@@ -88,6 +88,7 @@ def _spec(
         task_id=task_id,
         task_spec_id=SpecId.new(),
         task_spec_version=1,
+        base_commit="a" * 40,
         goal="执行动态规格",
         acceptance_criteria=("产出结构化结果",),
         required_modalities=modalities,

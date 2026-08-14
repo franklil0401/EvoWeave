@@ -40,6 +40,7 @@ def _spec(
         task_id=task_id,
         task_spec_id=SpecId.new(),
         task_spec_version=1,
+        base_commit="a" * 40,
         goal="处理不可信输入",
         acceptance_criteria=("不扩大权限",),
         required_modalities=modalities,

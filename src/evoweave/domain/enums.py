@@ -65,6 +65,20 @@ class CapabilityAccess(StrEnum):
     COMMAND = "command"
 
 
+class WorkspaceAccessMode(StrEnum):
+    READ_ONLY = "read_only"
+    READ_WRITE = "read_write"
+
+
+class WorkspaceLeaseStatus(StrEnum):
+    CREATING = "creating"
+    ACTIVE = "active"
+    RELEASING = "releasing"
+    RELEASED = "released"
+    FAILED = "failed"
+    ORPHANED = "orphaned"
+
+
 class TaskDifficulty(StrEnum):
     LOW = "low"
     MEDIUM = "medium"

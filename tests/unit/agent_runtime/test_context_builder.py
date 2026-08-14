@@ -37,6 +37,7 @@ def _spec(
         task_id=task_id,
         task_spec_id=SpecId.new(),
         task_spec_version=1,
+        base_commit="a" * 40,
         goal="理解界面并更新代码",
         acceptance_criteria=("界面符合需求",),
         required_modalities=modalities,

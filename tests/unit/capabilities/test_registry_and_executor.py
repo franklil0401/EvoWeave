@@ -34,6 +34,7 @@ def _spec(
         task_id=task_id,
         task_spec_id=SpecId.new(),
         task_spec_version=1,
+        base_commit="a" * 40,
         goal="执行原子能力测试",
         acceptance_criteria=("行为符合权限",),
         model_routing=ModelRoutingDecision(

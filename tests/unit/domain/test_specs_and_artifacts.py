@@ -246,6 +246,7 @@ def test_agent_execution_spec_is_version_pinned() -> None:
         task_id=task_id,
         task_spec_id=SpecId.new(),
         task_spec_version=3,
+        base_commit="a" * 40,
         goal="更新领域协议",
         acceptance_criteria=("测试通过",),
         model_routing=decision,

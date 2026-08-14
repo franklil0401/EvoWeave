@@ -2,7 +2,7 @@
 
 from evoweave.domain.agent_execution_spec import AgentExecutionSpec
 from evoweave.domain.errors import DomainError, ErrorCode
-from evoweave.domain.identifiers import SpecId
+from evoweave.domain.identifiers import AgentId, SpecId
 from evoweave.domain.model_routing import ModelRoutingDecision
 
 
@@ -24,6 +24,7 @@ def revise_execution_spec_for_routing(
     return previous.model_copy(
         update={
             "spec_id": SpecId.new(),
+            "agent_id": AgentId.new(),
             "model_routing": versioned_decision,
             "version": previous.version + 1,
         }

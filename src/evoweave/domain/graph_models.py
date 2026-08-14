@@ -8,7 +8,7 @@ from pydantic import Field, model_validator
 from evoweave.domain.base import DomainModel, utc_now
 from evoweave.domain.enums import TaskRelation, TaskStatus
 from evoweave.domain.errors import DomainError, ErrorCode
-from evoweave.domain.identifiers import GraphId, TaskId
+from evoweave.domain.identifiers import GraphId, RunId, TaskId
 
 _ALLOWED_TRANSITIONS: dict[TaskStatus, frozenset[TaskStatus]] = {
     TaskStatus.CREATED: frozenset({TaskStatus.READY, TaskStatus.CANCELLED, TaskStatus.BLOCKED}),
@@ -57,6 +57,7 @@ class TaskEdge(DomainModel):
 
 class GraphSnapshot(DomainModel):
     graph_id: GraphId
+    run_id: RunId
     version: int = Field(ge=1)
     nodes: tuple[TaskNode, ...]
     edges: tuple[TaskEdge, ...] = ()

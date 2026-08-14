@@ -207,6 +207,7 @@ def test_failed_model_reroute_creates_new_execution_spec_version() -> None:
     assert original.model_routing.selected_model_key == first.key
     assert revised.version == 2
     assert revised.spec_id != original.spec_id
+    assert revised.agent_id != original.agent_id
     assert revised.model_routing.version == 2
     assert revised.model_routing.decision_id != original.model_routing.decision_id
     assert revised.model_routing.selected_model_key == second.key

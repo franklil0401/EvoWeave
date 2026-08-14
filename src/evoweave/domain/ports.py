@@ -9,13 +9,15 @@ from evoweave.domain.agent_execution_spec import AgentExecutionSpec
 from evoweave.domain.artifacts import ArtifactRef, ImageIngestionPolicy, InputArtifactRef
 from evoweave.domain.enums import ArtifactKind, EventType
 from evoweave.domain.events import DomainEvent
-from evoweave.domain.identifiers import ArtifactId, RunId, TaskId, WorkspaceId
+from evoweave.domain.graph_models import GraphSnapshot
+from evoweave.domain.identifiers import ArtifactId, RunId, SpecId, TaskId, WorkspaceId
 from evoweave.domain.model_routing import (
     ModelProfile,
     ModelRequirement,
     ModelRoutingDecision,
 )
 from evoweave.domain.task_result import TaskResult
+from evoweave.domain.task_spec import TaskSpec
 
 
 @dataclass(frozen=True, slots=True)
@@ -159,3 +161,40 @@ class EventRecorder(Protocol):
         payload: dict[str, JsonValue],
         task_id: TaskId | None = None,
     ) -> DomainEvent: ...
+
+
+@runtime_checkable
+class GraphStateStore(Protocol):
+    def save_graph(
+        self,
+        snapshot: GraphSnapshot,
+        task_specs: tuple[TaskSpec, ...],
+    ) -> None: ...
+
+    def load_latest_graph(
+        self,
+        run_id: RunId,
+    ) -> tuple[GraphSnapshot, tuple[TaskSpec, ...]] | None: ...
+
+
+@runtime_checkable
+class DecisionLedger(Protocol):
+    def record_decision(
+        self,
+        *,
+        decision_id: SpecId,
+        run_id: RunId,
+        graph_version: int,
+        payload: bytes,
+    ) -> bool: ...
+
+    def has_decision(self, decision_id: SpecId) -> bool: ...
+
+    def get_decision_payload(self, decision_id: SpecId) -> bytes | None: ...
+
+
+@runtime_checkable
+class CheckpointStore(Protocol):
+    def save_checkpoint(self, *, run_id: RunId, version: int, payload: bytes) -> None: ...
+
+    def load_latest_checkpoint(self, run_id: RunId) -> bytes | None: ...

@@ -12,6 +12,10 @@ class GraphPolicy(DomainModel):
     max_nodes: int = Field(default=64, ge=1, le=10_000)
     max_concurrent_tasks: int = Field(default=6, ge=1, le=1_000)
     max_attempts_per_task: int = Field(default=3, ge=1, le=100)
+    max_tasks_per_decision: int = Field(default=8, ge=1, le=1_000)
+    max_decisions: int = Field(default=256, ge=1, le=100_000)
+    max_no_progress_decisions: int = Field(default=8, ge=1, le=1_000)
+    task_lease_seconds: int = Field(default=1_800, ge=1, le=86_400)
 
 
 class PolicyViolation(DomainModel):

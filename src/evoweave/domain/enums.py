@@ -79,6 +79,13 @@ class WorkspaceLeaseStatus(StrEnum):
     ORPHANED = "orphaned"
 
 
+class TaskLeaseStatus(StrEnum):
+    ACTIVE = "active"
+    COMPLETED = "completed"
+    RELEASED = "released"
+    EXPIRED = "expired"
+
+
 class TaskDifficulty(StrEnum):
     LOW = "low"
     MEDIUM = "medium"
@@ -114,6 +121,10 @@ class PolicyViolationCode(StrEnum):
     TOO_MANY_RUNNING_TASKS = "too_many_running_tasks"
     GRAPH_INVALID = "graph_invalid"
     RETRY_LIMIT_EXCEEDED = "retry_limit_exceeded"
+    WRITE_SCOPE_OVERLAP = "write_scope_overlap"
+    TOO_MANY_TASKS_PER_DECISION = "too_many_tasks_per_decision"
+    NO_PROGRESS = "no_progress"
+    DUPLICATE_TASK = "duplicate_task"
 
 
 class EventType(StrEnum):
@@ -129,3 +140,7 @@ class EventType(StrEnum):
     TOOL_STARTED = "tool_started"
     TOOL_FINISHED = "tool_finished"
     TOOL_REJECTED = "tool_rejected"
+    ORCHESTRATION_DECIDED = "orchestration_decided"
+    TASK_LEASED = "task_leased"
+    CHECKPOINT_SAVED = "checkpoint_saved"
+    RUN_FINISHED = "run_finished"

@@ -79,3 +79,7 @@ class GraphId(Identifier):
 
 class WorkspaceId(Identifier):
     prefix = "workspace"
+
+
+class TaskLeaseId(Identifier):
+    prefix = "lease"

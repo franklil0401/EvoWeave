@@ -6,7 +6,7 @@ from pydantic import ValidationError
 from evoweave.domain.enums import PolicyViolationCode, TaskRelation, TaskStatus
 from evoweave.domain.errors import DomainError, ErrorCode
 from evoweave.domain.graph_models import GraphSnapshot, TaskEdge, TaskNode
-from evoweave.domain.identifiers import GraphId, TaskId
+from evoweave.domain.identifiers import GraphId, RunId, TaskId
 from evoweave.domain.policies import GraphPolicy, evaluate_graph_policy
 
 
@@ -20,7 +20,9 @@ def _node(status: TaskStatus = TaskStatus.CREATED, attempts: int = 0) -> TaskNod
 
 
 def test_independent_root_tasks_are_valid() -> None:
-    snapshot = GraphSnapshot(graph_id=GraphId.new(), version=1, nodes=(_node(), _node()))
+    snapshot = GraphSnapshot(
+        graph_id=GraphId.new(), run_id=RunId.new(), version=1, nodes=(_node(), _node())
+    )
     assert len(snapshot.nodes) == 2
 
 
@@ -29,6 +31,7 @@ def test_graph_rejects_missing_edge_endpoint() -> None:
     with pytest.raises(ValidationError, match="不存在的节点"):
         GraphSnapshot(
             graph_id=GraphId.new(),
+            run_id=RunId.new(),
             version=1,
             nodes=(node,),
             edges=(
@@ -46,6 +49,7 @@ def test_graph_rejects_duplicate_task_identifier() -> None:
     with pytest.raises(ValidationError, match="重复节点"):
         GraphSnapshot(
             graph_id=GraphId.new(),
+            run_id=RunId.new(),
             version=1,
             nodes=(node, node.model_copy()),
         )
@@ -56,6 +60,7 @@ def test_graph_rejects_dependency_cycle() -> None:
     with pytest.raises(ValidationError, match="循环"):
         GraphSnapshot(
             graph_id=GraphId.new(),
+            run_id=RunId.new(),
             version=1,
             nodes=(first, second),
             edges=(
@@ -94,6 +99,7 @@ def test_graph_policy_reports_all_limit_violations() -> None:
     second = _node(TaskStatus.LEASED)
     snapshot = GraphSnapshot(
         graph_id=GraphId.new(),
+        run_id=RunId.new(),
         version=1,
         nodes=(first, second),
     )

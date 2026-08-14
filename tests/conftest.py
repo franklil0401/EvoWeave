@@ -1,6 +1,10 @@
 """Shared deterministic fixtures for stage 0 contracts."""
 
+import shutil
+import subprocess
+from collections.abc import Callable
 from datetime import UTC, datetime
+from pathlib import Path
 
 import pytest
 
@@ -16,6 +20,38 @@ from evoweave.domain.model_routing import (
     ModelProfile,
     ModelRequirement,
 )
+
+
+@pytest.fixture
+def committed_repository(tmp_path: Path) -> Callable[[str], Path]:
+    """Copy one fixture into a temporary Git repository and commit it."""
+
+    fixture_root = Path(__file__).parent / "fixtures" / "repositories"
+    counter = 0
+
+    def create(name: str) -> Path:
+        nonlocal counter
+        counter += 1
+        destination = tmp_path / f"{name}-{counter}"
+        shutil.copytree(fixture_root / name, destination)
+        _git(destination, "init", "--initial-branch=main")
+        _git(destination, "config", "user.name", "EvoWeave Tests")
+        _git(destination, "config", "user.email", "tests@evoweave.local")
+        _git(destination, "add", "-A")
+        _git(destination, "commit", "-m", "fixture")
+        return destination
+
+    return create
+
+
+def _git(repository: Path, *args: str) -> str:
+    completed = subprocess.run(
+        ("git", "-C", str(repository), *args),
+        check=True,
+        capture_output=True,
+        text=True,
+    )
+    return completed.stdout.strip()
 
 
 @pytest.fixture

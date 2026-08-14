@@ -45,6 +45,7 @@ _RECOVERABLE_TOOL_ERRORS = {
     ErrorCode.COMMAND_DENIED,
     ErrorCode.WORKSPACE_ACCESS_DENIED,
 }
+_MAX_DECISION_REPAIR_ATTEMPTS = 1
 
 
 class WorkerRuntime:
@@ -107,6 +108,7 @@ class WorkerRuntime:
             )
             evidence: list[EvidenceRef] = []
             artifacts: list[ArtifactRef] = []
+            decision_repair_attempts = 0
             while True:
                 tracker.record_step()
                 _assert_message_estimate(tuple(messages), execution_spec)
@@ -122,7 +124,41 @@ class WorkerRuntime:
                         "reasoning_tokens": response.reasoning_tokens,
                     },
                 )
-                decision = parse_worker_decision(response.text)
+                try:
+                    decision = parse_worker_decision(response.text)
+                except DomainError as error:
+                    if (
+                        error.code is not ErrorCode.INVALID_MODEL_OUTPUT
+                        or decision_repair_attempts >= _MAX_DECISION_REPAIR_ATTEMPTS
+                    ):
+                        raise
+                    decision_repair_attempts += 1
+                    self._record(
+                        execution_spec,
+                        EventType.MODEL_OUTPUT_REJECTED,
+                        {
+                            "error_code": error.code.value,
+                            "repair_attempt": decision_repair_attempts,
+                        },
+                    )
+                    messages.append(
+                        "协议拒绝观察："
+                        + json.dumps(
+                            {
+                                "error_code": error.code.value,
+                                "instruction": (
+                                    "上次响应没有执行。请只返回一个符合已提供 JSON Schema 的"
+                                    "tool 或 finish 对象；不要添加第二个对象或私有推理。"
+                                ),
+                                "remaining_repair_attempts": (
+                                    _MAX_DECISION_REPAIR_ATTEMPTS - decision_repair_attempts
+                                ),
+                            },
+                            ensure_ascii=False,
+                            sort_keys=True,
+                        )
+                    )
+                    continue
                 if isinstance(decision, FinishDecision):
                     result = self._result_builder.build(
                         spec=execution_spec,

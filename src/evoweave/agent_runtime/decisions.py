@@ -44,43 +44,64 @@ def parse_worker_decision(text: str) -> WorkerDecision:
     try:
         return _DECISION_ADAPTER.validate_json(text)
     except ValidationError as direct_error:
+        return _extract_unique_worker_decision(text, direct_error=direct_error)
+
+
+def _extract_unique_worker_decision(
+    text: str,
+    *,
+    direct_error: ValidationError,
+) -> WorkerDecision:
+    """Recover exactly one schema-valid decision from prose without guessing fields."""
+
+    valid: list[WorkerDecision] = []
+    candidate_errors: list[dict[str, object]] = []
+    decoder = json.JSONDecoder()
+    cursor = 0
+    while True:
+        start = text.find("{", cursor)
+        if start < 0:
+            break
         try:
-            payload = _extract_single_json_object(text)
-            return _DECISION_ADAPTER.validate_python(payload)
-        except (json.JSONDecodeError, TypeError, ValueError, ValidationError) as exc:
-            errors = (
-                exc.errors(include_url=False)
-                if isinstance(exc, ValidationError)
-                else [{"type": type(exc).__name__, "msg": str(exc)}]
-            )
-            raise DomainError(
-                ErrorCode.INVALID_MODEL_OUTPUT,
-                "模型输出不符合 Worker 决策协议",
-                details={
-                    "direct_errors": direct_error.errors(include_url=False),
-                    "extraction_errors": errors,
-                },
-            ) from exc
+            payload, consumed = decoder.raw_decode(text[start:])
+        except json.JSONDecodeError as error:
+            if len(candidate_errors) < 8:
+                candidate_errors.append(
+                    {"type": type(error).__name__, "msg": str(error), "offset": start}
+                )
+            cursor = start + 1
+            continue
+        cursor = start + max(consumed, 1)
+        if not isinstance(payload, dict):
+            continue
+        try:
+            valid.append(_DECISION_ADAPTER.validate_python(payload))
+        except ValidationError as error:
+            if len(candidate_errors) < 8:
+                candidate_errors.append(
+                    {
+                        "type": "schema_validation",
+                        "offset": start,
+                        "errors": error.errors(include_url=False),
+                    }
+                )
 
-
-def _extract_single_json_object(text: str) -> dict[str, object]:
-    """Accept one object wrapped by prose or one Markdown fence, never trailing data."""
-
-    start = text.find("{")
-    if start < 0:
-        raise ValueError("模型输出不包含 JSON 对象")
-    payload, consumed = json.JSONDecoder().raw_decode(text[start:])
-    if not isinstance(payload, dict):
-        raise TypeError("Worker 决策必须是 JSON 对象")
-    suffix = text[start + consumed :].strip()
-    if suffix == "```":
-        suffix = ""
-    if suffix:
+    if len(valid) == 1:
+        return valid[0]
+    if len(valid) > 1:
         raise DomainError(
             ErrorCode.INVALID_MODEL_OUTPUT,
-            "模型输出在决策 JSON 后包含额外内容",
+            "模型输出包含多个有效 Worker 决策，无法安全判定",
+            details={"valid_candidate_count": len(valid)},
         )
-    return payload
+    raise DomainError(
+        ErrorCode.INVALID_MODEL_OUTPUT,
+        "模型输出不符合 Worker 决策协议",
+        details={
+            "direct_errors": direct_error.errors(include_url=False),
+            "candidate_errors": candidate_errors,
+        },
+    )
 
 
 def worker_decision_json_schema() -> dict[str, JsonValue]:

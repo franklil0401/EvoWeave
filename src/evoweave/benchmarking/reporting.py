@@ -86,13 +86,12 @@ def assess_go_no_go(
     expected_per_group = len(suite.tasks)
     for level in (EvidenceLevel.LIVE_MODEL, EvidenceLevel.OFFLINE_REPLAY):
         level_metrics = tuple(item for item in metrics if item.evidence_level is level)
-        complete_groups = {
-            (item.agent_strategy, item.model_strategy)
-            for item in level_metrics
-            if item.run_count == expected_per_group
-        }
-        expected_groups = {(agent, model) for agent in AgentStrategy for model in ModelStrategy}
-        if complete_groups != expected_groups:
+        if not _has_complete_trials(
+            suite,
+            records,
+            evidence_level=level,
+            expected_per_group=expected_per_group,
+        ):
             continue
         dynamic = next(
             item
@@ -118,7 +117,12 @@ def assess_go_no_go(
         simple_minimal = bool(simple_dynamic) and (
             sum(record.agent_count == 1 for record in simple_dynamic) / len(simple_dynamic) >= 0.8
         )
-        route_hard_constraints = dynamic.initial_route_success_rate == 1.0
+        route_hard_constraints = dynamic.route_hard_constraint_compliance_rate == 1.0
+        route_hard_constraint_reason = (
+            "模型硬约束合规门槛：数据缺失"
+            if dynamic.route_hard_constraint_compliance_rate is None
+            else f"模型硬约束合规门槛：{'通过' if route_hard_constraints else '未通过'}"
+        )
         context_reduced = dynamic.orchestrator_context_ratio <= 0.5
         passed = performance and simple_minimal and route_hard_constraints and context_reduced
         return GoNoGoAssessment(
@@ -127,7 +131,7 @@ def assess_go_no_go(
             reasons=(
                 f"性能门槛：{'通过' if performance else '未通过'}",
                 f"简单任务最小实例门槛：{'通过' if simple_minimal else '未通过'}",
-                f"模型硬约束门槛：{'通过' if route_hard_constraints else '未通过'}",
+                route_hard_constraint_reason,
                 f"调度上下文压缩门槛：{'通过' if context_reduced else '未通过'}",
             ),
         )
@@ -175,14 +179,18 @@ def _markdown(
         lines.extend(
             [
                 "| Agent 策略 | 模型策略 | 证据 | 数量 | 成功率 | "
-                "平均 Token | 平均时延(ms) | 平均 Agent |",
-                "|---|---|---|---:|---:|---:|---:|---:|",
+                "重复数 | 成功率标准差 | 平均 Token | 平均时延(ms) | 平均 Agent | "
+                "硬约束合规 | 首次执行成功 |",
+                "|---|---|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|",
                 *(
                     "| "
                     f"{item.agent_strategy.value} | {item.model_strategy.value} | "
                     f"{item.evidence_level.value} | {item.run_count} | "
-                    f"{item.success_rate:.1%} | {item.average_tokens:.1f} | "
-                    f"{item.average_duration_ms:.1f} | {item.average_agent_count:.2f} |"
+                    f"{item.success_rate:.1%} | {item.trial_count} | "
+                    f"{item.success_rate_stddev:.1%} | {item.average_tokens:.1f} | "
+                    f"{item.average_duration_ms:.1f} | {item.average_agent_count:.2f} | "
+                    f"{_optional_percent(item.route_hard_constraint_compliance_rate)} | "
+                    f"{item.initial_execution_success_rate:.1%} |"
                     for item in metrics
                 ),
             ]
@@ -198,6 +206,40 @@ def _markdown(
         ]
     )
     return "\n".join(lines)
+
+
+def _has_complete_trials(
+    suite: BenchmarkSuite,
+    records: tuple[BenchmarkRunRecord, ...],
+    *,
+    evidence_level: EvidenceLevel,
+    expected_per_group: int,
+) -> bool:
+    expected_tasks = {item.benchmark_id for item in suite.tasks}
+    expected_groups = {(agent, model) for agent in AgentStrategy for model in ModelStrategy}
+    tasks_by_trial: dict[tuple[AgentStrategy, ModelStrategy, int], set[str]] = {}
+    for record in records:
+        if record.evidence_level is not evidence_level:
+            continue
+        key = (record.agent_strategy, record.model_strategy, record.trial_index)
+        tasks_by_trial.setdefault(key, set()).add(record.benchmark_id)
+    trial_sets = {
+        group: {trial for agent, model, trial in tasks_by_trial if (agent, model) == group}
+        for group in expected_groups
+    }
+    common_trials = next(iter(trial_sets.values()), set())
+    if not common_trials or any(trials != common_trials for trials in trial_sets.values()):
+        return False
+    return all(
+        len(tasks_by_trial.get((agent, model, trial), set())) == expected_per_group
+        and tasks_by_trial[(agent, model, trial)] == expected_tasks
+        for agent, model in expected_groups
+        for trial in common_trials
+    )
+
+
+def _optional_percent(value: float | None) -> str:
+    return f"{value:.1%}" if value is not None else "N/A"
 
 
 def _atomic_text(path: Path, content: str) -> None:

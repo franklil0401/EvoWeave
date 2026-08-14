@@ -187,6 +187,12 @@ def build_parser() -> argparse.ArgumentParser:
         help="显式执行 3×3 全部策略；不指定时只运行所选的一组策略",
     )
     benchmark_run.add_argument(
+        "--trials",
+        type=_benchmark_trial_count,
+        default=1,
+        help="每个任务与策略组合的重复运行次数，默认 1，最大 100",
+    )
+    benchmark_run.add_argument(
         "--provider",
         action="append",
         choices=("deepseek", "doubao", "qianwen"),
@@ -469,6 +475,7 @@ def _benchmark(
                 item.agent_strategy,
                 item.model_strategy,
                 item.evidence_level,
+                item.trial_index,
             )
             for item in stored_records
         }
@@ -477,27 +484,30 @@ def _benchmark(
         passed = 0
         for agent_strategy in agent_strategies:
             for model_strategy in model_strategies:
-                for task in tasks:
-                    key = (
-                        runner.system_commit,
-                        task.benchmark_id,
-                        agent_strategy,
-                        model_strategy,
-                        EvidenceLevel.LIVE_MODEL,
-                    )
-                    if key in existing:
-                        skipped += 1
-                        continue
-                    record = runner.run(
-                        task=task,
-                        agent_strategy=agent_strategy,
-                        model_strategy=model_strategy,
-                        evidence_level=EvidenceLevel.LIVE_MODEL,
-                    )
-                    store.append(record)
-                    existing.add(key)
-                    completed += 1
-                    passed += record.status.value == "passed"
+                for trial_index in range(1, arguments.trials + 1):
+                    for task in tasks:
+                        key = (
+                            runner.system_commit,
+                            task.benchmark_id,
+                            agent_strategy,
+                            model_strategy,
+                            EvidenceLevel.LIVE_MODEL,
+                            trial_index,
+                        )
+                        if key in existing:
+                            skipped += 1
+                            continue
+                        record = runner.run(
+                            task=task,
+                            agent_strategy=agent_strategy,
+                            model_strategy=model_strategy,
+                            evidence_level=EvidenceLevel.LIVE_MODEL,
+                            trial_index=trial_index,
+                        )
+                        store.append(record)
+                        existing.add(key)
+                        completed += 1
+                        passed += record.status.value == "passed"
         data = {
             "suite_id": suite.suite_id,
             "completed": completed,
@@ -506,6 +516,7 @@ def _benchmark(
             "results": str(Path(arguments.results).resolve()),
             "available_models": [item.key for item in profiles],
             "provider_failures": provider_failures,
+            "requested_trials": arguments.trials,
         }
         return (
             data,
@@ -614,6 +625,16 @@ def _assert_docker_ready(image: str) -> None:
 
 def _repository_argument(parser: argparse.ArgumentParser) -> None:
     parser.add_argument("repository", nargs="?", default=".", help="目标 Git 仓库")
+
+
+def _benchmark_trial_count(value: str) -> int:
+    try:
+        count = int(value)
+    except ValueError as exc:
+        raise argparse.ArgumentTypeError("--trials 必须是整数") from exc
+    if not 1 <= count <= 100:
+        raise argparse.ArgumentTypeError("--trials 必须在 1 到 100 之间")
+    return count
 
 
 def _json_argument(parser: argparse.ArgumentParser) -> None:

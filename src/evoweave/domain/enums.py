@@ -184,6 +184,7 @@ class EventType(StrEnum):
     ARTIFACT_PERSISTED = "artifact_persisted"
     POLICY_REJECTED = "policy_rejected"
     MODEL_CALL_COMPLETED = "model_call_completed"
+    MODEL_OUTPUT_REJECTED = "model_output_rejected"
     TOOL_STARTED = "tool_started"
     TOOL_FINISHED = "tool_finished"
     TOOL_REJECTED = "tool_rejected"

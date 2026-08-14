@@ -19,7 +19,7 @@ from evoweave.domain.identifiers import ArtifactId
 from evoweave.infrastructure.artifacts.local_store import LocalArtifactStore
 
 
-def test_planner_derives_agent_count_and_module_dependency(
+def test_planner_consolidates_small_dependent_modules(
     committed_repository: Callable[[str], Path],
 ) -> None:
     manifest, profile, config = _analyzed(
@@ -30,12 +30,51 @@ def test_planner_derives_agent_count_and_module_dependency(
 
     plan = AdaptiveTaskPlanner(config).plan(manifest, profile)
 
+    assert plan.agent_count == 1
+    assert plan.task_specs[0].write_scope == (
+        "src/shop/pricing.py",
+        "src/shop/service.py",
+    )
+    assert plan.task_specs[0].depends_on == ()
+    assert "合并低收益分组" in plan.rationale
+
+
+def test_planner_keeps_large_dependent_modules_split(
+    committed_repository: Callable[[str], Path],
+) -> None:
+    manifest, profile, config = _analyzed(
+        committed_repository,
+        objective="同步更新价格计算与结账调用",
+        allowed_paths=("src/shop/pricing.py", "src/shop/service.py"),
+    )
+
+    plan = AdaptiveTaskPlanner(config.model_copy(update={"split_directory_lines": 1})).plan(
+        manifest, profile
+    )
+
     assert plan.agent_count == 2
     by_scope = {item.write_scope: item for item in plan.task_specs}
     pricing = by_scope[("src/shop/pricing.py",)]
     service = by_scope[("src/shop/service.py",)]
     assert service.depends_on == (pricing.task_id,)
     assert pricing.depends_on == ()
+    assert "达到拆分阈值" in plan.rationale
+
+
+def test_planner_keeps_explicit_independent_changes_parallel(
+    committed_repository: Callable[[str], Path],
+) -> None:
+    manifest, profile, config = _analyzed(
+        committed_repository,
+        objective="同时独立更新客户模型与价格匹配",
+        allowed_paths=("src/shop/models.py", "src/shop/pricing.py"),
+    )
+
+    plan = AdaptiveTaskPlanner(config).plan(manifest, profile)
+
+    assert plan.agent_count == 2
+    assert all(not item.depends_on for item in plan.task_specs)
+    assert "允许无依赖分组并行" in plan.rationale
 
 
 def test_planner_sends_images_to_only_one_relevant_task(

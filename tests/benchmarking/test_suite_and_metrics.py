@@ -115,6 +115,86 @@ def test_duplicate_strategy_record_is_rejected() -> None:
         aggregate_metrics(suite, (record, record))
 
 
+def test_hard_constraint_compliance_is_distinct_from_initial_execution_success() -> None:
+    suite, _suite_digest = load_benchmark_suite(_SUITE_PATH)
+    record = _passing_record(
+        suite.tasks[0],
+        AgentStrategy.ADAPTIVE,
+        ModelStrategy.ADAPTIVE,
+    ).model_copy(update={"initial_route_valid": False})
+
+    metric = aggregate_metrics(suite, (record,))[0]
+
+    assert metric.route_hard_constraint_compliance_rate == 1.0
+    assert metric.initial_execution_success_rate == 0.0
+    assert metric.initial_route_success_rate == 0.0
+
+
+def test_metrics_report_cross_trial_variance() -> None:
+    suite, _suite_digest = load_benchmark_suite(_SUITE_PATH)
+    first_trial = tuple(
+        _passing_record(
+            task,
+            AgentStrategy.ADAPTIVE,
+            ModelStrategy.ADAPTIVE,
+        )
+        for task in suite.tasks
+    )
+    second_trial = tuple(
+        item.model_copy(
+            update={
+                "run_id": f"{item.run_id}-trial-2",
+                "trial_index": 2,
+                "status": BenchmarkRunStatus.FAILED,
+            }
+        )
+        for item in first_trial
+    )
+
+    metric = aggregate_metrics(suite, (*first_trial, *second_trial))[0]
+
+    assert metric.run_count == 24
+    assert metric.trial_count == 2
+    assert metric.success_rate == 0.5
+    assert metric.success_rate_stddev == 0.5
+    assert metric.average_tokens_stddev == 0.0
+
+
+def test_incomplete_additional_trial_keeps_assessment_pending() -> None:
+    suite, _suite_digest = load_benchmark_suite(_SUITE_PATH)
+    first_trial = tuple(
+        _passing_record(task, agent_strategy, model_strategy)
+        for agent_strategy in AgentStrategy
+        for model_strategy in ModelStrategy
+        for task in suite.tasks
+    )
+    incomplete_second = _passing_record(
+        suite.tasks[0],
+        AgentStrategy.ADAPTIVE,
+        ModelStrategy.ADAPTIVE,
+    ).model_copy(update={"run_id": "incomplete-trial-2", "trial_index": 2})
+
+    metrics = aggregate_metrics(suite, (*first_trial, incomplete_second))
+    assessment = assess_go_no_go(suite, (*first_trial, incomplete_second), metrics)
+
+    assert assessment.status is GoNoGoStatus.PENDING
+
+
+def test_v1_record_without_trial_or_hard_constraint_fields_remains_loadable() -> None:
+    suite, _suite_digest = load_benchmark_suite(_SUITE_PATH)
+    record = _passing_record(
+        suite.tasks[0],
+        AgentStrategy.ADAPTIVE,
+        ModelStrategy.ADAPTIVE,
+    )
+    payload = record.model_dump(exclude={"trial_index", "route_hard_constraints_satisfied"})
+
+    restored = BenchmarkRunRecord.model_validate(payload)
+
+    assert restored.trial_index == 1
+    assert restored.route_hard_constraints_satisfied is None
+
+
 def test_report_rejects_mixed_system_commits(tmp_path: Path) -> None:
     suite, suite_digest = load_benchmark_suite(_SUITE_PATH)
     first = _passing_record(
@@ -166,6 +246,7 @@ def _passing_record(task, agent_strategy, model_strategy) -> BenchmarkRunRecord:
         orchestrator_context_chars=100 if adaptive else 500,
         worker_context_chars=1_000,
         initial_route_valid=True,
+        route_hard_constraints_satisfied=True,
         fallback_count=0,
         predicted_difficulty=task.human_difficulty,
         image_agent_count=1 if image_relevant else 0,

@@ -41,7 +41,7 @@ class RuleBasedModelRouter:
         rejected: list[ModelCandidateRejection] = []
         hard_eligible: list[ModelProfile] = []
         for profile in sorted(profiles, key=lambda item: item.key):
-            reasons = _hard_rejection_reasons(requirement, profile)
+            reasons = hard_constraint_violations(requirement, profile)
             if reasons:
                 rejected.append(
                     ModelCandidateRejection(model_key=profile.key, reasons=tuple(reasons))
@@ -110,10 +110,12 @@ class RuleBasedModelRouter:
         return (-_TIER_RANK[profile.tier], profile.stable_priority, provider_priority, profile.key)
 
 
-def _hard_rejection_reasons(
+def hard_constraint_violations(
     requirement: ModelRequirement,
     profile: ModelProfile,
-) -> list[str]:
+) -> tuple[str, ...]:
+    """Return deterministic capability violations without considering price or tier."""
+
     reasons: list[str] = []
     if profile.availability is not ModelAvailability.AVAILABLE:
         reasons.append("模型当前不可用")
@@ -131,7 +133,7 @@ def _hard_rejection_reasons(
         reasons.append("不支持结构化输出")
     if requirement.requires_thinking and not profile.supports_thinking:
         reasons.append("不支持思考模式")
-    return reasons
+    return tuple(reasons)
 
 
 def _latest_checked_at(profiles: list[ModelProfile]) -> datetime:

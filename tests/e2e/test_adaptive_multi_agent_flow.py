@@ -105,7 +105,7 @@ def test_two_independent_scopes_create_two_agents_and_integrate_both_patches(
     run_store = JsonRunStateStore(layout.run_state)
     change = IntakeService().create(
         repository=repository,
-        objective="折扣客户类型忽略大小写，并统一标签为小写",
+        objective="两个改动相互独立且可并行：折扣客户类型忽略大小写，并统一标签为小写",
         acceptance_criteria=("全部测试通过",),
         allowed_paths=("calculator.py", "formatter.py"),
     )

@@ -32,6 +32,7 @@ _VISUAL_PATH_MARKERS = (
 _VISUAL_SUFFIXES = (".css", ".html", ".jsx", ".scss", ".svelte", ".tsx", ".vue")
 _VISUAL_OBJECTIVE_TERMS = ("ui", "原型", "图片", "图像", "截图", "架构图", "界面", "视觉")
 _IMAGE_NEGATIVE_TERMS = ("与任务无关", "不需要读图", "忽略图片", "无需图片", "无关图片")
+_PARALLEL_OBJECTIVE_TERMS = ("并行", "同时", "独立", "分别", "互不依赖", "可并发")
 _HIGH_COMPLEXITY_TERMS = (
     "架构",
     "数据流",
@@ -73,10 +74,18 @@ class AdaptiveTaskPlanner:
         profile: RepositoryProfile,
     ) -> AdaptiveTaskPlan:
         change = manifest.change_spec
-        groups = _write_groups(
+        initial_groups = _write_groups(
             change.allowed_paths,
             profile.files,
             max_tasks=self._config.max_dynamic_tasks,
+            split_directory_lines=self._config.split_directory_lines,
+        )
+        groups, topology_reason = _select_execution_groups(
+            initial_groups,
+            objective=change.objective,
+            has_images=bool(change.input_artifacts),
+            files=profile.files,
+            profile=profile,
             split_directory_lines=self._config.split_directory_lines,
         )
         task_ids = tuple(TaskId.new() for _ in groups)
@@ -89,7 +98,7 @@ class AdaptiveTaskPlanner:
             objective=change.objective,
             acceptance_criteria=change.acceptance_criteria,
             allowed_paths=change.allowed_paths,
-            groups=groups,
+            groups=initial_groups,
             files=profile.files,
         )
         readable_paths = tuple(item.path for item in profile.files if item.line_count > 0)
@@ -163,7 +172,7 @@ class AdaptiveTaskPlanner:
         rationale = (
             f"按 {len(change.allowed_paths)} 个用户写范围、固定 commit 文件规模和模块依赖，"
             f"生成 {len(planned)} 个临时任务、{relation_count} 条依赖；"
-            f"其中 {len(visual_groups)} 个任务接收图片。"
+            f"其中 {len(visual_groups)} 个任务接收图片；{topology_reason}。"
         )
         return AdaptiveTaskPlan(task_specs=planned, rationale=rationale)
 
@@ -281,6 +290,59 @@ def _write_groups(
     return tuple(tuple(sorted(bucket)) for bucket in buckets if bucket)
 
 
+def _select_execution_groups(
+    groups: tuple[tuple[str, ...], ...],
+    *,
+    objective: str,
+    has_images: bool,
+    files: tuple[RepositoryFile, ...],
+    profile: RepositoryProfile,
+    split_directory_lines: int,
+) -> tuple[tuple[tuple[str, ...], ...], str]:
+    """Keep a split only when its independence, modality, or scale can repay extra calls."""
+
+    if len(groups) <= 1:
+        return groups, "单一写分组无需扩展任务图"
+
+    dependencies = _group_dependency_edges(groups, profile)
+    folded_objective = objective.casefold()
+    parallel_signal = any(term in folded_objective for term in _PARALLEL_OBJECTIVE_TERMS)
+    visual_flags = tuple(any(_is_visual_path(scope) for scope in group) for group in groups)
+    modality_boundary = has_images and any(visual_flags) and not all(visual_flags)
+    total_lines = _covered_line_count(groups, files)
+
+    reasons: list[str] = []
+    if parallel_signal and not dependencies:
+        reasons.append("需求明确允许无依赖分组并行")
+    if modality_boundary:
+        reasons.append("拆分可避免向非视觉路径实例发送原图")
+    if total_lines >= split_directory_lines:
+        reasons.append(f"授权代码量 {total_lines} 行达到拆分阈值 {split_directory_lines} 行")
+    if reasons:
+        return groups, "保留拆分：" + "；".join(reasons)
+
+    merged = (tuple(scope for group in groups for scope in group),)
+    dependency_text = "存在跨分组依赖" if dependencies else "缺少明确独立性证据"
+    return (
+        merged,
+        f"合并低收益分组：{dependency_text}，且授权代码量 {total_lines} 行低于"
+        f" {split_directory_lines} 行阈值",
+    )
+
+
+def _covered_line_count(
+    groups: tuple[tuple[str, ...], ...],
+    files: tuple[RepositoryFile, ...],
+) -> int:
+    scopes = tuple(scope for group in groups for scope in group)
+    covered = {
+        item.path: item.line_count
+        for item in files
+        if item.line_count > 0 and path_is_within_scopes(item.path, scopes)
+    }
+    return sum(covered.values())
+
+
 def _visual_group_indexes(
     groups: tuple[tuple[str, ...], ...],
     has_images: bool,
@@ -327,6 +389,21 @@ def _task_dependencies(
     task_ids: tuple[TaskId, ...],
     profile: RepositoryProfile,
 ) -> tuple[tuple[TaskId, ...], ...]:
+    candidates = _group_dependency_edges(groups, profile)
+    accepted: set[tuple[int, int]] = set()
+    for source, target in sorted(candidates, key=lambda item: (groups[item[0]], groups[item[1]])):
+        if not _would_create_cycle(accepted, source, target):
+            accepted.add((source, target))
+    return tuple(
+        tuple(task_ids[source] for source, target in sorted(accepted) if target == index)
+        for index in range(len(groups))
+    )
+
+
+def _group_dependency_edges(
+    groups: tuple[tuple[str, ...], ...],
+    profile: RepositoryProfile,
+) -> set[tuple[int, int]]:
     module_to_group: dict[str, int] = {}
     for file in profile.files:
         if file.module_name is None:
@@ -342,21 +419,13 @@ def _task_dependencies(
         if group_index is not None:
             module_to_group[file.module_name] = group_index
 
-    candidates = {
+    return {
         (module_to_group[edge.imported_module], module_to_group[edge.importer_module])
         for edge in profile.dependencies
         if edge.imported_module in module_to_group
         and edge.importer_module in module_to_group
         and module_to_group[edge.imported_module] != module_to_group[edge.importer_module]
     }
-    accepted: set[tuple[int, int]] = set()
-    for source, target in sorted(candidates, key=lambda item: (groups[item[0]], groups[item[1]])):
-        if not _would_create_cycle(accepted, source, target):
-            accepted.add((source, target))
-    return tuple(
-        tuple(task_ids[source] for source, target in sorted(accepted) if target == index)
-        for index in range(len(groups))
-    )
 
 
 def _would_create_cycle(

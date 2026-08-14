@@ -56,6 +56,7 @@ from evoweave.domain.run_models import RunManifest
 from evoweave.domain.task_result import TaskResult
 from evoweave.infrastructure.artifacts.image_ingestor import PillowImageIngestor
 from evoweave.infrastructure.artifacts.local_store import LocalArtifactStore
+from evoweave.infrastructure.models.rule_router import hard_constraint_violations
 from evoweave.infrastructure.persistence.graph_repository import SQLiteOrchestrationStore
 from evoweave.infrastructure.persistence.sqlite import SQLiteDatabase
 from evoweave.infrastructure.telemetry.jsonl import JsonlEventRecorder
@@ -155,7 +156,10 @@ class BenchmarkRunner:
         agent_strategy: AgentStrategy,
         model_strategy: ModelStrategy,
         evidence_level: EvidenceLevel,
+        trial_index: int = 1,
     ) -> BenchmarkRunRecord:
+        if not 1 <= trial_index <= 1_000:
+            raise ValueError("benchmark trial_index 必须在 1 到 1000 之间")
         started = monotonic()
         with tempfile.TemporaryDirectory(prefix=f"evoweave-{task.benchmark_id}-") as temporary:
             temporary_root = Path(temporary)
@@ -244,6 +248,8 @@ class BenchmarkRunner:
                     system_commit=self._system_commit,
                     usage=usage,
                     evidence_directory=evidence_directory,
+                    model_profiles=self._profiles,
+                    trial_index=trial_index,
                 )
 
             checkpoint = _load_checkpoint(layout, outcome.manifest)
@@ -258,6 +264,10 @@ class BenchmarkRunner:
                 target_command.command_id,
             )
             route_valid, fallback_count = _route_metrics(checkpoint, outcome.task_results)
+            route_hard_constraints_satisfied = _route_hard_constraints_satisfied(
+                checkpoint,
+                self._profiles,
+            )
             context = _context_metrics(checkpoint, artifact_store)
             image_agent_count = sum(
                 InputModality.IMAGE in item.required_modalities
@@ -279,6 +289,7 @@ class BenchmarkRunner:
             return BenchmarkRunRecord(
                 benchmark_id=task.benchmark_id,
                 run_id=str(outcome.manifest.run_id),
+                trial_index=trial_index,
                 suite_sha256=self._suite_sha256,
                 system_commit=self._system_commit,
                 agent_strategy=agent_strategy,
@@ -302,6 +313,7 @@ class BenchmarkRunner:
                 orchestrator_context_chars=context[0],
                 worker_context_chars=context[1],
                 initial_route_valid=route_valid,
+                route_hard_constraints_satisfied=route_hard_constraints_satisfied,
                 fallback_count=fallback_count,
                 predicted_difficulty=predicted_difficulty,
                 image_agent_count=image_agent_count,
@@ -426,7 +438,7 @@ class BenchmarkResultStore:
             raise ValueError("结果文件包含其他系统 Git 提交")
         key = _record_key(record)
         if any(_record_key(item) == key for item in records):
-            raise ValueError("同一任务、策略和真实性等级的 benchmark 记录已存在")
+            raise ValueError("同一任务、策略、重复序号和真实性等级的 benchmark 记录已存在")
         self._path.parent.mkdir(parents=True, exist_ok=True)
         temporary = self._path.with_suffix(f"{self._path.suffix}.tmp")
         try:
@@ -524,6 +536,24 @@ def _route_metrics(
     )
     fallback_count = max(0, len(checkpoint.execution_specs) - len(checkpoint.task_specs))
     return initial_valid, fallback_count
+
+
+def _route_hard_constraints_satisfied(
+    checkpoint: OrchestrationCheckpoint | None,
+    profiles: tuple[ModelProfile, ...],
+) -> bool | None:
+    if checkpoint is None or not checkpoint.execution_specs:
+        return None
+    task_by_id = {item.task_id: item for item in checkpoint.task_specs}
+    profile_by_key = {item.key: item for item in profiles}
+    for execution_spec in checkpoint.execution_specs:
+        task_spec = task_by_id.get(execution_spec.task_id)
+        profile = profile_by_key.get(execution_spec.model_routing.selected_model_key)
+        if task_spec is None or profile is None:
+            return False
+        if hard_constraint_violations(task_spec.model_requirement, profile):
+            return False
+    return True
 
 
 def _gateway_for_task(task: BenchmarkTask, gateway: ModelGateway) -> ModelGateway:
@@ -631,12 +661,15 @@ def _failure_record(
     system_commit: str,
     usage: tuple[int, int, int],
     evidence_directory: str | None,
+    model_profiles: tuple[ModelProfile, ...],
+    trial_index: int,
 ) -> BenchmarkRunRecord:
     execution_specs = checkpoint.execution_specs if checkpoint is not None else ()
     context = _context_metrics(checkpoint, artifact_store) if checkpoint is not None else (0, 0)
     return BenchmarkRunRecord(
         benchmark_id=task.benchmark_id,
         run_id=str(manifest.run_id),
+        trial_index=trial_index,
         suite_sha256=suite_sha256,
         system_commit=system_commit,
         agent_strategy=agent_strategy,
@@ -669,6 +702,10 @@ def _failure_record(
             ErrorCode.MODEL_CAPABILITY_MISMATCH,
             ErrorCode.INVALID_MODEL_OUTPUT,
         },
+        route_hard_constraints_satisfied=_route_hard_constraints_satisfied(
+            checkpoint,
+            model_profiles,
+        ),
         fallback_count=max(0, len(execution_specs) - len(plan.task_specs)),
         predicted_difficulty=predicted_difficulty,
         image_agent_count=sum(
@@ -684,7 +721,7 @@ def _failure_record(
 
 def _record_key(
     record: BenchmarkRunRecord,
-) -> tuple[str, str, str, AgentStrategy, ModelStrategy, EvidenceLevel]:
+) -> tuple[str, str, str, AgentStrategy, ModelStrategy, EvidenceLevel, int]:
     return (
         record.suite_sha256,
         record.system_commit,
@@ -692,6 +729,7 @@ def _record_key(
         record.agent_strategy,
         record.model_strategy,
         record.evidence_level,
+        record.trial_index,
     )
 
 

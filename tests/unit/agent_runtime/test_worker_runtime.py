@@ -294,15 +294,59 @@ def test_escaping_search_path_is_rejected_and_model_can_retry() -> None:
 
 def test_invalid_model_output_becomes_structured_failure() -> None:
     run_id, task_id = RunId.new(), TaskId.new()
+    recorder = InMemoryEventRecorder()
     runtime = _runtime(
-        responses=(_response("not-json"),),
+        responses=(_response("not-json"), _response("still-not-json")),
         workspaces={task_id: FakeWorkspace(task_id=task_id, read_scope=("src",))},
         store=InMemoryArtifactStore(),
-        recorder=InMemoryEventRecorder(),
+        recorder=recorder,
     )
     result = runtime.execute(_spec(run_id=run_id, task_id=task_id, tools=("file.read",)))
     assert result.failure is not None
     assert result.failure.code is ErrorCode.INVALID_MODEL_OUTPUT
+    rejected = [
+        event
+        for event in recorder.events_for(run_id)
+        if event.event_type is EventType.MODEL_OUTPUT_REJECTED
+    ]
+    assert len(rejected) == 1
+
+
+def test_invalid_model_output_gets_one_bounded_self_correction() -> None:
+    run_id, task_id = RunId.new(), TaskId.new()
+    recorder = InMemoryEventRecorder()
+    gateway = ScriptedModelGateway(
+        responses=(
+            _response("先分析一下，稍后再给决定"),
+            _response(_tool("file.read", {"path": "src/app.py"})),
+            _response(_finish()),
+        )
+    )
+    runtime = _runtime(
+        responses=(),
+        workspaces={
+            task_id: FakeWorkspace(
+                task_id=task_id,
+                files={"src/app.py": "value = 1\n"},
+                read_scope=("src",),
+            )
+        },
+        store=InMemoryArtifactStore(),
+        recorder=recorder,
+        gateway=gateway,
+    )
+
+    result = runtime.execute(_spec(run_id=run_id, task_id=task_id, tools=("file.read",)))
+
+    assert result.status is ResultStatus.SUCCEEDED
+    assert "协议拒绝观察" in gateway.requests[1].messages[-1]
+    assert (
+        sum(
+            event.event_type is EventType.MODEL_OUTPUT_REJECTED
+            for event in recorder.events_for(run_id)
+        )
+        == 1
+    )
 
 
 def test_success_without_evidence_is_rejected() -> None:

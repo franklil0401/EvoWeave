@@ -137,6 +137,7 @@ class BenchmarkSuite(DomainModel):
 class BenchmarkRunRecord(DomainModel):
     benchmark_id: str = Field(pattern=r"^bench-[0-9]{2}-[a-z0-9-]+$")
     run_id: str = Field(min_length=1, max_length=128)
+    trial_index: int = Field(default=1, ge=1, le=1_000)
     suite_sha256: str = Field(pattern=r"^[0-9a-f]{64}$")
     system_commit: str = Field(pattern=r"^[0-9a-f]{40}$")
     agent_strategy: AgentStrategy
@@ -160,6 +161,7 @@ class BenchmarkRunRecord(DomainModel):
     orchestrator_context_chars: int = Field(ge=0)
     worker_context_chars: int = Field(ge=0)
     initial_route_valid: bool
+    route_hard_constraints_satisfied: bool | None = None
     fallback_count: int = Field(ge=0)
     predicted_difficulty: TaskDifficulty
     image_agent_count: int = Field(ge=0)

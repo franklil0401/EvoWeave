@@ -2,6 +2,8 @@ import json
 from collections.abc import Callable
 from pathlib import Path
 
+import pytest
+
 from evoweave.interfaces.cli import build_parser, main
 
 
@@ -143,4 +145,14 @@ def test_cli_benchmark_run_defaults_to_one_adaptive_strategy_pair() -> None:
     assert arguments.agent_strategy == "adaptive_agent"
     assert arguments.model_strategy == "adaptive_model"
     assert arguments.all_strategies is False
+    assert arguments.trials == 1
     assert arguments.task == ["bench-01-single-file"]
+
+
+def test_cli_benchmark_run_accepts_bounded_trial_count() -> None:
+    arguments = build_parser().parse_args(["benchmark", "run", "--trials", "3"])
+
+    assert arguments.trials == 3
+
+    with pytest.raises(SystemExit):
+        build_parser().parse_args(["benchmark", "run", "--trials", "0"])

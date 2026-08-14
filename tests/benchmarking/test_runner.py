@@ -81,6 +81,7 @@ def test_runner_uses_hidden_acceptance_and_persists_unique_record(tmp_path: Path
     assert record.agent_count == 1
     assert record.input_tokens == 30
     assert record.selected_model_keys == ("fake:worker",)
+    assert record.route_hard_constraints_satisfied is True
     assert record.evidence_directory is not None
     assert (tmp_path / "evidence" / record.run_id / "最终补丁.diff").exists()
 
@@ -89,9 +90,18 @@ def test_runner_uses_hidden_acceptance_and_persists_unique_record(tmp_path: Path
     assert store.load() == (record,)
     with pytest.raises(ValueError, match="已存在"):
         store.append(record)
+    second_trial = record.model_copy(update={"run_id": "run-trial-2", "trial_index": 2})
+    store.append(second_trial)
+    assert store.load() == (record, second_trial)
     with pytest.raises(ValueError, match="其他系统 Git 提交"):
         store.append(
-            record.model_copy(update={"run_id": "run-other-commit", "system_commit": "b" * 40})
+            record.model_copy(
+                update={
+                    "run_id": "run-other-commit",
+                    "system_commit": "b" * 40,
+                    "trial_index": 3,
+                }
+            )
         )
 
 
@@ -107,6 +117,13 @@ def test_failed_run_preserves_model_usage_and_structured_details(tmp_path: Path)
                 input_tokens=13,
                 output_tokens=7,
                 reasoning_tokens=2,
+            ),
+            ModelResponse(
+                model_key=profile.key,
+                text="still-not-json",
+                input_tokens=17,
+                output_tokens=9,
+                reasoning_tokens=3,
             ),
         ),
     )
@@ -128,7 +145,8 @@ def test_failed_run_preserves_model_usage_and_structured_details(tmp_path: Path)
     )
 
     assert record.status is BenchmarkRunStatus.FAILED
-    assert (record.input_tokens, record.output_tokens, record.reasoning_tokens) == (13, 7, 2)
+    assert (record.input_tokens, record.output_tokens, record.reasoning_tokens) == (30, 16, 5)
+    assert record.route_hard_constraints_satisfied is True
     assert record.failure_reason is not None
     assert "invalid_model_output" in record.failure_reason
     failure_path = tmp_path / "evidence" / record.run_id / "失败信息.json"

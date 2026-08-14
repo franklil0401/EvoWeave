@@ -1,0 +1,40 @@
+{
+  "details": {
+    "direct_errors": [
+      {
+        "ctx": {
+          "error": "非成功决定必须包含失败代码和消息"
+        },
+        "input": {
+          "action": "finish",
+          "status": "failed",
+          "summary": "只读审查结果：当前calculate_discount函数仅处理'VIP'类型客户，未覆盖'vip'和'Vip'类型，不满足所有三种客户类型均获得九折的验收条件；现有测试test_vip_discount通过。"
+        },
+        "loc": [
+          "finish"
+        ],
+        "msg": "Value error, 非成功决定必须包含失败代码和消息",
+        "type": "value_error"
+      }
+    ],
+    "extraction_errors": [
+      {
+        "ctx": {
+          "error": "非成功决定必须包含失败代码和消息"
+        },
+        "input": {
+          "action": "finish",
+          "status": "failed",
+          "summary": "只读审查结果：当前calculate_discount函数仅处理'VIP'类型客户，未覆盖'vip'和'Vip'类型，不满足所有三种客户类型均获得九折的验收条件；现有测试test_vip_discount通过。"
+        },
+        "loc": [
+          "finish"
+        ],
+        "msg": "Value error, 非成功决定必须包含失败代码和消息",
+        "type": "value_error"
+      }
+    ]
+  },
+  "error_code": "invalid_model_output",
+  "message": "模型输出不符合 Worker 决策协议"
+}

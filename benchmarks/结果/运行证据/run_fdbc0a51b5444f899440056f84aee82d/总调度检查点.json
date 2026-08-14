@@ -1,0 +1,352 @@
+{
+  "run_id": "run_fdbc0a51b5444f899440056f84aee82d",
+  "version": 3,
+  "graph": {
+    "graph_id": "graph_de2a69e9aa0d408e9b4f2096bb419f5d",
+    "run_id": "run_fdbc0a51b5444f899440056f84aee82d",
+    "version": 5,
+    "nodes": [
+      {
+        "task_id": "task_5f3f2a8f7cb9457bb9288f0a9bbf4c52",
+        "task_spec_version": 1,
+        "status": "failed",
+        "attempts": 1
+      },
+      {
+        "task_id": "task_55fe4f5821a84b0696b2a2f35333d393",
+        "task_spec_version": 1,
+        "status": "created",
+        "attempts": 0
+      },
+      {
+        "task_id": "task_618d167a886f4b1793afb20c5f03ade2",
+        "task_spec_version": 1,
+        "status": "created",
+        "attempts": 0
+      },
+      {
+        "task_id": "task_dce465c7b8ce41f7bebe16e79b1081f1",
+        "task_spec_version": 1,
+        "status": "created",
+        "attempts": 0
+      }
+    ],
+    "edges": [
+      {
+        "source": "task_5f3f2a8f7cb9457bb9288f0a9bbf4c52",
+        "target": "task_55fe4f5821a84b0696b2a2f35333d393",
+        "relation": "depends_on"
+      },
+      {
+        "source": "task_55fe4f5821a84b0696b2a2f35333d393",
+        "target": "task_618d167a886f4b1793afb20c5f03ade2",
+        "relation": "depends_on"
+      },
+      {
+        "source": "task_618d167a886f4b1793afb20c5f03ade2",
+        "target": "task_dce465c7b8ce41f7bebe16e79b1081f1",
+        "relation": "depends_on"
+      }
+    ],
+    "created_at": "2026-08-14T15:57:23.266386Z"
+  },
+  "task_specs": [
+    {
+      "spec_id": "spec_ca1e504b0f6f4fd08ff502eba9c8c9e4",
+      "task_id": "task_55fe4f5821a84b0696b2a2f35333d393",
+      "change_spec_id": "spec_d29a1cd9fe5f4571bd9205a2f84c9dd9",
+      "goal": "固定流水线步骤 2/4：根据用户目标修改全部授权写范围；原目标：首选模型不可用时继续完成客户类型大小写修复",
+      "base_commit": "c0eca3a1137c62190990bcd56ba95930866b941b",
+      "acceptance_criteria": [
+        "创建新 Agent 和新版路由",
+        "最终补丁通过测试"
+      ],
+      "depends_on": [
+        "task_5f3f2a8f7cb9457bb9288f0a9bbf4c52"
+      ],
+      "input_artifact_ids": [],
+      "context_artifact_ids": [
+        "artifact_6e5c5c017f034b4bb4c0ccd11fa6ae7b"
+      ],
+      "read_scope": [
+        "calculator.py",
+        "pyproject.toml",
+        "tests/test_calculator.py"
+      ],
+      "write_scope": [
+        "calculator.py"
+      ],
+      "required_modalities": [
+        "text"
+      ],
+      "difficulty": {
+        "difficulty": "low",
+        "rationale": "仓库证据规则评分 0；单一、明确且低风险的候选范围",
+        "evidence_ids": [
+          "evidence_8e1c5ebecce8d4fff0fa86c1",
+          "evidence_9553c19c60eb286b227af113"
+        ],
+        "version": 1
+      },
+      "model_requirement": {
+        "requirement_id": "spec_2ebc55d535cf41ba9f4cda452af92ad4",
+        "task_id": "task_55fe4f5821a84b0696b2a2f35333d393",
+        "difficulty": "low",
+        "required_modalities": [
+          "text"
+        ],
+        "min_context_tokens": 8000,
+        "min_output_tokens": 2000,
+        "requires_tool_calling": true,
+        "requires_structured_output": true,
+        "requires_thinking": false,
+        "version": 1
+      },
+      "risk_level": "low",
+      "version": 1
+    },
+    {
+      "spec_id": "spec_ecb176996fb4479cbf7b7090ade42ed4",
+      "task_id": "task_5f3f2a8f7cb9457bb9288f0a9bbf4c52",
+      "change_spec_id": "spec_d29a1cd9fe5f4571bd9205a2f84c9dd9",
+      "goal": "固定流水线步骤 1/4：读取仓库并总结需求相关证据，不修改文件",
+      "base_commit": "c0eca3a1137c62190990bcd56ba95930866b941b",
+      "acceptance_criteria": [
+        "创建新 Agent 和新版路由",
+        "最终补丁通过测试"
+      ],
+      "depends_on": [],
+      "input_artifact_ids": [],
+      "context_artifact_ids": [
+        "artifact_6e5c5c017f034b4bb4c0ccd11fa6ae7b"
+      ],
+      "read_scope": [
+        "calculator.py",
+        "pyproject.toml",
+        "tests/test_calculator.py"
+      ],
+      "write_scope": [],
+      "required_modalities": [
+        "text"
+      ],
+      "difficulty": {
+        "difficulty": "low",
+        "rationale": "仓库证据规则评分 0；单一、明确且低风险的候选范围",
+        "evidence_ids": [
+          "evidence_8e1c5ebecce8d4fff0fa86c1",
+          "evidence_9553c19c60eb286b227af113"
+        ],
+        "version": 1
+      },
+      "model_requirement": {
+        "requirement_id": "spec_178f04950d6849978a432dee9297f55b",
+        "task_id": "task_5f3f2a8f7cb9457bb9288f0a9bbf4c52",
+        "difficulty": "low",
+        "required_modalities": [
+          "text"
+        ],
+        "min_context_tokens": 8000,
+        "min_output_tokens": 2000,
+        "requires_tool_calling": true,
+        "requires_structured_output": true,
+        "requires_thinking": false,
+        "version": 1
+      },
+      "risk_level": "low",
+      "version": 1
+    },
+    {
+      "spec_id": "spec_6fa65ba5276d40c08202bdbb6ce8f673",
+      "task_id": "task_618d167a886f4b1793afb20c5f03ade2",
+      "change_spec_id": "spec_d29a1cd9fe5f4571bd9205a2f84c9dd9",
+      "goal": "固定流水线步骤 3/4：只读审查修改范围和验收条件，不修改文件",
+      "base_commit": "c0eca3a1137c62190990bcd56ba95930866b941b",
+      "acceptance_criteria": [
+        "创建新 Agent 和新版路由",
+        "最终补丁通过测试"
+      ],
+      "depends_on": [
+        "task_55fe4f5821a84b0696b2a2f35333d393"
+      ],
+      "input_artifact_ids": [],
+      "context_artifact_ids": [
+        "artifact_6e5c5c017f034b4bb4c0ccd11fa6ae7b"
+      ],
+      "read_scope": [
+        "calculator.py",
+        "pyproject.toml",
+        "tests/test_calculator.py"
+      ],
+      "write_scope": [],
+      "required_modalities": [
+        "text"
+      ],
+      "difficulty": {
+        "difficulty": "low",
+        "rationale": "仓库证据规则评分 0；单一、明确且低风险的候选范围",
+        "evidence_ids": [
+          "evidence_8e1c5ebecce8d4fff0fa86c1",
+          "evidence_9553c19c60eb286b227af113"
+        ],
+        "version": 1
+      },
+      "model_requirement": {
+        "requirement_id": "spec_1b80332e0e864fc789ce0865e61b3f6a",
+        "task_id": "task_618d167a886f4b1793afb20c5f03ade2",
+        "difficulty": "low",
+        "required_modalities": [
+          "text"
+        ],
+        "min_context_tokens": 8000,
+        "min_output_tokens": 2000,
+        "requires_tool_calling": true,
+        "requires_structured_output": true,
+        "requires_thinking": false,
+        "version": 1
+      },
+      "risk_level": "low",
+      "version": 1
+    },
+    {
+      "spec_id": "spec_6444fcbe6b4347dba65416067d641bc5",
+      "task_id": "task_dce465c7b8ce41f7bebe16e79b1081f1",
+      "change_spec_id": "spec_d29a1cd9fe5f4571bd9205a2f84c9dd9",
+      "goal": "固定流水线步骤 4/4：只读检查测试与风险信息，不修改文件",
+      "base_commit": "c0eca3a1137c62190990bcd56ba95930866b941b",
+      "acceptance_criteria": [
+        "创建新 Agent 和新版路由",
+        "最终补丁通过测试"
+      ],
+      "depends_on": [
+        "task_618d167a886f4b1793afb20c5f03ade2"
+      ],
+      "input_artifact_ids": [],
+      "context_artifact_ids": [
+        "artifact_6e5c5c017f034b4bb4c0ccd11fa6ae7b"
+      ],
+      "read_scope": [
+        "calculator.py",
+        "pyproject.toml",
+        "tests/test_calculator.py"
+      ],
+      "write_scope": [],
+      "required_modalities": [
+        "text"
+      ],
+      "difficulty": {
+        "difficulty": "low",
+        "rationale": "仓库证据规则评分 0；单一、明确且低风险的候选范围",
+        "evidence_ids": [
+          "evidence_8e1c5ebecce8d4fff0fa86c1",
+          "evidence_9553c19c60eb286b227af113"
+        ],
+        "version": 1
+      },
+      "model_requirement": {
+        "requirement_id": "spec_1caed299f94e4156b1d6b4981862a65a",
+        "task_id": "task_dce465c7b8ce41f7bebe16e79b1081f1",
+        "difficulty": "low",
+        "required_modalities": [
+          "text"
+        ],
+        "min_context_tokens": 8000,
+        "min_output_tokens": 2000,
+        "requires_tool_calling": true,
+        "requires_structured_output": true,
+        "requires_thinking": false,
+        "version": 1
+      },
+      "risk_level": "low",
+      "version": 1
+    }
+  ],
+  "execution_specs": [
+    {
+      "spec_id": "spec_e43aa76a1f424a57a5bec3f0565b22e2",
+      "run_id": "run_fdbc0a51b5444f899440056f84aee82d",
+      "agent_id": "agent_681b05ded60c486686b1f13732e3f1e4",
+      "task_id": "task_5f3f2a8f7cb9457bb9288f0a9bbf4c52",
+      "task_spec_id": "spec_ecb176996fb4479cbf7b7090ade42ed4",
+      "task_spec_version": 1,
+      "base_commit": "c0eca3a1137c62190990bcd56ba95930866b941b",
+      "goal": "固定流水线步骤 1/4：读取仓库并总结需求相关证据，不修改文件",
+      "acceptance_criteria": [
+        "创建新 Agent 和新版路由",
+        "最终补丁通过测试"
+      ],
+      "required_modalities": [
+        "text"
+      ],
+      "model_routing": {
+        "decision_id": "spec_9e297660f7c445b5993254161e4f93b3",
+        "requirement_id": "spec_178f04950d6849978a432dee9297f55b",
+        "requirement_version": 1,
+        "selected_model_key": "doubao:doubao-seed-2-0-mini-260428",
+        "selected_availability": "available",
+        "selected_snapshot": null,
+        "reason": "benchmark fixed_low 对照固定使用单一模型；输入模态、上下文、工具和结构化输出硬约束仍然生效",
+        "fallback_model_keys": [],
+        "rejected_candidates": [],
+        "capability_snapshot_at": "2026-08-14T15:43:42.850325Z",
+        "version": 1
+      },
+      "tool_names": [
+        "file.read",
+        "file.search"
+      ],
+      "allowed_commands": [],
+      "read_scope": [
+        "calculator.py",
+        "pyproject.toml",
+        "tests/test_calculator.py"
+      ],
+      "write_scope": [],
+      "context_artifact_ids": [
+        "artifact_6e5c5c017f034b4bb4c0ccd11fa6ae7b"
+      ],
+      "input_artifact_ids": [],
+      "runtime_limits": {
+        "max_steps": 32,
+        "max_input_tokens": 1000000,
+        "max_output_tokens": 16384,
+        "max_tool_calls": 32,
+        "timeout_seconds": 900
+      },
+      "output_schema": "TaskResult",
+      "version": 1
+    }
+  ],
+  "active_leases": [],
+  "allocation_decisions": [
+    {
+      "allocation_id": "spec_8ef4b96517eb49418d7cae05563908f8",
+      "run_id": "run_fdbc0a51b5444f899440056f84aee82d",
+      "graph_version": 2,
+      "ready_task_ids": [
+        "task_5f3f2a8f7cb9457bb9288f0a9bbf4c52"
+      ],
+      "selected_task_ids": [
+        "task_5f3f2a8f7cb9457bb9288f0a9bbf4c52"
+      ],
+      "available_slots": 6,
+      "reason": "实例数由就绪任务、并发槽位和写集合独立性共同决定"
+    }
+  ],
+  "result_summaries": [
+    {
+      "task_id": "task_5f3f2a8f7cb9457bb9288f0a9bbf4c52",
+      "agent_id": "agent_681b05ded60c486686b1f13732e3f1e4",
+      "execution_spec_id": "spec_e43aa76a1f424a57a5bec3f0565b22e2",
+      "status": "failed",
+      "summary": "benchmark 注入首选模型不可用故障",
+      "artifacts": [],
+      "suggestions": []
+    }
+  ],
+  "processed_decisions": [],
+  "progress_state": null,
+  "decision_count": 0,
+  "acceptance_satisfied": false,
+  "finished": false,
+  "finish_summary": null
+}

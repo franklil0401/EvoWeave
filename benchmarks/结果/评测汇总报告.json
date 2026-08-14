@@ -1,10 +1,13 @@
 {
   "go_no_go": {
-    "evidence_level": null,
+    "evidence_level": "live_model",
     "reasons": [
-      "尚无任一真实性等级完成 12 个任务 × 3 种 Agent 策略 × 3 种模型策略的完整矩阵"
+      "性能门槛：未通过",
+      "简单任务最小实例门槛：通过",
+      "模型硬约束门槛：未通过",
+      "调度上下文压缩门槛：通过"
     ],
-    "status": "pending"
+    "status": "no_go"
   },
   "metrics": [
     {
@@ -113,6 +116,27 @@
       "success_rate": 0.0
     },
     {
+      "agent_strategy": "fixed_multi_agent",
+      "average_agent_count": 2.333,
+      "average_duration_ms": 68374.5,
+      "average_tokens": 90490.75,
+      "conflict_rate": 0.0,
+      "difficulty_match_rate": 0.916667,
+      "evidence_level": "live_model",
+      "fallback_rate": 0.0,
+      "image_success_rate": 0.0,
+      "initial_route_success_rate": 0.666667,
+      "invalid_task_rate": 0.1875,
+      "localization_recall": 0.958,
+      "model_strategy": "fixed_low",
+      "orchestrator_context_ratio": 0.090866,
+      "original_image_exposure_rate": 1.0,
+      "patch_efficiency": 1.0,
+      "regression_rate": 0.0,
+      "run_count": 12,
+      "success_rate": 0.25
+    },
+    {
       "agent_strategy": "single_agent",
       "average_agent_count": 1.833,
       "average_duration_ms": 71440.833,
@@ -176,7 +200,7 @@
       "success_rate": 0.0
     }
   ],
-  "record_count": 96,
+  "record_count": 108,
   "suite_id": "evoweave_v1",
   "suite_sha256": "842d8c4edfeaf1e02350a594ee473d5d9a8372de9371e2483593aa86ca65350e",
   "suite_version": 3,

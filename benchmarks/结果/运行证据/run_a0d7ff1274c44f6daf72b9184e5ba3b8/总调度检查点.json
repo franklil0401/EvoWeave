@@ -1,0 +1,577 @@
+{
+  "run_id": "run_a0d7ff1274c44f6daf72b9184e5ba3b8",
+  "version": 5,
+  "graph": {
+    "graph_id": "graph_345accd143624a7a964117d8044c1762",
+    "run_id": "run_a0d7ff1274c44f6daf72b9184e5ba3b8",
+    "version": 9,
+    "nodes": [
+      {
+        "task_id": "task_0ceaf9a89c4b422eb6bfb889e87df017",
+        "task_spec_version": 1,
+        "status": "succeeded",
+        "attempts": 1
+      },
+      {
+        "task_id": "task_f6aa5a4673b949d2ab5e1997c27908e8",
+        "task_spec_version": 1,
+        "status": "failed",
+        "attempts": 1
+      },
+      {
+        "task_id": "task_740cd11ca2034590aae9321d271e8ccc",
+        "task_spec_version": 1,
+        "status": "created",
+        "attempts": 0
+      },
+      {
+        "task_id": "task_0154a62a4df24352b362bc8573f19459",
+        "task_spec_version": 1,
+        "status": "created",
+        "attempts": 0
+      }
+    ],
+    "edges": [
+      {
+        "source": "task_0ceaf9a89c4b422eb6bfb889e87df017",
+        "target": "task_f6aa5a4673b949d2ab5e1997c27908e8",
+        "relation": "depends_on"
+      },
+      {
+        "source": "task_f6aa5a4673b949d2ab5e1997c27908e8",
+        "target": "task_740cd11ca2034590aae9321d271e8ccc",
+        "relation": "depends_on"
+      },
+      {
+        "source": "task_740cd11ca2034590aae9321d271e8ccc",
+        "target": "task_0154a62a4df24352b362bc8573f19459",
+        "relation": "depends_on"
+      }
+    ],
+    "created_at": "2026-08-14T15:47:39.911535Z"
+  },
+  "task_specs": [
+    {
+      "spec_id": "spec_700b94b0fab54551b98aff113351b7e3",
+      "task_id": "task_0154a62a4df24352b362bc8573f19459",
+      "change_spec_id": "spec_959c83a41bdd4cf5bdb5a87f6aad5a8c",
+      "goal": "固定流水线步骤 4/4：只读检查测试与风险信息，不修改文件",
+      "base_commit": "15fdda6d2004e5291abacbf11c727bc977e51409",
+      "acceptance_criteria": [
+        "Customer.normalized_type 返回去空格的大写值",
+        "价格模块独立支持大小写与空格",
+        "回归通过"
+      ],
+      "depends_on": [
+        "task_740cd11ca2034590aae9321d271e8ccc"
+      ],
+      "input_artifact_ids": [],
+      "context_artifact_ids": [
+        "artifact_5f89a66ba8664c03ac0c48312c34dca1"
+      ],
+      "read_scope": [
+        ".github/workflows/ci.yml",
+        "pyproject.toml",
+        "src/shop/__init__.py",
+        "src/shop/legacy_broken.py",
+        "src/shop/models.py",
+        "src/shop/pricing.py",
+        "src/shop/service.py",
+        "tests/test_service.py"
+      ],
+      "write_scope": [],
+      "required_modalities": [
+        "text"
+      ],
+      "difficulty": {
+        "difficulty": "medium",
+        "rationale": "仓库证据规则评分 4；候选影响文件跨越多个文件；候选模块存在依赖扇出；定位存在一定歧义",
+        "evidence_ids": [
+          "evidence_038038e72d924192763aaec6",
+          "evidence_0b4ce13b603cc451de040304",
+          "evidence_415fe9882f5e0e076424888a",
+          "evidence_5c43ba8973e80c1fbf9a295d",
+          "evidence_9a7de0ea556122ec1b77d253",
+          "evidence_bbd8dd833515492908bcc492",
+          "evidence_1dc740337b2854b6c0b155be",
+          "evidence_65407f4fe0f339d057c8189d",
+          "evidence_860316578bf7ace3a4ac60cc",
+          "evidence_935ddeddb1267cee12b17c6c",
+          "evidence_95f1ab3d5708a7ad987daa5e",
+          "evidence_a4bbad59c34fdfdfc8db2070",
+          "evidence_b4c4266317692cb3bd2fa75a",
+          "evidence_583d010c4675fa2b5541bd97",
+          "evidence_745eb2c1f40c12eac871599f",
+          "evidence_7615d891088b843690416a09",
+          "evidence_8641529085cab769d26abdd1",
+          "evidence_8a0c0e1dbfe0841efb0509f1",
+          "evidence_a2bf2b2d4af036f5e27221b7",
+          "evidence_a55e13e8d5c495c242754514",
+          "evidence_e67cc2499c075b608e47e71d",
+          "evidence_5bc229732d3c9973b3c45a51",
+          "evidence_753c0804d5d4aca505a49c8c",
+          "evidence_8111f34bcc970d42a5797940",
+          "evidence_cbbc702718bbb011d3394406",
+          "evidence_3616d3b9402cea2dd3889ca7",
+          "evidence_fd0b317dc5e16a4e8d4564c2",
+          "evidence_4f6b86f6da278d3891cdb6e6",
+          "evidence_e7b59004e0b0ac35c0ddb924"
+        ],
+        "version": 1
+      },
+      "model_requirement": {
+        "requirement_id": "spec_b3418279d7b24c75b21b5825af40d817",
+        "task_id": "task_0154a62a4df24352b362bc8573f19459",
+        "difficulty": "medium",
+        "required_modalities": [
+          "text"
+        ],
+        "min_context_tokens": 32000,
+        "min_output_tokens": 4000,
+        "requires_tool_calling": true,
+        "requires_structured_output": true,
+        "requires_thinking": false,
+        "version": 1
+      },
+      "risk_level": "low",
+      "version": 1
+    },
+    {
+      "spec_id": "spec_a2d6ccf7c92f4b66a5c72f1eca380644",
+      "task_id": "task_0ceaf9a89c4b422eb6bfb889e87df017",
+      "change_spec_id": "spec_959c83a41bdd4cf5bdb5a87f6aad5a8c",
+      "goal": "固定流水线步骤 1/4：读取仓库并总结需求相关证据，不修改文件",
+      "base_commit": "15fdda6d2004e5291abacbf11c727bc977e51409",
+      "acceptance_criteria": [
+        "Customer.normalized_type 返回去空格的大写值",
+        "价格模块独立支持大小写与空格",
+        "回归通过"
+      ],
+      "depends_on": [],
+      "input_artifact_ids": [],
+      "context_artifact_ids": [
+        "artifact_5f89a66ba8664c03ac0c48312c34dca1"
+      ],
+      "read_scope": [
+        ".github/workflows/ci.yml",
+        "pyproject.toml",
+        "src/shop/__init__.py",
+        "src/shop/legacy_broken.py",
+        "src/shop/models.py",
+        "src/shop/pricing.py",
+        "src/shop/service.py",
+        "tests/test_service.py"
+      ],
+      "write_scope": [],
+      "required_modalities": [
+        "text"
+      ],
+      "difficulty": {
+        "difficulty": "medium",
+        "rationale": "仓库证据规则评分 4；候选影响文件跨越多个文件；候选模块存在依赖扇出；定位存在一定歧义",
+        "evidence_ids": [
+          "evidence_038038e72d924192763aaec6",
+          "evidence_0b4ce13b603cc451de040304",
+          "evidence_415fe9882f5e0e076424888a",
+          "evidence_5c43ba8973e80c1fbf9a295d",
+          "evidence_9a7de0ea556122ec1b77d253",
+          "evidence_bbd8dd833515492908bcc492",
+          "evidence_1dc740337b2854b6c0b155be",
+          "evidence_65407f4fe0f339d057c8189d",
+          "evidence_860316578bf7ace3a4ac60cc",
+          "evidence_935ddeddb1267cee12b17c6c",
+          "evidence_95f1ab3d5708a7ad987daa5e",
+          "evidence_a4bbad59c34fdfdfc8db2070",
+          "evidence_b4c4266317692cb3bd2fa75a",
+          "evidence_583d010c4675fa2b5541bd97",
+          "evidence_745eb2c1f40c12eac871599f",
+          "evidence_7615d891088b843690416a09",
+          "evidence_8641529085cab769d26abdd1",
+          "evidence_8a0c0e1dbfe0841efb0509f1",
+          "evidence_a2bf2b2d4af036f5e27221b7",
+          "evidence_a55e13e8d5c495c242754514",
+          "evidence_e67cc2499c075b608e47e71d",
+          "evidence_5bc229732d3c9973b3c45a51",
+          "evidence_753c0804d5d4aca505a49c8c",
+          "evidence_8111f34bcc970d42a5797940",
+          "evidence_cbbc702718bbb011d3394406",
+          "evidence_3616d3b9402cea2dd3889ca7",
+          "evidence_fd0b317dc5e16a4e8d4564c2",
+          "evidence_4f6b86f6da278d3891cdb6e6",
+          "evidence_e7b59004e0b0ac35c0ddb924"
+        ],
+        "version": 1
+      },
+      "model_requirement": {
+        "requirement_id": "spec_99490f2fa07a45cb8199203254b62987",
+        "task_id": "task_0ceaf9a89c4b422eb6bfb889e87df017",
+        "difficulty": "medium",
+        "required_modalities": [
+          "text"
+        ],
+        "min_context_tokens": 32000,
+        "min_output_tokens": 4000,
+        "requires_tool_calling": true,
+        "requires_structured_output": true,
+        "requires_thinking": false,
+        "version": 1
+      },
+      "risk_level": "low",
+      "version": 1
+    },
+    {
+      "spec_id": "spec_3ee2b19f09204b60a6c95d504f4f42c6",
+      "task_id": "task_740cd11ca2034590aae9321d271e8ccc",
+      "change_spec_id": "spec_959c83a41bdd4cf5bdb5a87f6aad5a8c",
+      "goal": "固定流水线步骤 3/4：只读审查修改范围和验收条件，不修改文件",
+      "base_commit": "15fdda6d2004e5291abacbf11c727bc977e51409",
+      "acceptance_criteria": [
+        "Customer.normalized_type 返回去空格的大写值",
+        "价格模块独立支持大小写与空格",
+        "回归通过"
+      ],
+      "depends_on": [
+        "task_f6aa5a4673b949d2ab5e1997c27908e8"
+      ],
+      "input_artifact_ids": [],
+      "context_artifact_ids": [
+        "artifact_5f89a66ba8664c03ac0c48312c34dca1"
+      ],
+      "read_scope": [
+        ".github/workflows/ci.yml",
+        "pyproject.toml",
+        "src/shop/__init__.py",
+        "src/shop/legacy_broken.py",
+        "src/shop/models.py",
+        "src/shop/pricing.py",
+        "src/shop/service.py",
+        "tests/test_service.py"
+      ],
+      "write_scope": [],
+      "required_modalities": [
+        "text"
+      ],
+      "difficulty": {
+        "difficulty": "medium",
+        "rationale": "仓库证据规则评分 4；候选影响文件跨越多个文件；候选模块存在依赖扇出；定位存在一定歧义",
+        "evidence_ids": [
+          "evidence_038038e72d924192763aaec6",
+          "evidence_0b4ce13b603cc451de040304",
+          "evidence_415fe9882f5e0e076424888a",
+          "evidence_5c43ba8973e80c1fbf9a295d",
+          "evidence_9a7de0ea556122ec1b77d253",
+          "evidence_bbd8dd833515492908bcc492",
+          "evidence_1dc740337b2854b6c0b155be",
+          "evidence_65407f4fe0f339d057c8189d",
+          "evidence_860316578bf7ace3a4ac60cc",
+          "evidence_935ddeddb1267cee12b17c6c",
+          "evidence_95f1ab3d5708a7ad987daa5e",
+          "evidence_a4bbad59c34fdfdfc8db2070",
+          "evidence_b4c4266317692cb3bd2fa75a",
+          "evidence_583d010c4675fa2b5541bd97",
+          "evidence_745eb2c1f40c12eac871599f",
+          "evidence_7615d891088b843690416a09",
+          "evidence_8641529085cab769d26abdd1",
+          "evidence_8a0c0e1dbfe0841efb0509f1",
+          "evidence_a2bf2b2d4af036f5e27221b7",
+          "evidence_a55e13e8d5c495c242754514",
+          "evidence_e67cc2499c075b608e47e71d",
+          "evidence_5bc229732d3c9973b3c45a51",
+          "evidence_753c0804d5d4aca505a49c8c",
+          "evidence_8111f34bcc970d42a5797940",
+          "evidence_cbbc702718bbb011d3394406",
+          "evidence_3616d3b9402cea2dd3889ca7",
+          "evidence_fd0b317dc5e16a4e8d4564c2",
+          "evidence_4f6b86f6da278d3891cdb6e6",
+          "evidence_e7b59004e0b0ac35c0ddb924"
+        ],
+        "version": 1
+      },
+      "model_requirement": {
+        "requirement_id": "spec_7cd07006e9f84717899df962bddd8ee0",
+        "task_id": "task_740cd11ca2034590aae9321d271e8ccc",
+        "difficulty": "medium",
+        "required_modalities": [
+          "text"
+        ],
+        "min_context_tokens": 32000,
+        "min_output_tokens": 4000,
+        "requires_tool_calling": true,
+        "requires_structured_output": true,
+        "requires_thinking": false,
+        "version": 1
+      },
+      "risk_level": "low",
+      "version": 1
+    },
+    {
+      "spec_id": "spec_d5332842251643c3bbc6709a4cb9da57",
+      "task_id": "task_f6aa5a4673b949d2ab5e1997c27908e8",
+      "change_spec_id": "spec_959c83a41bdd4cf5bdb5a87f6aad5a8c",
+      "goal": "固定流水线步骤 2/4：根据用户目标修改全部授权写范围；原目标：同时为 Customer 增加 normalized_type 标准化属性，并让价格匹配独立支持大小写与首尾空格",
+      "base_commit": "15fdda6d2004e5291abacbf11c727bc977e51409",
+      "acceptance_criteria": [
+        "Customer.normalized_type 返回去空格的大写值",
+        "价格模块独立支持大小写与空格",
+        "回归通过"
+      ],
+      "depends_on": [
+        "task_0ceaf9a89c4b422eb6bfb889e87df017"
+      ],
+      "input_artifact_ids": [],
+      "context_artifact_ids": [
+        "artifact_5f89a66ba8664c03ac0c48312c34dca1"
+      ],
+      "read_scope": [
+        ".github/workflows/ci.yml",
+        "pyproject.toml",
+        "src/shop/__init__.py",
+        "src/shop/legacy_broken.py",
+        "src/shop/models.py",
+        "src/shop/pricing.py",
+        "src/shop/service.py",
+        "tests/test_service.py"
+      ],
+      "write_scope": [
+        "src/shop/models.py",
+        "src/shop/pricing.py"
+      ],
+      "required_modalities": [
+        "text"
+      ],
+      "difficulty": {
+        "difficulty": "medium",
+        "rationale": "仓库证据规则评分 4；候选影响文件跨越多个文件；候选模块存在依赖扇出；定位存在一定歧义",
+        "evidence_ids": [
+          "evidence_038038e72d924192763aaec6",
+          "evidence_0b4ce13b603cc451de040304",
+          "evidence_415fe9882f5e0e076424888a",
+          "evidence_5c43ba8973e80c1fbf9a295d",
+          "evidence_9a7de0ea556122ec1b77d253",
+          "evidence_bbd8dd833515492908bcc492",
+          "evidence_1dc740337b2854b6c0b155be",
+          "evidence_65407f4fe0f339d057c8189d",
+          "evidence_860316578bf7ace3a4ac60cc",
+          "evidence_935ddeddb1267cee12b17c6c",
+          "evidence_95f1ab3d5708a7ad987daa5e",
+          "evidence_a4bbad59c34fdfdfc8db2070",
+          "evidence_b4c4266317692cb3bd2fa75a",
+          "evidence_583d010c4675fa2b5541bd97",
+          "evidence_745eb2c1f40c12eac871599f",
+          "evidence_7615d891088b843690416a09",
+          "evidence_8641529085cab769d26abdd1",
+          "evidence_8a0c0e1dbfe0841efb0509f1",
+          "evidence_a2bf2b2d4af036f5e27221b7",
+          "evidence_a55e13e8d5c495c242754514",
+          "evidence_e67cc2499c075b608e47e71d",
+          "evidence_5bc229732d3c9973b3c45a51",
+          "evidence_753c0804d5d4aca505a49c8c",
+          "evidence_8111f34bcc970d42a5797940",
+          "evidence_cbbc702718bbb011d3394406",
+          "evidence_3616d3b9402cea2dd3889ca7",
+          "evidence_fd0b317dc5e16a4e8d4564c2",
+          "evidence_4f6b86f6da278d3891cdb6e6",
+          "evidence_e7b59004e0b0ac35c0ddb924"
+        ],
+        "version": 1
+      },
+      "model_requirement": {
+        "requirement_id": "spec_e99b341cd3f64946a1dad804223838bb",
+        "task_id": "task_f6aa5a4673b949d2ab5e1997c27908e8",
+        "difficulty": "medium",
+        "required_modalities": [
+          "text"
+        ],
+        "min_context_tokens": 32000,
+        "min_output_tokens": 4000,
+        "requires_tool_calling": true,
+        "requires_structured_output": true,
+        "requires_thinking": false,
+        "version": 1
+      },
+      "risk_level": "low",
+      "version": 1
+    }
+  ],
+  "execution_specs": [
+    {
+      "spec_id": "spec_64698fc047124d3db456062569ac5f34",
+      "run_id": "run_a0d7ff1274c44f6daf72b9184e5ba3b8",
+      "agent_id": "agent_da7329fb4c3d4e7bac1818a09b42fd08",
+      "task_id": "task_0ceaf9a89c4b422eb6bfb889e87df017",
+      "task_spec_id": "spec_a2d6ccf7c92f4b66a5c72f1eca380644",
+      "task_spec_version": 1,
+      "base_commit": "15fdda6d2004e5291abacbf11c727bc977e51409",
+      "goal": "固定流水线步骤 1/4：读取仓库并总结需求相关证据，不修改文件",
+      "acceptance_criteria": [
+        "Customer.normalized_type 返回去空格的大写值",
+        "价格模块独立支持大小写与空格",
+        "回归通过"
+      ],
+      "required_modalities": [
+        "text"
+      ],
+      "model_routing": {
+        "decision_id": "spec_af6d934ebaf640af964f275e1a1d3f9f",
+        "requirement_id": "spec_99490f2fa07a45cb8199203254b62987",
+        "requirement_version": 1,
+        "selected_model_key": "doubao:doubao-seed-2-0-mini-260428",
+        "selected_availability": "available",
+        "selected_snapshot": null,
+        "reason": "benchmark fixed_low 对照固定使用单一模型；输入模态、上下文、工具和结构化输出硬约束仍然生效",
+        "fallback_model_keys": [],
+        "rejected_candidates": [],
+        "capability_snapshot_at": "2026-08-14T15:43:42.850325Z",
+        "version": 1
+      },
+      "tool_names": [
+        "file.read",
+        "file.search"
+      ],
+      "allowed_commands": [],
+      "read_scope": [
+        ".github/workflows/ci.yml",
+        "pyproject.toml",
+        "src/shop/__init__.py",
+        "src/shop/legacy_broken.py",
+        "src/shop/models.py",
+        "src/shop/pricing.py",
+        "src/shop/service.py",
+        "tests/test_service.py"
+      ],
+      "write_scope": [],
+      "context_artifact_ids": [
+        "artifact_5f89a66ba8664c03ac0c48312c34dca1"
+      ],
+      "input_artifact_ids": [],
+      "runtime_limits": {
+        "max_steps": 32,
+        "max_input_tokens": 1000000,
+        "max_output_tokens": 16384,
+        "max_tool_calls": 32,
+        "timeout_seconds": 900
+      },
+      "output_schema": "TaskResult",
+      "version": 1
+    },
+    {
+      "spec_id": "spec_920dc2e6c42543c5bc6a75aa204f6f90",
+      "run_id": "run_a0d7ff1274c44f6daf72b9184e5ba3b8",
+      "agent_id": "agent_dc602a5f46a0477daee87619b57eb630",
+      "task_id": "task_f6aa5a4673b949d2ab5e1997c27908e8",
+      "task_spec_id": "spec_d5332842251643c3bbc6709a4cb9da57",
+      "task_spec_version": 1,
+      "base_commit": "15fdda6d2004e5291abacbf11c727bc977e51409",
+      "goal": "固定流水线步骤 2/4：根据用户目标修改全部授权写范围；原目标：同时为 Customer 增加 normalized_type 标准化属性，并让价格匹配独立支持大小写与首尾空格",
+      "acceptance_criteria": [
+        "Customer.normalized_type 返回去空格的大写值",
+        "价格模块独立支持大小写与空格",
+        "回归通过"
+      ],
+      "required_modalities": [
+        "text"
+      ],
+      "model_routing": {
+        "decision_id": "spec_ac884e555af74d42ac781be106995b68",
+        "requirement_id": "spec_e99b341cd3f64946a1dad804223838bb",
+        "requirement_version": 1,
+        "selected_model_key": "doubao:doubao-seed-2-0-mini-260428",
+        "selected_availability": "available",
+        "selected_snapshot": null,
+        "reason": "benchmark fixed_low 对照固定使用单一模型；输入模态、上下文、工具和结构化输出硬约束仍然生效",
+        "fallback_model_keys": [],
+        "rejected_candidates": [],
+        "capability_snapshot_at": "2026-08-14T15:43:42.850325Z",
+        "version": 1
+      },
+      "tool_names": [
+        "file.read",
+        "file.search",
+        "file.write"
+      ],
+      "allowed_commands": [],
+      "read_scope": [
+        ".github/workflows/ci.yml",
+        "pyproject.toml",
+        "src/shop/__init__.py",
+        "src/shop/legacy_broken.py",
+        "src/shop/models.py",
+        "src/shop/pricing.py",
+        "src/shop/service.py",
+        "tests/test_service.py"
+      ],
+      "write_scope": [
+        "src/shop/models.py",
+        "src/shop/pricing.py"
+      ],
+      "context_artifact_ids": [
+        "artifact_5f89a66ba8664c03ac0c48312c34dca1"
+      ],
+      "input_artifact_ids": [],
+      "runtime_limits": {
+        "max_steps": 32,
+        "max_input_tokens": 1000000,
+        "max_output_tokens": 16384,
+        "max_tool_calls": 32,
+        "timeout_seconds": 900
+      },
+      "output_schema": "TaskResult",
+      "version": 1
+    }
+  ],
+  "active_leases": [],
+  "allocation_decisions": [
+    {
+      "allocation_id": "spec_b1cb82a5742849ee95d68f3b2e3f6ccd",
+      "run_id": "run_a0d7ff1274c44f6daf72b9184e5ba3b8",
+      "graph_version": 2,
+      "ready_task_ids": [
+        "task_0ceaf9a89c4b422eb6bfb889e87df017"
+      ],
+      "selected_task_ids": [
+        "task_0ceaf9a89c4b422eb6bfb889e87df017"
+      ],
+      "available_slots": 6,
+      "reason": "实例数由就绪任务、并发槽位和写集合独立性共同决定"
+    },
+    {
+      "allocation_id": "spec_abe6916d5fcf45128ee7a3ead5f7ce39",
+      "run_id": "run_a0d7ff1274c44f6daf72b9184e5ba3b8",
+      "graph_version": 6,
+      "ready_task_ids": [
+        "task_f6aa5a4673b949d2ab5e1997c27908e8"
+      ],
+      "selected_task_ids": [
+        "task_f6aa5a4673b949d2ab5e1997c27908e8"
+      ],
+      "available_slots": 6,
+      "reason": "实例数由就绪任务、并发槽位和写集合独立性共同决定"
+    }
+  ],
+  "result_summaries": [
+    {
+      "task_id": "task_0ceaf9a89c4b422eb6bfb889e87df017",
+      "agent_id": "agent_da7329fb4c3d4e7bac1818a09b42fd08",
+      "execution_spec_id": "spec_64698fc047124d3db456062569ac5f34",
+      "status": "succeeded",
+      "summary": "已读取仓库相关文件并总结需求证据：1. src/shop/models.py中Customer类仅定义了customer_type属性，未实现normalized_type方法，无法满足「Customer.normalized_type返回去空格的大写值」的要求；2. src/shop/pricing.py中calculate_discount函数仅精确匹配\"VIP\"字符串，不支持大小写转换和空格处理，不符合「价格模块独立支持大小写与空格」的要求；3. tests/test_service.py文件已存在，但尚未读取其内容，暂无法获取回归相关证据。",
+      "artifacts": [],
+      "suggestions": []
+    },
+    {
+      "task_id": "task_f6aa5a4673b949d2ab5e1997c27908e8",
+      "agent_id": "agent_dc602a5f46a0477daee87619b57eb630",
+      "execution_spec_id": "spec_920dc2e6c42543c5bc6a75aa204f6f90",
+      "status": "failed",
+      "summary": "Worker 已达到确定性运行上限",
+      "artifacts": [],
+      "suggestions": []
+    }
+  ],
+  "processed_decisions": [],
+  "progress_state": null,
+  "decision_count": 0,
+  "acceptance_satisfied": false,
+  "finished": false,
+  "finish_summary": null
+}

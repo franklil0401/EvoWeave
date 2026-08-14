@@ -1,0 +1,28 @@
+{
+  "details": {
+    "direct_errors": [
+      {
+        "input": [],
+        "loc": [
+          "finish",
+          "risk_nototes"
+        ],
+        "msg": "Extra inputs are not permitted",
+        "type": "extra_forbidden"
+      }
+    ],
+    "extraction_errors": [
+      {
+        "input": [],
+        "loc": [
+          "finish",
+          "risk_nototes"
+        ],
+        "msg": "Extra inputs are not permitted",
+        "type": "extra_forbidden"
+      }
+    ]
+  },
+  "error_code": "invalid_model_output",
+  "message": "模型输出不符合 Worker 决策协议"
+}
